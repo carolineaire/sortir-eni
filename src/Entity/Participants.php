@@ -10,12 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ParticipantsRepository::class)]
 class Participants
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Id]
+    #[ORM\Column(name: "no_participant")]
     private ?int $idParticipant = null;
 
     #[ORM\Column(length: 255)]
@@ -39,7 +36,7 @@ class Participants
     #[ORM\Column(length: 20)]
     private ?string $mot_de_passe = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length: 30,unique: true)]
     private ?string $pseudo = null;
 
     /**
@@ -49,18 +46,14 @@ class Participants
     private Collection $inscriptions;
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Sites $noSites = null;
-
+    #[ORM\JoinColumn( name: "sites_no_site", referencedColumnName: "no_site", nullable: false )]
+    private ?Sites $site = null;
     public function __construct()
     {
         $this->inscriptions = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+
 
     public function getIdParticipant(): ?int
     {

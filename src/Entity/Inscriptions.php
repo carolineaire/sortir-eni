@@ -8,26 +8,23 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: InscriptionsRepository::class)]
 class Inscriptions
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+
+
 
     #[ORM\Column]
     private ?\DateTimeImmutable $dateInscription = null;
 
+    #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'inscriptions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn( name: "participants_no_participant", referencedColumnName: "no_participant", nullable: false )]
     private ?Participants $noParticipants = null;
 
+    #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'inscriptions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn( name: "sorties_no_sortie", referencedColumnName: "no_sortie", nullable: false )]
     private ?Sorties $noSorties = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+
 
     public function getDateInscription(): ?\DateTimeImmutable
     {
