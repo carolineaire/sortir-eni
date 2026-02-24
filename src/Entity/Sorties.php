@@ -13,6 +13,7 @@ class Sorties
 {
 
     #[ORM\Id]
+    #[ORM\GeneratedValue]
     #[ORM\Column(name: "no_sortie")]
     private ?int $idSortie = null;
 

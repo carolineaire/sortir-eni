@@ -15,6 +15,10 @@
     --text-nav: #c9c5e8;
 }
 
+main{
+    min-height: 80dvh;
+}
+
 body {
     font-family: 'DM Sans', sans-serif;
 }
@@ -64,7 +68,6 @@ nav a {
 
 nav a:hover {
     color: white;
-    background: rgba(124, 110, 250, 0.15);
 }
 
 nav a.active {
@@ -86,4 +89,25 @@ nav a.nav-logout:hover {
 
 h1 {
     color: var(--accent);
+}
+
+/* Page principal: liste des sorties */
+
+.informations {
+    background: #ffffff;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-top: 1rem;
+    border: 1px solid #eaeaea;
+    min-width: 250px;
+}
+
+.informations p {
+    margin: 0.3rem 0;
+}
+
+.informations span {
+    font-weight: 600;
+    color: rgb(48, 36, 158);
 }
