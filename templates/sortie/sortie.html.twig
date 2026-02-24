@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortie.com{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid d-flex justify-content-end">
+    <div class="informations text-end">
+        <p>Date du jour : <span id="date-du-jour"></span></p>
+        <p>Participant : <span>Prénom N.</span></p>
+    </div>
+</div>
+
+<div class="container-fluid">
+    
+
+</div>
+
+<script>
+  document.getElementById('date-du-jour')
+    .textContent = new Date().toLocaleDateString('fr-FR');
+</script>
+{% endblock %}
+
