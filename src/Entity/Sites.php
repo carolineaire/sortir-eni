@@ -10,11 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: SitesRepository::class)]
 class Sites
 {
-
-
     #[ORM\Id]
-    #[ORM\Column(name: "no_site")]
-    private ?int $idSite = null;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(name: "id_site")]
+       private ?int $idSite = null;
 
     #[ORM\Column(length: 30)]
     private ?string $nomSite = null;
