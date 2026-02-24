@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Lieux
 {
     #[ORM\Id]
+    #[ORM\GeneratedValue]
     #[ORM\Column(name: "no_lieu")]
     private ?int $idLieu = null;
 

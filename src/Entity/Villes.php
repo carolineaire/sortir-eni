@@ -12,6 +12,7 @@ class Villes
 {
 
     #[ORM\Id]
+    #[ORM\GeneratedValue]
     #[ORM\Column(name: "no_ville")]
     private ?int $idVille = null;
 

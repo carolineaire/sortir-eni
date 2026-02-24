@@ -13,6 +13,7 @@ class Etats
 
 
     #[ORM\Id]
+    #[ORM\GeneratedValue]
     #[ORM\Column(name: "no_etat")]
     private ?int $idEtat = null;
 
