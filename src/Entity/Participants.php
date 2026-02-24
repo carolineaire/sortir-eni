@@ -46,7 +46,7 @@ class Participants
     private Collection $inscriptions;
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
-    #[ORM\JoinColumn( name: "sites_no_site", referencedColumnName: "no_site", nullable: false )]
+    #[ORM\JoinColumn(name: "sites_no_site", referencedColumnName: "no_site", nullable: false)]
     private ?Sites $site = null;
     public function __construct()
     {
@@ -193,15 +193,14 @@ class Participants
         return $this;
     }
 
-    public function getNoSites(): ?Sites
+    public function getSite(): ?Sites
     {
-        return $this->noSites;
+        return $this->site;
     }
 
-    public function setNoSites(?Sites $noSites): static
+    public function setSite(?Sites $site): static
     {
-        $this->noSites = $noSites;
-
+        $this->site = $site;
         return $this;
     }
 }
