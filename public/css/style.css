@@ -24,12 +24,31 @@ nav {
     padding: 0 2rem;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    justify-content: space-between;
     height: 60px;
     border-bottom: 1px solid rgba(124, 110, 250, 0.2);
     position: sticky;
     top: 0;
     z-index: 100;
+}
+
+nav .logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+nav .logo img {
+    height: 60px;
+    max-height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+nav .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 nav a {
@@ -48,20 +67,18 @@ nav a:hover {
     background: rgba(124, 110, 250, 0.15);
 }
 
-/* Lien actif (à ajouter via Twig avec class="active") */
 nav a.active {
     color: var(--accent-light);
     background: rgba(124, 110, 250, 0.12);
 }
 
-/* Bouton Déconnexion mis en valeur */
-nav a:last-child {
-    margin-left: auto;
+nav a.nav-logout {
+    margin-left: 0.5rem;
     border: 1px solid rgba(124, 110, 250, 0.35);
     color: var(--accent-light);
 }
 
-nav a:last-child:hover {
+nav a.nav-logout:hover {
     background: rgba(124, 110, 250, 0.2);
     border-color: var(--accent);
     color: white;

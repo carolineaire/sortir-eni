@@ -7,23 +7,23 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class"title"></div>
-    {# LE HEADER — affiché sur toutes les pages #}
     <nav>
-        <a href=>Villes</a>
-        <a href=>Sites</a>
-        <a href=>Accueil</a>
-        <a href="{{ path('app_profil') }}">Mon profil</a>
-        <a href=>Déconnexion</a>
+        <a class="logo" href="/">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Sorti">
+        </a>
+        <div class="nav-links">
+            <a href="#">Villes</a>
+            <a href="#">Sites</a>
+            <a href="#">Accueil</a>
+            <a href="{{ path('app_profil') }}">Mon profil</a>
+            <a href="#" class="nav-logout">Déconnexion</a>
+        </div>
     </nav>
 
-    {# LE CONTENU — chaque page met ce qu'elle veut ici #}
     {% block body %}{% endblock %}
 
-    {# LE FOOTER — affiché sur toutes les pages #}
     <footer>
         <p>© 2025 Sortie</p>
     </footer>
-
 </body>
 </html>
