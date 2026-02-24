@@ -13,12 +13,17 @@ class Participants
 {
 
 
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
+
+   
+
+
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
     #[Assert\NotBlank]
@@ -69,10 +74,7 @@ class Participants
         $this->inscriptions = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+
 
 
     public function getNom(): ?string

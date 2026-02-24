@@ -1,0 +1,113 @@
+/* public/css/style.css */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --accent: #7c6efa;
+    --accent-light: #a89efb;
+    --bg-nav: #0f0f13;
+    --text-nav: #c9c5e8;
+}
+
+main{
+    min-height: 80dvh;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+}
+
+nav {
+    background: var(--bg-nav);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    border-bottom: 1px solid rgba(124, 110, 250, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+nav .logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+nav .logo img {
+    height: 60px;
+    max-height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+nav .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+nav a {
+    color: var(--text-nav);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+    letter-spacing: 0.01em;
+}
+
+nav a:hover {
+    color: white;
+}
+
+nav a.active {
+    color: var(--accent-light);
+    background: rgba(124, 110, 250, 0.12);
+}
+
+nav a.nav-logout {
+    margin-left: 0.5rem;
+    border: 1px solid rgba(124, 110, 250, 0.35);
+    color: var(--accent-light);
+}
+
+nav a.nav-logout:hover {
+    background: rgba(124, 110, 250, 0.2);
+    border-color: var(--accent);
+    color: white;
+}
+
+h1 {
+    color: var(--accent);
+}
+
+/* Page principal: liste des sorties */
+
+.informations {
+    background: #ffffff;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-top: 1rem;
+    border: 1px solid #eaeaea;
+    min-width: 250px;
+}
+
+.informations p {
+    margin: 0.3rem 0;
+}
+
+.informations span {
+    font-weight: 600;
+    color: rgb(48, 36, 158);
+}
