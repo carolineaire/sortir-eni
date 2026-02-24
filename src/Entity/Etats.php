@@ -10,11 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: EtatsRepository::class)]
 class Etats
 {
-
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(name: "no_etat")]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column]
     private ?int $idEtat = null;
 
     #[ORM\Column(length: 30)]
@@ -23,7 +24,7 @@ class Etats
     /**
      * @var Collection<int, Sorties>
      */
-    #[ORM\OneToMany(targetEntity: Sorties::class, mappedBy: 'etat')]
+    #[ORM\OneToMany(targetEntity: Sorties::class, mappedBy: 'noEtats', orphanRemoval: true)]
     private Collection $sorties;
 
     public function __construct()

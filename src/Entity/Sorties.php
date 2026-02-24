@@ -11,10 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: SortiesRepository::class)]
 class Sorties
 {
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(name: "no_sortie")]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column]
     private ?int $idSortie = null;
 
     #[ORM\Column(length: 30)]
@@ -51,12 +53,12 @@ class Sorties
     private Collection $inscriptions;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
-    #[ORM\JoinColumn( name: "lieux_no_lieu", referencedColumnName: "no_lieu", nullable: false )]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Lieux $noLieux = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
-    #[ORM\JoinColumn( name: "etats_no_etat", referencedColumnName: "no_etat", nullable: false )]
-    private ?Etats $etat = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Etats $noEtats = null;
 
     public function __construct()
     {

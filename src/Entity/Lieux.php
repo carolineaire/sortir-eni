@@ -12,7 +12,10 @@ class Lieux
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(name: "no_lieu")]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column]
     private ?int $idLieu = null;
 
     #[ORM\Column(length: 30)]
@@ -28,8 +31,8 @@ class Lieux
     private ?float $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'lieuxes')]
-    #[ORM\JoinColumn( name: "villes_no_ville", referencedColumnName: "no_ville", nullable: false )]
-    private ?Villes $ville = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Villes $noVilles = null;
 
     /**
      * @var Collection<int, Sorties>
@@ -42,7 +45,10 @@ class Lieux
         $this->sorties = new ArrayCollection();
     }
 
-
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getIdLieu(): ?int
     {
