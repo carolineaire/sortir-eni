@@ -12,11 +12,8 @@ class Sites
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column]
-    private ?int $idSite = null;
+    #[ORM\Column(name: "id_site")]
+       private ?int $idSite = null;
 
     #[ORM\Column(length: 30)]
     private ?string $nomSite = null;

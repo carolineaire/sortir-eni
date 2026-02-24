@@ -6,27 +6,31 @@ use App\Repository\ParticipantsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantsRepository::class)]
 class Participants
 {
+
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column]
-    private ?int $idParticipant = null;
-
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
-
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
-
+    #[Assert\Length(max: 10)]
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $telephone = null;
-
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    #[Assert\Length(max: 255)]
     #[ORM\Column(length: 255)]
     private ?string $mail = null;
 
@@ -39,8 +43,16 @@ class Participants
     #[ORM\Column(length: 20)]
     private ?string $mot_de_passe = null;
 
-    #[ORM\Column(length: 30)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 30)]
+    #[ORM\Column(length: 30,unique: true)]
     private ?string $pseudo = null;
+
+
+    #[ORM\OneToOne(inversedBy: 'participant')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
 
     /**
      * @var Collection<int, Inscriptions>
@@ -49,7 +61,7 @@ class Participants
     private Collection $inscriptions;
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: "site_id", referencedColumnName: "id_site", nullable: false)]
     private ?Sites $noSites = null;
 
     public function __construct()
@@ -62,17 +74,6 @@ class Participants
         return $this->id;
     }
 
-    public function getIdParticipant(): ?int
-    {
-        return $this->idParticipant;
-    }
-
-    public function setIdParticipant(int $idParticipant): static
-    {
-        $this->idParticipant = $idParticipant;
-
-        return $this;
-    }
 
     public function getNom(): ?string
     {
@@ -211,4 +212,15 @@ class Participants
 
         return $this;
     }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
 }
