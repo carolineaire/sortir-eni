@@ -2,8 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Participants;
 use App\Entity\Sites;
-use App\Entity\User;
+
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -26,13 +27,12 @@ class RegistrationFormType extends AbstractType
             // Champs User
             ->add('pseudo', TextType::class)
             ->add('nom', TextType::class, [
-                'mapped' => false,
-            ])
+                           ])
             ->add('prenom', TextType::class, [
-                'mapped' => false,
+
             ])
             ->add('telephone', TelType::class, [
-                'mapped' => false,
+
                 'required' => false,
             ])
 
@@ -40,6 +40,7 @@ class RegistrationFormType extends AbstractType
 
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
+                'label' => 'Mot de passe',
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank(message: 'Please enter a password'),
@@ -50,23 +51,23 @@ class RegistrationFormType extends AbstractType
             // Champs Participants (mapped = false)
 
             ->add('administrateur', ChoiceType::class, [
-                'mapped' => false,
+
                 'choices' => [
                     'Oui' => true,
                     'Non' => false,
                 ],
             ])
             ->add('actif', ChoiceType::class, [
-                'mapped' => false,
+                'label' => 'Compte actif',
                 'choices' => [
                     'Actif' => true,
                     'Inactif' => false,
                 ],
             ])
-            ->add('site', EntityType::class,[
+            ->add('noSites', EntityType::class,[
                 'class' => Sites::class,
                 'choice_label' => 'nomSite',
-                'mapped' => false,
+                'label' => 'Site',
                 'placeholder' => 'Choisissez un site', ])
         ;
     }
@@ -74,7 +75,7 @@ class RegistrationFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => Participants::class,
         ]);
     }
 }
