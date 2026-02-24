@@ -16,28 +16,19 @@ class ParticipantsRepository extends ServiceEntityRepository
         parent::__construct($registry, Participants::class);
     }
 
-    //    /**
-    //     * @return Participants[] Returns an array of Participants objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findUserById(int $id): ?Participants
+    {
+        return $this->find($id); 
+    }
 
-    //    public function findOneBySomeField($value): ?Participants
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findParticipantWithSite(int $id): ?Participants
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.site', 's')
+            ->addSelect('s')
+            ->andWhere('p.idParticipant = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
