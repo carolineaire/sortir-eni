@@ -33,28 +33,19 @@ class ParticipantsRepository extends ServiceEntityRepository implements Password
         $this->getEntityManager()->flush();
     }
 
-    //    /**
-    //     * @return Participants[] Returns an array of Participants objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findUserById(int $id): ?Participants
+    {
+        return $this->find($id); 
+    }
 
-    //    public function findOneBySomeField($value): ?Participants
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findParticipantWithSite(int $id): ?Participants
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.noSites', 's')
+            ->addSelect('s')
+            ->andWhere('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

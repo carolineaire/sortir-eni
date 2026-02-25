@@ -4,6 +4,16 @@
 {% block title %}Mon Profil{% endblock %}
 
 {% block body %}
-    <h1>Bienvenue sur ton profil !</h1>
-    <p>Nom : Oui</p>
+    <div class="user-data">
+        <h1 class="tittle">{{ user.pseudo }}</h1> 
+        <div class="name">Prénom : {{ user.prenom }}</div>
+        <div class="surname">Nom : {{ user.nom }}</div>
+        <div class="phone-number">Téléphone : {{ user.telephone }}</div>
+        <div class="email">Email : {{ user.email }}</div>
+        <div class="city">Ville de rattachement : {{ user.noSites.nomSite }}</div>
+    </div>
+
+    {% if myprofil == true %}
+        <a href="{{ path('app_profil') }}">Modifier votre profil</a>
+    {% endif %}
 {% endblock %}
