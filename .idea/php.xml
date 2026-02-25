@@ -140,19 +140,12 @@
       <path value="$PROJECT_DIR$/vendor/symfony/twig-bundle" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-idn" />
       <path value="$PROJECT_DIR$/vendor/symfony/web-profiler-bundle" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/data-fixtures" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-fixtures-bundle" />
+      <path value="$PROJECT_DIR$/vendor/fakerphp/faker" />
     </include_path>
   </component>
-<<<<<<< HEAD
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
-  <component name="PhpStanOptionsConfiguration">
-    <option name="transferred" value="true" />
-  </component>
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-  <component name="PhpProjectSharedConfiguration" php_language_level="8.5">
-    <option name="suggestChangeDefaultLanguageLevel" value="false" />
-  </component>
   <component name="PhpStanOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
@@ -161,18 +154,6 @@
       <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" />
     </phpunit_settings>
   </component>
-=======
-=======
->>>>>>> 12448928e4f88d9fa41534141dcac52c5486f979
-  <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
-  <component name="PhpStanOptionsConfiguration">
-    <option name="transferred" value="true" />
-  </component>
-<<<<<<< HEAD
->>>>>>> 1244892 (resoveld conflict)
-=======
->>>>>>> 12448928e4f88d9fa41534141dcac52c5486f979
->>>>>>> 13c4e0ce8500b85186753d75daea6468859b3336
   <component name="PsalmOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
