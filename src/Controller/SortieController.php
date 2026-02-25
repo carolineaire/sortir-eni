@@ -9,12 +9,25 @@ use App\Repository\SortiesRepository;
 
 final class SortieController extends AbstractController
 {
-    #[Route('/', name: 'app_sortie')]
+    #[Route('/sortie', name: 'app_sortie')]
     public function index(SortiesRepository $repo): Response
     {
         $sorties = $repo->findAll();
+        $user = $this->getUser();
+
+        $villes = [];
+        foreach ($sorties as $s) {
+            $nomVille = $s->getNoLieux()->getNoVilles()->getNomVille();
+            if (!in_array($nomVille, $villes)) {
+                $villes[] = $nomVille;
+            }
+        }
+
+
         return $this->render('sortie/sortie.html.twig', [
             'sortie' => $sorties,
+            'ville' => $villes,
+            'user' => $user
         ]);
     }
 }

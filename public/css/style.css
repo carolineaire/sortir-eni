@@ -48,6 +48,30 @@ body::before {
     mix-blend-mode: multiply;
 }
 
+.page-container {
+    min-height: 100vh; 
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1; 
+    padding: 20px;
+    background-color: #f9f9f9; 
+}
+
+.footer {
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    padding: 15px 10px;
+    font-size: 0.9rem;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+}
+.footer p {
+    margin: 0;
+}
+
 /* ===== NAVBAR ===== */
 nav {
     height: 65px;
@@ -64,6 +88,19 @@ nav {
 }
 
 /* Logo */
+nav .logo {
+    display: flex;
+    align-items: center; 
+    gap: 10px;          
+    text-decoration: none;
+}
+
+nav .logo h1 {
+    margin: 0;          
+    font-size: 1.5rem;   
+    color: #000;        
+}
+
 nav .logo img {
     height: 50px;
     object-fit: contain;
@@ -76,7 +113,7 @@ nav .nav-links {
     gap: 1rem;
 }
 
-nav a {
+nav .nav-links a {
     color: var(--text-primary);
     text-decoration: none;
     font-size: 0.85rem;
@@ -89,7 +126,7 @@ nav a {
 }
 
 /* Hover smooth */
-nav a:hover {
+nav .nav-links a:hover {
     background: var(--glass);
     color: var(--accent);
     border-color: var(--border-color);
@@ -108,6 +145,41 @@ nav a.nav-logout {
     color: var(--accent);
 }
 
+/* Page principal: liste des sorties */
+
+    /* Panneau date + utilisateur connecté */
+    .informations {
+        background: #ffffff;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        margin-top: 1rem;
+        border: 1px solid #eaeaea;
+        min-width: 250px;
+    }
+
+    .informations p {
+        margin: 0.3rem 0;
+    }
+
+    .informations span {
+        font-weight: 600;
+        color: rgb(48, 36, 158);
+    }
+
+    /* Bloc des filtres */
+    .filtres {
+        width: 60%;
+        margin: 1rem 0;
+    }
+
+    /* Bloc liste des sorties */
+    .sorties{
+        margin: 0;
+    }
+
+
+/* Gestion du profil */
 nav a.nav-logout:hover {
     background: var(--accent);
     color: white;
