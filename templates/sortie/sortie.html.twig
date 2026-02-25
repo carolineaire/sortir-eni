@@ -93,6 +93,7 @@
             <th scope="col">Fin des inscription</th>
             <th scope="col">Places restantes</th>
             <th scope="col">Lieu</th>
+            <th scope="col">Ville</th>
             <th scope="col">Actions</th>
         </tr>
         </thead>
@@ -105,6 +106,7 @@
                 <td>{{ s.dateCloture | date('d/m/Y') }}</td>
                 <td>{{ s.nbInscriptionMax }}</td>
                 <td>{{ s.noLieux.nomLieu }}</td>
+                <td>{{ s.noLieux.noVilles.nomVille }}</td>
                 <td>
                     <a href="#" tooltip="voir le détail de la sortie">
                         Détails
