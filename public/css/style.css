@@ -93,21 +93,33 @@ h1 {
 
 /* Page principal: liste des sorties */
 
-.informations {
-    background: #ffffff;
-    padding: 1rem 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    margin-top: 1rem;
-    border: 1px solid #eaeaea;
-    min-width: 250px;
-}
+    /* Panneau date + utilisateur connecté */
+    .informations {
+        background: #ffffff;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        margin-top: 1rem;
+        border: 1px solid #eaeaea;
+        min-width: 250px;
+    }
 
-.informations p {
-    margin: 0.3rem 0;
-}
+    .informations p {
+        margin: 0.3rem 0;
+    }
 
-.informations span {
-    font-weight: 600;
-    color: rgb(48, 36, 158);
-}
+    .informations span {
+        font-weight: 600;
+        color: rgb(48, 36, 158);
+    }
+
+    /* Bloc des filtres */
+    .filtres {
+        width: 60%;
+        margin: 1rem 0;
+    }
+
+    /* Bloc liste des sorties */
+    .sorties{
+        margin: 0;
+    }
