@@ -67,6 +67,17 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Inscriptions::class, mappedBy: 'noParticipants')]
     private Collection $inscriptions;
 
+    /**
+     * @var Collection<int, Sorties>
+     */
+    #[ORM\OneToMany(targetEntity: Sorties::class, mappedBy: 'organisateur', orphanRemoval: true)]
+    private Collection $sorties;
+
+    public function __construct()
+    {
+        $this->sorties = new ArrayCollection();
+    }
+
     #[ORM\ManyToOne(inversedBy: 'participants')]
     #[ORM\JoinColumn(name: "site_id", referencedColumnName: "id_site", nullable: false)]
     private ?Sites $noSites = null;

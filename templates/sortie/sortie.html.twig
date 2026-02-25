@@ -62,7 +62,7 @@
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" id="orga">
                     <label class="form-check-label" for="orga">
-                        TODO: Sorties dont je suis l'organisateur/trice
+                        Sorties dont je suis l'organisateur/trice
                     </label>
                 </div>
                 <div class="form-check mb-2">
@@ -102,12 +102,13 @@
             <th scope="col">Places restantes</th>
             <th scope="col">Lieu</th>
             <th scope="col">Ville</th>
+            <th scope="col">Organisé par</th>
             <th scope="col">Actions</th>
         </tr>
         </thead>
         <tbody>
         {% for s in sortie %}
-            <tr>
+            <tr data-organisateur="{{ s.organisateur.id }}">
                 <td>{{ s.nom }}</td>
                 <td>{{ s.duree }}</td>
                 <td>{{ s.dateDebut | date('d/m/Y') }}</td>
@@ -115,6 +116,7 @@
                 <td>{{ s.nbInscriptionMax }}</td>
                 <td>{{ s.noLieux.nomLieu }}</td>
                 <td>{{ s.noLieux.noVilles.nomVille }}</td>
+                <td>{{ s.organisateur.prenom }} {{s.organisateur.nom|slice(0,1)}}.</td>
                 <td>
                     <a href="#" data-bs-toggle="tooltip" title="Voir le détail">
                         <i class="fa-regular fa-eye"></i>
@@ -137,6 +139,8 @@
 </div>
 
 <script>
+    const currentUserId = {{ app.user.id }};
+
     {# Date du jour #}
     document.getElementById('date-du-jour')
         .textContent = new Date().toLocaleDateString('fr-FR');
@@ -147,6 +151,7 @@
     const dateStartInput = document.getElementById('dateStart');
     const dateEndInput = document.getElementById('dateEnd');
     const passeesCheckbox = document.getElementById('passees');
+    const orgaCheckbox = document.getElementById('orga');
     const rows = document.querySelectorAll('table tbody tr');
 
     function applyFilters() {
@@ -156,6 +161,7 @@
         const startDate = dateStartInput.value ? new Date(dateStartInput.value) : null;
         const endDate = dateEndInput.value ? new Date(dateEndInput.value) : null;
         const showPassees = passeesCheckbox.checked;
+        const showOrga = orgaCheckbox.checked;
 
         const today = new Date();
         today.setHours(0,0,0,0); 
@@ -184,6 +190,12 @@
             // Filtre sorties passées
             if (showPassees && rowDate >= today) show = false;
 
+            // Filtre organisateur
+            if (showOrga) {
+                const orgaId = row.dataset.organisateur; 
+                if (parseInt(orgaId) !== currentUserId) show = false;
+            }
+
             row.style.display = show ? '' : 'none';
         });
     }
@@ -194,6 +206,7 @@
     dateStartInput.addEventListener('change', applyFilters);
     dateEndInput.addEventListener('change', applyFilters);
     passeesCheckbox.addEventListener('change', applyFilters);
+    orgaCheckbox.addEventListener('change', applyFilters);
 
     {# Nettoyer les filtres #}
     const resetBtn = document.getElementById('resetFilters');
@@ -212,11 +225,10 @@
         document.getElementById('nonInscrit').checked = false;
 
         // Réaffiche toutes les lignes
-        const rows = document.querySelectorAll('table tbody tr');
         rows.forEach(row => row.style.display = '');
 
-        // Si tu veux garder la logique applyFilters pour le futur, tu peux aussi faire :
-        // applyFilters();
+        // Appliquer les filtres pour remettre à jour le tableau
+        applyFilters();
     });
 </script>
 {% endblock %}
