@@ -19,7 +19,7 @@
 <div class="filtres mt-4">
     <!-- Bloc filtre -->
     <div class="p-4">
-        <h4 class="mb-4">TODO:Filtrer les sorties</h4>
+        <h4 class="mb-4">WIP:Filtrer les sorties</h4>
         <div class="row">
             <!-- Colonne gauche -->
             <div class="col-md-6">
@@ -41,9 +41,7 @@
                 </div>
                 <!-- Nom de la sortie -->
                 <div class="mb-3">
-                    <label for="search" class="form-label">
-                        Le nom de la sortie contient :
-                    </label>
+                    <label for="search" class="form-label">Le nom de la sortie contient :</label>
                     <div class="input-group">
                         <span class="input-group-text">🔍</span>
                         <input type="text" id="search" class="form-control" placeholder="search">
@@ -157,6 +155,25 @@
                 row.style.display = "";
             } else {
                 row.style.display = "none";
+            }
+        });
+    });
+
+    {# Filtrer avec la recherche #}
+    const searchInput = document.getElementById('search');
+    const tableRows = document.querySelectorAll('table tbody tr');
+
+    searchInput.addEventListener('input', () => {
+        const searchValue = searchInput.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const titre = row.cells[0].textContent.toLowerCase(); // Colonne "Titre"
+            
+            // Affiche la ligne si elle contient le texte, sinon la cache
+            if (titre.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
             }
         });
     });
