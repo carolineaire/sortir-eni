@@ -1,0 +1,378 @@
+{# templates/profil/edit.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon Profil{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div class="card shadow-sm edit-card">
+                    <div class="card-body p-5">
+
+                        <h2 class="text-center mb-4 edit-title">Modifier mon profil</h2>
+
+                        {{ form_start(editProfilForm, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                        <!-- Pseudo -->
+                        <div class="mb-3 form-item">
+                            {{ form_label(editProfilForm.pseudo, 'Pseudo') }}
+                            {{ form_widget(editProfilForm.pseudo, {'attr': {'class': 'form-control edit-input'}}) }}
+                            {{ form_errors(editProfilForm.pseudo) }}
+                        </div>
+
+                        <!-- Prenom -->
+                        <div class="mb-3 form-item">
+                            {{ form_label(editProfilForm.prenom, 'Prénom') }}
+                            {{ form_widget(editProfilForm.prenom, {'attr': {'class': 'form-control edit-input'}}) }}
+                            {{ form_errors(editProfilForm.prenom) }}
+                        </div>
+
+                        <!-- Nom -->
+                        <div class="mb-3 form-item">
+                            {{ form_label(editProfilForm.nom, 'Nom') }}
+                            {{ form_widget(editProfilForm.nom, {'attr': {'class': 'form-control edit-input'}}) }}
+                            {{ form_errors(editProfilForm.nom) }}
+                        </div>
+
+                        <!-- Telephone -->
+                        <div class="mb-3 form-item">
+                            {{ form_label(editProfilForm.telephone, 'Téléphone') }}
+                            {{ form_widget(editProfilForm.telephone, {'attr': {'class': 'form-control edit-input', 'type': 'tel'}}) }}
+                            {{ form_errors(editProfilForm.telephone) }}
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3 form-item">
+                            {{ form_label(editProfilForm.email, 'Email') }}
+                            {{ form_widget(editProfilForm.email, {'attr': {'class': 'form-control edit-input', 'type': 'email'}}) }}
+                            {{ form_errors(editProfilForm.email) }}
+                        </div>
+
+                        <!-- Ville de rattachement -->
+                        <div class="mb-3 form-item">
+                            {{ form_label(editProfilForm.noSites, 'Ville de rattachement') }}
+                            {{ form_widget(editProfilForm.noSites, {'attr': {'class': 'form-select edit-input'}}) }}
+                            {{ form_errors(editProfilForm.noSites) }}
+                        </div>
+
+                        <!-- Mot de passe actuel -->
+                        <div class="mb-3 form-item">
+                            {{ form_label(editProfilForm.currentPassword, 'Mot de passe actuel') }}
+                            {{ form_widget(editProfilForm.currentPassword, {'attr': {'class': 'form-control edit-input', 'type': 'password'}}) }}
+                            {{ form_errors(editProfilForm.currentPassword) }}
+                        </div>
+
+                        <!-- Nouveau mot de passe et confirmation (RepeatedType) -->
+                        <div class="mb-3 form-item">
+                            {{ form_label(editProfilForm.plainPassword.first, 'Nouveau mot de passe') }}
+                            {{ form_widget(editProfilForm.plainPassword.first, {'attr': {'class': 'form-control edit-input'}}) }}
+                            <small class="form-text text-muted">Minimum 8 caractères</small>
+                            {{ form_errors(editProfilForm.plainPassword.first) }}
+                        </div>
+
+                        <div class="mb-3 form-item">
+                            {{ form_label(editProfilForm.plainPassword.second, 'Confirmer le mot de passe') }}
+                            {{ form_widget(editProfilForm.plainPassword.second, {'attr': {'class': 'form-control edit-input'}}) }}
+                            {{ form_errors(editProfilForm.plainPassword.second) }}
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Boutons d'action -->
+                        <div class="d-flex gap-2 edit-actions">
+                            <button type="submit" class="btn btn-primary edit-btn flex-grow-1">
+                                <i class="fas fa-save"></i> Mettre à jour
+                            </button>
+                            <a href="{{ path('app_profil') }}" class="btn btn-secondary edit-btn flex-grow-1">
+                                <i class="fas fa-arrow-left"></i> Annuler
+                            </a>
+                        </div>
+
+                        {{ form_end(editProfilForm) }}
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes focusGlow {
+            from {
+                box-shadow: 0 0 0 0 rgba(184, 163, 209, 0.4);
+            }
+            to {
+                box-shadow: 0 0 0 8px rgba(184, 163, 209, 0);
+            }
+        }
+
+        @keyframes buttonPulse {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.02);
+            }
+        }
+
+        /* ===== CARTE ===== */
+        .edit-card {
+            border: none;
+            border-radius: 12px;
+            animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s ease;
+        }
+
+        .edit-card:hover {
+            box-shadow: 0 12px 32px rgba(184, 163, 209, 0.2) !important;
+            border-color: #b8a3d1;
+        }
+
+        /* ===== TITRE ===== */
+        .edit-title {
+            font-weight: 700;
+            color: #333;
+            animation: slideInLeft 0.5s ease-out 0.1s both;
+            background: linear-gradient(135deg, #333, #b8a3d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== ITEMS FORM ===== */
+        .form-item {
+            animation: slideInLeft 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .form-item:nth-child(1) { animation-delay: 0.15s; }
+        .form-item:nth-child(2) { animation-delay: 0.25s; }
+        .form-item:nth-child(3) { animation-delay: 0.35s; }
+        .form-item:nth-child(4) { animation-delay: 0.45s; }
+        .form-item:nth-child(5) { animation-delay: 0.55s; }
+        .form-item:nth-child(6) { animation-delay: 0.65s; }
+        .form-item:nth-child(7) { animation-delay: 0.75s; }
+        .form-item:nth-child(8) { animation-delay: 0.85s; }
+        .form-item:nth-child(9) { animation-delay: 0.95s; }
+
+        /* ===== INPUTS ===== */
+        .edit-input {
+            border-radius: 8px;
+            border: 1.5px solid #e0e0e0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            background: #f9f9f9;
+        }
+
+        .edit-input:focus {
+            outline: none;
+            border-color: #b8a3d1;
+            background: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(184, 163, 209, 0.25);
+            animation: focusGlow 0.6s ease-out;
+        }
+
+        .edit-input:hover:not(:focus) {
+            border-color: #d0d0d0;
+            background: #fafafa;
+        }
+
+        .edit-input::placeholder {
+            color: #bbb;
+            transition: color 0.3s ease;
+        }
+
+        .edit-input:focus::placeholder {
+            color: #d4c5f9;
+        }
+
+        /* ===== BOUTONS ===== */
+        .edit-actions {
+            animation: slideInLeft 0.5s ease-out 1.1s both;
+        }
+
+        .edit-btn {
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .edit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .edit-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #b8a3d1 0%, #d4c5f9 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(184, 163, 209, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(184, 163, 209, 0.4);
+            animation: buttonPulse 0.4s ease-in-out;
+        }
+
+        .btn-primary:active {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 1.5px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-4px);
+            border-color: #b8a3d1;
+            background: #f5f2fa;
+            color: #b8a3d1;
+            box-shadow: 0 6px 18px rgba(184, 163, 209, 0.2);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(-2px);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .edit-card {
+                margin: 1rem;
+                border-radius: 8px;
+            }
+
+            .card-body {
+                padding: 1.5rem !important;
+            }
+
+            .edit-btn {
+                padding: 0.7rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-body {
+                padding: 1rem !important;
+            }
+
+            .edit-title {
+                font-size: 1.5rem;
+            }
+
+            .edit-input {
+                font-size: 16px; /* Évite zoom mobile */
+                padding: 0.8rem;
+            }
+
+            .d-flex.gap-2 {
+                flex-direction: column;
+                gap: 0.8rem !important;
+            }
+
+            .edit-btn {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.edit-input');
+            const buttons = document.querySelectorAll('.edit-btn');
+
+            // Effet ripple sur les inputs
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                });
+
+                input.addEventListener('blur', function() {
+                    if(!this.value) {
+                        this.style.background = '#f9f9f9';
+                    }
+                });
+            });
+
+            // Ripple effect sur les boutons
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const ripple = document.createElement('span');
+                    ripple.style.position = 'absolute';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.style.width = '10px';
+                    ripple.style.height = '10px';
+                    ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.pointerEvents = 'none';
+                    ripple.style.transform = 'translate(-50%, -50%)';
+
+                    const animation = ripple.animate([
+                        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                        { transform: 'translate(-50%, -50%) scale(30)', opacity: 0 }
+                    ], {
+                        duration: 600,
+                        easing: 'ease-out'
+                    });
+
+                    this.style.position = 'relative';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        });
+    </script>
+{% endblock %}

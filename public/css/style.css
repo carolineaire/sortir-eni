@@ -275,3 +275,51 @@ h1 {
 .user-data {
     animation: gentle-fade-in 0.4s ease;
 }
+
+/* ===== BOUTON MODIFIER PROFIL ===== */
+.edit-profile-btn {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.85rem 2rem;
+    background: linear-gradient(135deg, var(--accent) 0%, #a892c2 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 2px solid var(--accent);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(184, 163, 209, 0.3);
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.edit-profile-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.edit-profile-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(184, 163, 209, 0.4);
+    border-color: #a892c2;
+    background: linear-gradient(135deg, #a892c2 0%, var(--accent) 100%);
+}
+
+.edit-profile-btn:hover::before {
+    left: 100%;
+}
+
+.edit-profile-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(184, 163, 209, 0.3);
+}
