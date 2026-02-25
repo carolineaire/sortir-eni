@@ -33,20 +33,6 @@ class ParticipantsRepository extends ServiceEntityRepository implements Password
         $this->getEntityManager()->flush();
     }
 
-    /**
-     * Used to upgrade (rehash) the user's password automatically over time.
-     */
-    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
-    {
-        if (!$user instanceof Participants) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
-        }
-
-        $user->setPassword($newHashedPassword);
-        $this->getEntityManager()->persist($user);
-        $this->getEntityManager()->flush();
-    }
-
     public function findUserById(int $id): ?Participants
     {
         return $this->find($id); 
@@ -55,54 +41,9 @@ class ParticipantsRepository extends ServiceEntityRepository implements Password
     public function findParticipantWithSite(int $id): ?Participants
     {
         return $this->createQueryBuilder('p')
-            ->leftJoin('p.site', 's')
+            ->leftJoin('p.noSites', 's')
             ->addSelect('s')
-            ->andWhere('p.idParticipant = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-    public function findUserById(int $id): ?Participants
-    {
-        return $this->find($id); 
-    }
-
-    public function findParticipantWithSite(int $id): ?Participants
-    {
-        return $this->createQueryBuilder('p')
-            ->leftJoin('p.site', 's')
-            ->addSelect('s')
-            ->andWhere('p.idParticipant = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-    public function findUserById(int $id): ?Participants
-    {
-        return $this->find($id); 
-    }
-
-    public function findParticipantWithSite(int $id): ?Participants
-    {
-        return $this->createQueryBuilder('p')
-            ->leftJoin('p.site', 's')
-            ->addSelect('s')
-            ->andWhere('p.idParticipant = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-    public function findUserById(int $id): ?Participants
-    {
-        return $this->find($id); 
-    }
-
-    public function findParticipantWithSite(int $id): ?Participants
-    {
-        return $this->createQueryBuilder('p')
-            ->leftJoin('p.site', 's')
-            ->addSelect('s')
-            ->andWhere('p.idParticipant = :id')
+            ->andWhere('p.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
             ->getOneOrNullResult();
