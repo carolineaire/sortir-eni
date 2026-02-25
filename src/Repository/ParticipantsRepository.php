@@ -33,28 +33,33 @@ class ParticipantsRepository extends ServiceEntityRepository implements Password
         $this->getEntityManager()->flush();
     }
 
-    //    /**
-    //     * @return Participants[] Returns an array of Participants objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Used to upgrade (rehash) the user's password automatically over time.
+     */
+    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
+    {
+        if (!$user instanceof Participants) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
+        }
 
-    //    public function findOneBySomeField($value): ?Participants
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $user->setPassword($newHashedPassword);
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+    }
+
+    public function findUserById(int $id): ?Participants
+    {
+        return $this->find($id); 
+    }
+
+    public function findParticipantWithSite(int $id): ?Participants
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.site', 's')
+            ->addSelect('s')
+            ->andWhere('p.idParticipant = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
