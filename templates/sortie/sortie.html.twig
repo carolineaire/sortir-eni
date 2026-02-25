@@ -77,13 +77,13 @@
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" id="inscrit">
                     <label class="form-check-label" for="inscrit">
-                        TODO: Sorties auxquelles je suis inscrit/e
+                        Sorties auxquelles je suis inscrit/e
                     </label>
                 </div>
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" id="nonInscrit">
                     <label class="form-check-label" for="nonInscrit">
-                        TODO: Sorties auxquelles je ne suis pas inscrit/e
+                        Sorties auxquelles je ne suis pas inscrit/e
                     </label>
                 </div>
                 <div class="form-check">
@@ -117,7 +117,7 @@
         </thead>
         <tbody>
         {% for s in sortie %}
-            <tr data-organisateur="{{ s.organisateur.id }}">
+            <tr data-organisateur="{{ s.organisateur.id }}" data-inscrit="{{ s.estInscrit(app.user) ? '1' : '0' }}">
                 <td>{{ s.nom }}</td>
                 <td>{{ s.duree }}</td>
                 <td>{{ s.dateDebut | date('d/m/Y') }}</td>
@@ -188,17 +188,20 @@
 <script>
     const currentUserId = {{ app.user.id }};
 
-    {# Date du jour #}
+    // Date du jour
     document.getElementById('date-du-jour')
         .textContent = new Date().toLocaleDateString('fr-FR');
 
-    {# Filtres sur tableau #}
+    // Filtres
     const selectVille = document.getElementById('site');
     const searchInput = document.getElementById('search');
     const dateStartInput = document.getElementById('dateStart');
     const dateEndInput = document.getElementById('dateEnd');
     const passeesCheckbox = document.getElementById('passees');
     const orgaCheckbox = document.getElementById('orga');
+    const inscritCheckbox = document.getElementById('inscrit');
+    const nonInscritCheckbox = document.getElementById('nonInscrit');
+
     const rows = document.querySelectorAll('table tbody tr');
 
     function applyFilters() {
@@ -209,9 +212,11 @@
         const endDate = dateEndInput.value ? new Date(dateEndInput.value) : null;
         const showPassees = passeesCheckbox.checked;
         const showOrga = orgaCheckbox.checked;
+        const showInscrit = inscritCheckbox.checked;
+        const showNonInscrit = nonInscritCheckbox.checked;
 
         const today = new Date();
-        today.setHours(0,0,0,0); 
+        today.setHours(0,0,0,0);
 
         rows.forEach(row => {
 
@@ -221,6 +226,9 @@
             const [day, month, year] = dateText.split('/');
             const rowDate = new Date(`${year}-${month}-${day}`);
             rowDate.setHours(0,0,0,0);
+
+            const orgaId = row.dataset.organisateur;
+            const isInscrit = row.dataset.inscrit === "1";
 
             let show = true;
 
@@ -238,50 +246,53 @@
             if (showPassees && rowDate >= today) show = false;
 
             // Filtre organisateur
-            if (showOrga) {
-                const orgaId = row.dataset.organisateur; 
-                if (parseInt(orgaId) !== currentUserId) show = false;
-            }
+            if (showOrga && parseInt(orgaId) !== currentUserId) show = false;
+
+            // Filtre inscrit / non inscrit
+            if (showInscrit && !isInscrit) show = false;
+            if (showNonInscrit && isInscrit) show = false;
+
+            // Si les deux sont cochés → on annule le filtre
+            if (showInscrit && showNonInscrit) show = true;
 
             row.style.display = show ? '' : 'none';
         });
     }
 
-    // 🔥 Événements automatiques
+    // Événements
     selectVille.addEventListener('change', applyFilters);
     searchInput.addEventListener('input', applyFilters);
     dateStartInput.addEventListener('change', applyFilters);
     dateEndInput.addEventListener('change', applyFilters);
     passeesCheckbox.addEventListener('change', applyFilters);
     orgaCheckbox.addEventListener('change', applyFilters);
+    inscritCheckbox.addEventListener('change', applyFilters);
+    nonInscritCheckbox.addEventListener('change', applyFilters);
 
-    {# Nettoyer les filtres #}
+    // Reset filtres
     const resetBtn = document.getElementById('resetFilters');
 
     resetBtn.addEventListener('click', (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
-        // Réinitialiser les inputs et select
-        document.getElementById('site').value = '';
-        document.getElementById('search').value = '';
-        document.getElementById('dateStart').value = '';
-        document.getElementById('dateEnd').value = '';
-        document.getElementById('passees').checked = false;
-        document.getElementById('orga').checked = false;
-        document.getElementById('inscrit').checked = false;
-        document.getElementById('nonInscrit').checked = false;
+        selectVille.value = '';
+        searchInput.value = '';
+        dateStartInput.value = '';
+        dateEndInput.value = '';
+        passeesCheckbox.checked = false;
+        orgaCheckbox.checked = false;
+        inscritCheckbox.checked = false;
+        nonInscritCheckbox.checked = false;
 
-        // Réaffiche toutes les lignes
         rows.forEach(row => row.style.display = '');
 
-        // Appliquer les filtres pour remettre à jour le tableau
         applyFilters();
     });
 
-    {# Script de popup pour se désinscrire #}
-        document.querySelectorAll('.btn-desinscription').forEach(function(link) {
+    // Popup désinscription
+    document.querySelectorAll('.btn-desinscription').forEach(function(link) {
         link.addEventListener('click', function(event) {
-            event.preventDefault(); 
+            event.preventDefault();
             if (confirm("Voulez-vous vraiment vous désinscrire ?")) {
                 window.location.href = this.href;
             }
