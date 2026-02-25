@@ -15,8 +15,8 @@ class Lieux
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idLieu = null;
+//    #[ORM\Column]
+//    private ?int $idLieu = null;
 
     #[ORM\Column(length: 30)]
     private ?string $nomLieu = null;
@@ -50,17 +50,17 @@ class Lieux
         return $this->id;
     }
 
-    public function getIdLieu(): ?int
-    {
-        return $this->idLieu;
-    }
-
-    public function setIdLieu(int $idLieu): static
-    {
-        $this->idLieu = $idLieu;
-
-        return $this;
-    }
+//    public function getIdLieu(): ?int
+//    {
+//        return $this->idLieu;
+//    }
+//
+//    public function setIdLieu(int $idLieu): static
+//    {
+//        $this->idLieu = $idLieu;
+//
+//        return $this;
+//    }
 
     public function getNomLieu(): ?string
     {

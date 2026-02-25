@@ -16,8 +16,8 @@ class Sorties
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idSortie = null;
+//    #[ORM\Column]
+//    private ?int $idSortie = null;
 
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
@@ -37,8 +37,8 @@ class Sorties
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $etatSortie = null;
+//    #[ORM\Column(nullable: true)]
+//    private ?int $etatSortie = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
@@ -70,17 +70,17 @@ class Sorties
         return $this->id;
     }
 
-    public function getIdSortie(): ?int
-    {
-        return $this->idSortie;
-    }
-
-    public function setIdSortie(int $idSortie): static
-    {
-        $this->idSortie = $idSortie;
-
-        return $this;
-    }
+//    public function getIdSortie(): ?int
+//    {
+//        return $this->idSortie;
+//    }
+//
+//    public function setIdSortie(int $idSortie): static
+//    {
+//        $this->idSortie = $idSortie;
+//
+//        return $this;
+//    }
 
     public function getNom(): ?string
     {
@@ -154,17 +154,17 @@ class Sorties
         return $this;
     }
 
-    public function getEtatSortie(): ?int
-    {
-        return $this->etatSortie;
-    }
-
-    public function setEtatSortie(?int $etatSortie): static
-    {
-        $this->etatSortie = $etatSortie;
-
-        return $this;
-    }
+//    public function getEtatSortie(): ?int
+//    {
+//        return $this->etatSortie;
+//    }
+//
+//    public function setEtatSortie(?int $etatSortie): static
+//    {
+//        $this->etatSortie = $etatSortie;
+//
+//        return $this;
+//    }
 
     public function getUrlPhoto(): ?string
     {
