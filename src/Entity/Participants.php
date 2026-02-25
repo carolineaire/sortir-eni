@@ -276,7 +276,4 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-
-
 }
