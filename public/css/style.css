@@ -178,6 +178,10 @@ nav a.nav-logout {
         margin: 0;
     }
 
+    .resetFilters{
+        text-decoration: none;
+    }
+
 
 /* Gestion du profil */
 nav a.nav-logout:hover {
