@@ -62,7 +62,7 @@
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" id="orga">
                     <label class="form-check-label" for="orga">
-                        TODO: Sorties dont je suis l'organisateur/trice
+                        Sorties dont je suis l'organisateur/trice
                     </label>
                 </div>
                 <div class="form-check mb-2">
@@ -80,11 +80,11 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="passees">
                     <label class="form-check-label" for="passees">
-                        TODO: Sorties passées
+                        Sorties passées
                     </label>
                 </div>
-                <div>
-                    <a href="#"><i class="fas fa-broom"></i> TODO: Nettoyer les filtres</a>
+               <div>
+                    <button id="resetFilters"><i class="fas fa-broom"></i> Nettoyer les filtres</button>
                 </div>
             </div>
         </div>
@@ -102,12 +102,13 @@
             <th scope="col">Places restantes</th>
             <th scope="col">Lieu</th>
             <th scope="col">Ville</th>
+            <th scope="col">Organisé par</th>
             <th scope="col">Actions</th>
         </tr>
         </thead>
         <tbody>
         {% for s in sortie %}
-            <tr>
+            <tr data-organisateur="{{ s.organisateur.id }}">
                 <td>{{ s.nom }}</td>
                 <td>{{ s.duree }}</td>
                 <td>{{ s.dateDebut | date('d/m/Y') }}</td>
@@ -115,8 +116,9 @@
                 <td>{{ s.nbInscriptionMax }}</td>
                 <td>{{ s.noLieux.nomLieu }}</td>
                 <td>{{ s.noLieux.noVilles.nomVille }}</td>
+                <td>{{ s.organisateur.prenom }} {{s.organisateur.nom|slice(0,1)}}.</td>
                 <td>
-                    <a href="#" data-bs-toggle="tooltip" title="Voir le détail">
+                    <a href="{{ path('sortie', { id: s.id }) }}" data-bs-toggle="tooltip" title="Voir le détail">
                         <i class="fa-regular fa-eye"></i>
                     </a>
                     <a href="#" data-bs-toggle="tooltip" title="S'inscrire">
@@ -137,13 +139,19 @@
 </div>
 
 <script>
+    const currentUserId = {{ app.user.id }};
+
+    {# Date du jour #}
     document.getElementById('date-du-jour')
         .textContent = new Date().toLocaleDateString('fr-FR');
 
+    {# Filtres sur tableau #}
     const selectVille = document.getElementById('site');
     const searchInput = document.getElementById('search');
     const dateStartInput = document.getElementById('dateStart');
     const dateEndInput = document.getElementById('dateEnd');
+    const passeesCheckbox = document.getElementById('passees');
+    const orgaCheckbox = document.getElementById('orga');
     const rows = document.querySelectorAll('table tbody tr');
 
     function applyFilters() {
@@ -152,6 +160,11 @@
         const searchValue = searchInput.value.toLowerCase();
         const startDate = dateStartInput.value ? new Date(dateStartInput.value) : null;
         const endDate = dateEndInput.value ? new Date(dateEndInput.value) : null;
+        const showPassees = passeesCheckbox.checked;
+        const showOrga = orgaCheckbox.checked;
+
+        const today = new Date();
+        today.setHours(0,0,0,0); 
 
         rows.forEach(row => {
 
@@ -160,13 +173,28 @@
             const dateText = row.cells[2].textContent.trim();
             const [day, month, year] = dateText.split('/');
             const rowDate = new Date(`${year}-${month}-${day}`);
+            rowDate.setHours(0,0,0,0);
 
             let show = true;
 
+            // Filtre ville
             if (selectedVille && ville !== selectedVille) show = false;
+
+            // Filtre recherche
             if (searchValue && !titre.includes(searchValue)) show = false;
+
+            // Filtre intervalle de date
             if (startDate && rowDate < startDate) show = false;
             if (endDate && rowDate > endDate) show = false;
+
+            // Filtre sorties passées
+            if (showPassees && rowDate >= today) show = false;
+
+            // Filtre organisateur
+            if (showOrga) {
+                const orgaId = row.dataset.organisateur; 
+                if (parseInt(orgaId) !== currentUserId) show = false;
+            }
 
             row.style.display = show ? '' : 'none';
         });
@@ -177,6 +205,31 @@
     searchInput.addEventListener('input', applyFilters);
     dateStartInput.addEventListener('change', applyFilters);
     dateEndInput.addEventListener('change', applyFilters);
+    passeesCheckbox.addEventListener('change', applyFilters);
+    orgaCheckbox.addEventListener('change', applyFilters);
+
+    {# Nettoyer les filtres #}
+    const resetBtn = document.getElementById('resetFilters');
+
+    resetBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // empêche le href="#"
+
+        // Réinitialiser les inputs et select
+        document.getElementById('site').value = '';
+        document.getElementById('search').value = '';
+        document.getElementById('dateStart').value = '';
+        document.getElementById('dateEnd').value = '';
+        document.getElementById('passees').checked = false;
+        document.getElementById('orga').checked = false;
+        document.getElementById('inscrit').checked = false;
+        document.getElementById('nonInscrit').checked = false;
+
+        // Réaffiche toutes les lignes
+        rows.forEach(row => row.style.display = '');
+
+        // Appliquer les filtres pour remettre à jour le tableau
+        applyFilters();
+    });
 </script>
 {% endblock %}
 
