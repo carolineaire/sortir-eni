@@ -7,11 +7,89 @@
 <div class="container-fluid d-flex justify-content-end">
     <div class="informations text-end">
         <p>Date du jour : <span id="date-du-jour"></span></p>
-        <p>Participant : <span>Prénom N.</span></p>
+        {% if app.user %}
+            <p>
+                Participant :
+                <span>{{ app.user.prenom }} {{ app.user.nom|slice(0,1) }}.</span>
+            </p>
+        {% endif %}
     </div>
 </div>
 
-<div class="container-fluid">
+<div class="filtres mt-4">
+    <!-- Bloc filtre -->
+    <div class="p-4">
+        <h4 class="mb-4">TODO:Filtrer les sorties</h4>
+        <div class="row">
+            <!-- Colonne gauche -->
+            <div class="col-md-6">
+                <!-- Site -->
+                <div class="mb-3">
+                    <label for="site" class="form-label">Ville :</label>
+                    <select id="site" class="form-select">
+                    <option value="" selected disabled>-- Sélectionner une ville --</option>
+                    {% for s in sortie %}
+                        <option>{{ s.noLieux.noVilles.nomVille }}</option>
+                    {% else %}
+                        <option selected>Aucune villes trouvées</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <!-- Nom de la sortie -->
+                <div class="mb-3">
+                    <label for="search" class="form-label">
+                        Le nom de la sortie contient :
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">🔍</span>
+                        <input type="text" id="search" class="form-control" placeholder="search">
+                    </div>
+                </div>
+                <!-- Dates -->
+                <div class="mb-3">
+                    <label class="form-label d-block">Entre :</label>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="date" class="form-control">
+                        <span>et</span>
+                        <input type="date" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <!-- Colonne droite -->
+            <div class="col-md-6 d-flex flex-column justify-content-center">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="orga">
+                    <label class="form-check-label" for="orga">
+                        TODO: Sorties dont je suis l'organisateur/trice
+                    </label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="inscrit">
+                    <label class="form-check-label" for="inscrit">
+                        TODO: Sorties auxquelles je suis inscrit/e
+                    </label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="nonInscrit">
+                    <label class="form-check-label" for="nonInscrit">
+                        TODO: Sorties auxquelles je ne suis pas inscrit/e
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="passees">
+                    <label class="form-check-label" for="passees">
+                        TODO: Sorties passées
+                    </label>
+                </div>
+                <div>
+                    <a href="#"><i class="fas fa-broom"></i> TODO: Nettoyer les filtres</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt-4">
     <table class="table-sm table-bordered">
         <thead>
         <tr>
@@ -21,6 +99,7 @@
             <th scope="col">Fin des inscription</th>
             <th scope="col">Places restantes</th>
             <th scope="col">Lieu</th>
+            <th scope="col">Ville</th>
             <th scope="col">Actions</th>
         </tr>
         </thead>
@@ -33,15 +112,16 @@
                 <td>{{ s.dateCloture | date('d/m/Y') }}</td>
                 <td>{{ s.nbInscriptionMax }}</td>
                 <td>{{ s.noLieux.nomLieu }}</td>
+                <td>{{ s.noLieux.noVilles.nomVille }}</td>
                 <td>
-                    <a href="#" tooltip="voir le détail de la sortie">
-                        Détails
+                    <a href="#" data-bs-toggle="tooltip" title="Voir le détail">
+                        <i class="fa-regular fa-eye"></i>
                     </a>
-                    <a href="#" tooltip="s'inscrire à la sortie">
-                        S'inscrire
+                    <a href="#" data-bs-toggle="tooltip" title="S'inscrire">
+                        <i class="fa-solid fa-user-plus"></i>
                     </a>
-                     <a href="#" tooltip="annuler la sortie">
-                        Annuler
+                     <a href="#" data-bs-toggle="tooltip" title="Annuler">
+                        <i class="fa-solid fa-ban"></i>
                     </a>
                 </td>
             </tr>
