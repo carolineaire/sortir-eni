@@ -25,11 +25,14 @@
             <div class="col-md-6">
                 <!-- Site -->
                 <div class="mb-3">
-                    <label for="site" class="form-label">Site :</label>
+                    <label for="site" class="form-label">Ville :</label>
                     <select id="site" class="form-select">
-                        <option selected>SAINT HERBLAIN</option>
-                        <option>NANTES</option>
-                        <option>RENNES</option>
+                    <option value="" selected disabled>-- Sélectionner une ville --</option>
+                    {% for s in sortie %}
+                        <option>{{ s.noLieux.noVilles.nomVille }}</option>
+                    {% else %}
+                        <option selected>Aucune villes trouvées</option>
+                    {% endfor %}
                     </select>
                 </div>
                 <!-- Nom de la sortie -->
@@ -55,28 +58,31 @@
             <!-- Colonne droite -->
             <div class="col-md-6 d-flex flex-column justify-content-center">
                 <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" checked id="orga">
+                    <input class="form-check-input" type="checkbox" id="orga">
                     <label class="form-check-label" for="orga">
-                        Sorties dont je suis l'organisateur/trice
+                        TODO: Sorties dont je suis l'organisateur/trice
                     </label>
                 </div>
                 <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" checked id="inscrit">
+                    <input class="form-check-input" type="checkbox" id="inscrit">
                     <label class="form-check-label" for="inscrit">
-                        Sorties auxquelles je suis inscrit/e
+                        TODO: Sorties auxquelles je suis inscrit/e
                     </label>
                 </div>
                 <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" checked id="nonInscrit">
+                    <input class="form-check-input" type="checkbox" id="nonInscrit">
                     <label class="form-check-label" for="nonInscrit">
-                        Sorties auxquelles je ne suis pas inscrit/e
+                        TODO: Sorties auxquelles je ne suis pas inscrit/e
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="passees">
                     <label class="form-check-label" for="passees">
-                        Sorties passées
+                        TODO: Sorties passées
                     </label>
+                </div>
+                <div>
+                    <a href="#"><i class="fas fa-broom"></i> TODO: Nettoyer les filtres</a>
                 </div>
             </div>
         </div>
@@ -108,14 +114,14 @@
                 <td>{{ s.noLieux.nomLieu }}</td>
                 <td>{{ s.noLieux.noVilles.nomVille }}</td>
                 <td>
-                    <a href="#" tooltip="voir le détail de la sortie">
-                        Détails
+                    <a href="#" data-bs-toggle="tooltip" title="Voir le détail">
+                        <i class="fa-regular fa-eye"></i>
                     </a>
-                    <a href="#" tooltip="s'inscrire à la sortie">
-                        S'inscrire
+                    <a href="#" data-bs-toggle="tooltip" title="S'inscrire">
+                        <i class="fa-solid fa-user-plus"></i>
                     </a>
-                     <a href="#" tooltip="annuler la sortie">
-                        Annuler
+                     <a href="#" data-bs-toggle="tooltip" title="Annuler">
+                        <i class="fa-solid fa-ban"></i>
                     </a>
                 </td>
             </tr>
