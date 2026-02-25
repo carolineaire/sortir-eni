@@ -13,8 +13,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class Participants implements UserInterface, PasswordAuthenticatedUserInterface
 {
-
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -267,17 +265,15 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSite(): ?Sites
+    public function getNoSites(): ?Sites
     {
         return $this->noSites;
     }
 
-    public function setSite(?Sites $noSites): static
+    public function setNoSites(?Sites $noSites): static
     {
         $this->noSites = $noSites;
+
         return $this;
     }
-
-
-
 }

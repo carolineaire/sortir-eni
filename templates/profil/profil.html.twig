@@ -10,7 +10,7 @@
         <div class="surname">Nom : {{ user.nom }}</div>
         <div class="phone-number">Téléphone : {{ user.telephone }}</div>
         <div class="email">Email : {{ user.email }}</div>
-        <div class="city">Ville de rattachement : {{ user.site.nomSite }}</div>
+        <div class="city">Ville de rattachement : {{ user.noSites.nomSite }}</div>
     </div>
 
     {% if myprofil == true %}

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+    {% if app.user %}
     <nav>
         <a class="logo" href="/">
             <img src="{{ asset('images/logo.png') }}" alt="Logo Sorti">
@@ -24,17 +25,11 @@
                 </a>
             {% endif %}
 
-            {% if app.user %}
             <a href="{{ path('app_profil') }}">Mon profil</a>
-            {% endif %}
-            {% if app.user %}
             <a href="{{ path('app_logout') }}" class="nav-logout">Déconnexion</a>
-            {% else %}
-            <a href="{{ path('app_login') }}" class="nav-logout"> Se connecter</a>
-            {% endif %}
-
         </div>
     </nav>
+    {% endif %}
 
     <main>
         {% block body %}{% endblock %}
