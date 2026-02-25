@@ -15,8 +15,18 @@ final class SortieController extends AbstractController
         $sorties = $repo->findAll();
         $user = $this->getUser();
 
+        $villes = [];
+        foreach ($sorties as $s) {
+            $nomVille = $s->getNoLieux()->getNoVilles()->getNomVille();
+            if (!in_array($nomVille, $villes)) {
+                $villes[] = $nomVille;
+            }
+        }
+
+
         return $this->render('sortie/sortie.html.twig', [
             'sortie' => $sorties,
+            'ville' => $villes,
             'user' => $user
         ]);
     }

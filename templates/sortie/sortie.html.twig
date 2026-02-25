@@ -27,12 +27,16 @@
                 <div class="mb-3">
                     <label for="site" class="form-label">Ville :</label>
                     <select id="site" class="form-select">
-                    <option value="" selected disabled>-- Sélectionner une ville --</option>
-                    {% for s in sortie %}
-                        <option>{{ s.noLieux.noVilles.nomVille }}</option>
-                    {% else %}
-                        <option selected>Aucune villes trouvées</option>
-                    {% endfor %}
+                        <option value="" selected disabled>-- Sélectionner une ville --</option>
+                        {% set villes = [] %}
+                        {% for s in sortie %}
+                            {% if s.noLieux.noVilles.nomVille not in villes %}
+                                <option value="{{ s.noLieux.noVilles.nomVille }}">{{ s.noLieux.noVilles.nomVille }}</option>
+                                {% set villes = villes|merge([s.noLieux.noVilles.nomVille]) %}
+                            {% endif %}
+                        {% else %}
+                            <option selected>Aucune ville trouvée</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <!-- Nom de la sortie -->
@@ -136,8 +140,26 @@
 </div>
 
 <script>
-  document.getElementById('date-du-jour')
-    .textContent = new Date().toLocaleDateString('fr-FR');
+    {# Date du jour #}
+    document.getElementById('date-du-jour')
+        .textContent = new Date().toLocaleDateString('fr-FR');
+
+    {# Filtre sur la ville #}
+    const selectVille = document.getElementById('site');
+    const rows = document.querySelectorAll('table tbody tr');
+
+    selectVille.addEventListener('change', () => {
+        const selectedVille = selectVille.value;
+
+        rows.forEach(row => {
+            const villeCell = row.cells[6].textContent; // 6 = colonne Ville
+            if (villeCell === selectedVille || selectedVille === "") {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
 </script>
 {% endblock %}
 
