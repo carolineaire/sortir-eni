@@ -244,4 +244,14 @@ class Sorties
 
         return $this;
     }
+
+    public function estInscrit(Participants $participant): bool
+    {
+        foreach ($this->getInscriptions() as $inscription) {
+            if ($inscription->getNoParticipants() === $participant) {
+                return true;  // L'utilisateur est inscrit
+            }
+        }
+        return false;  // L'utilisateur n'est pas inscrit
+    }
 }

@@ -4,6 +4,15 @@
 
 {% block body %}
 
+{# Messages d'erreurs, d'avertissement ou de succès #}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
 <div class="container-fluid d-flex justify-content-end">
     <div class="informations text-end">
         <p>Date du jour : <span id="date-du-jour"></span></p>
@@ -121,11 +130,30 @@
                     <a href="{{ path('sortie', { id: s.id }) }}" data-bs-toggle="tooltip" title="Voir le détail">
                         <i class="fa-regular fa-eye"></i>
                     </a>
-                    <a href="#" data-bs-toggle="tooltip" title="S'inscrire">
-                        <i class="fa-solid fa-user-plus"></i>
-                    </a>
+                    {% if app.user %}
+
+                        {% if s.estInscrit(app.user) %}
+
+                           <a href="{{ path('sortie_desinscription', { id: s.id }) }}"
+                                class="btn-desinscription"
+                                data-bs-toggle="tooltip"
+                                title="Se désinscrire">
+                                    <i class="fa-solid fa-user-minus text-danger"></i>
+                            </a>
+
+                        {% else %}
+
+                            <a href="{{ path('sortie_inscription', { id: s.id }) }}"
+                            data-bs-toggle="tooltip"
+                            title="S'inscrire">
+                                <i class="fa-solid fa-user-plus text-success"></i>
+                            </a>
+
+                        {% endif %}
+
+                    {% endif %}
                      <a href="#" data-bs-toggle="tooltip" title="Annuler">
-                        <i class="fa-solid fa-ban"></i>
+                        <i class="fa-solid fa-ban text-danger"></i>
                     </a>
                 </td>
             </tr>
@@ -136,6 +164,25 @@
         {% endfor %}
         </tbody>
     </table>
+</div>
+
+<!-- Modal de confirmation de désinscription -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Êtes-vous sûr de vouloir vous désinscrire ?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Vous êtes sur le point de vous désinscrire de cette sortie. Cette action est irréversible.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                <button type="button" class="btn btn-danger" id="confirmUnsubscribe">Oui, je me désinscris</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -212,7 +259,7 @@
     const resetBtn = document.getElementById('resetFilters');
 
     resetBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // empêche le href="#"
+        e.preventDefault(); 
 
         // Réinitialiser les inputs et select
         document.getElementById('site').value = '';
@@ -230,6 +277,17 @@
         // Appliquer les filtres pour remettre à jour le tableau
         applyFilters();
     });
+
+    {# Script de popup pour se désinscrire #}
+        document.querySelectorAll('.btn-desinscription').forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            event.preventDefault(); 
+            if (confirm("Voulez-vous vraiment vous désinscrire ?")) {
+                window.location.href = this.href;
+            }
+        });
+    });
+
 </script>
 {% endblock %}
 
