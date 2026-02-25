@@ -13,8 +13,11 @@ final class SortieController extends AbstractController
     public function index(SortiesRepository $repo): Response
     {
         $sorties = $repo->findAll();
+        $user = $this->getUser();
+
         return $this->render('sortie/sortie.html.twig', [
             'sortie' => $sorties,
+            'user' => $user
         ]);
     }
 }

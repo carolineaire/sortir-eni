@@ -7,7 +7,7 @@
 <div class="container-fluid d-flex justify-content-end">
     <div class="informations text-end">
         <p>Date du jour : <span id="date-du-jour"></span></p>
-        <p>Participant : <span>Prénom N.</span></p>
+        <p>Participant : <span>{{ user.prenom }} {{ user.nom|slice(0,1) }}.</span></p>
     </div>
 </div>
 
