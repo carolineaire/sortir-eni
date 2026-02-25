@@ -267,15 +267,14 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getNoSites(): ?Sites
+    public function getSite(): ?Sites
     {
-        return $this->noSites;
+        return $this->site;
     }
 
-    public function setNoSites(?Sites $noSites): static
+    public function setSite(?Sites $site): static
     {
-        $this->noSites = $noSites;
-
+        $this->site = $site;
         return $this;
     }
 

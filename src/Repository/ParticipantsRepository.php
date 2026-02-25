@@ -62,4 +62,19 @@ class ParticipantsRepository extends ServiceEntityRepository implements Password
             ->getQuery()
             ->getOneOrNullResult();
     }
+    public function findUserById(int $id): ?Participants
+    {
+        return $this->find($id); 
+    }
+
+    public function findParticipantWithSite(int $id): ?Participants
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.site', 's')
+            ->addSelect('s')
+            ->andWhere('p.idParticipant = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
