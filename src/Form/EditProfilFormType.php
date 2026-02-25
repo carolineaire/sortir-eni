@@ -13,6 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -78,11 +80,6 @@ class EditProfilFormType extends AbstractType
                 'label' => 'Mot de passe actuel',
                 'mapped' => false,
                 'required' => false,
-                'constraints' => [
-                    new UserPassword([
-                        'message' => 'Le mot de passe saisi n\'est pas correct',
-                    ]),
-                ],
                 'attr' => ['autocomplete' => 'current-password'],
             ])
 
@@ -108,6 +105,20 @@ class EditProfilFormType extends AbstractType
                 ],
             ])
         ;
+
+        // Ajouter une validation dynamique pour le mot de passe actuel
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $form = $event->getForm();
+            $currentPassword = $form->get('currentPassword')->getData();
+            $plainPassword = $form->get('plainPassword')->getData();
+
+            // Si on change le mot de passe, on doit vérifier le mot de passe actuel
+            if (!empty($plainPassword) && empty($currentPassword)) {
+                $form->get('currentPassword')->addError(
+                    new \Symfony\Component\Form\FormError('Le mot de passe actuel est requis pour changer de mot de passe')
+                );
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
