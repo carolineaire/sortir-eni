@@ -50,10 +50,10 @@
                 <!-- Dates -->
                 <div class="mb-3">
                     <label class="form-label d-block">Entre :</label>
-                    <div class="d-flex align-items-center gap-2">
-                        <input type="date" class="form-control">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <input type="date" id="dateStart" class="form-control">
                         <span>et</span>
-                        <input type="date" class="form-control">
+                        <input type="date" id="dateEnd" class="form-control">
                     </div>
                 </div>
             </div>
@@ -134,49 +134,49 @@
         {% endfor %}
         </tbody>
     </table>
-
 </div>
 
 <script>
-    {# Date du jour #}
     document.getElementById('date-du-jour')
         .textContent = new Date().toLocaleDateString('fr-FR');
 
-    {# Filtre sur la ville #}
     const selectVille = document.getElementById('site');
+    const searchInput = document.getElementById('search');
+    const dateStartInput = document.getElementById('dateStart');
+    const dateEndInput = document.getElementById('dateEnd');
     const rows = document.querySelectorAll('table tbody tr');
 
-    selectVille.addEventListener('change', () => {
+    function applyFilters() {
+
         const selectedVille = selectVille.value;
+        const searchValue = searchInput.value.toLowerCase();
+        const startDate = dateStartInput.value ? new Date(dateStartInput.value) : null;
+        const endDate = dateEndInput.value ? new Date(dateEndInput.value) : null;
 
         rows.forEach(row => {
-            const villeCell = row.cells[6].textContent; // 6 = colonne Ville
-            if (villeCell === selectedVille || selectedVille === "") {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+
+            const titre = row.cells[0].textContent.toLowerCase();
+            const ville = row.cells[6].textContent;
+            const dateText = row.cells[2].textContent.trim();
+            const [day, month, year] = dateText.split('/');
+            const rowDate = new Date(`${year}-${month}-${day}`);
+
+            let show = true;
+
+            if (selectedVille && ville !== selectedVille) show = false;
+            if (searchValue && !titre.includes(searchValue)) show = false;
+            if (startDate && rowDate < startDate) show = false;
+            if (endDate && rowDate > endDate) show = false;
+
+            row.style.display = show ? '' : 'none';
         });
-    });
+    }
 
-    {# Filtrer avec la recherche #}
-    const searchInput = document.getElementById('search');
-    const tableRows = document.querySelectorAll('table tbody tr');
-
-    searchInput.addEventListener('input', () => {
-        const searchValue = searchInput.value.toLowerCase();
-
-        tableRows.forEach(row => {
-            const titre = row.cells[0].textContent.toLowerCase(); // Colonne "Titre"
-            
-            // Affiche la ligne si elle contient le texte, sinon la cache
-            if (titre.includes(searchValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
+    // 🔥 Événements automatiques
+    selectVille.addEventListener('change', applyFilters);
+    searchInput.addEventListener('input', applyFilters);
+    dateStartInput.addEventListener('change', applyFilters);
+    dateEndInput.addEventListener('change', applyFilters);
 </script>
 {% endblock %}
 
