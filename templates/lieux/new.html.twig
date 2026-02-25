@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un lieu{% endblock %}
+
+{% block body %}
+<div class="page-container">
+    <h1 class="page-title">Ajouter un lieu</h1>
+
+    <div class="form-card">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+
+        <div class="submit-container">
+            <button class="btn-primary">Enregistrer</button>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
