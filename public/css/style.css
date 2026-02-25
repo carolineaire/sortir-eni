@@ -64,6 +64,19 @@ nav {
 }
 
 /* Logo */
+nav .logo {
+    display: flex;
+    align-items: center; 
+    gap: 10px;          
+    text-decoration: none;
+}
+
+nav .logo h1 {
+    margin: 0;          
+    font-size: 1.5rem;   
+    color: #000;        
+}
+
 nav .logo img {
     height: 50px;
     object-fit: contain;
@@ -76,7 +89,7 @@ nav .nav-links {
     gap: 1rem;
 }
 
-nav a {
+nav .nav-links a {
     color: var(--text-primary);
     text-decoration: none;
     font-size: 0.85rem;
@@ -89,7 +102,7 @@ nav a {
 }
 
 /* Hover smooth */
-nav a:hover {
+nav .nav-links a:hover {
     background: var(--glass);
     color: var(--accent);
     border-color: var(--border-color);
