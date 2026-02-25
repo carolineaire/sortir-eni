@@ -15,6 +15,11 @@ final class ProfilController extends AbstractController
         $idCurrent = $this->getUser()->getId();
         $user = $profilService->getUserProfil($idCurrent);
 
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('profil/profil.html.twig', [
             'user' => $user,
             'myprofil' => true

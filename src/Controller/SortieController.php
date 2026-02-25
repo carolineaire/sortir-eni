@@ -23,6 +23,10 @@ final class SortieController extends AbstractController
             }
         }
 
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
 
         return $this->render('sortie/sortie.html.twig', [
             'sortie' => $sorties,

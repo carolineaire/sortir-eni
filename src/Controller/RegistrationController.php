@@ -79,6 +79,11 @@ class RegistrationController extends AbstractController
             return $security->login($participant, 'form_login', 'main');
         }
 
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
