@@ -43,14 +43,15 @@ class Sorties
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
 
-    #[ORM\Column]
-    private ?int $organisateur = null;
-
     /**
      * @var Collection<int, Inscriptions>
      */
     #[ORM\OneToMany(targetEntity: Inscriptions::class, mappedBy: 'noSorties')]
     private Collection $inscriptions;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Participants $organisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
@@ -178,18 +179,6 @@ class Sorties
         return $this;
     }
 
-    public function getOrganisateur(): ?int
-    {
-        return $this->organisateur;
-    }
-
-    public function setOrganisateur(int $organisateur): static
-    {
-        $this->organisateur = $organisateur;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Inscriptions>
      */
@@ -220,6 +209,18 @@ class Sorties
         return $this;
     }
 
+    public function getOrganisateur(): ?Participants
+    {
+        return $this->organisateur;
+    }
+
+    public function setorganisateur(?Participants $organisateur): static
+    {
+        $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
     public function getNoLieux(): ?Lieux
     {
         return $this->noLieux;
@@ -242,5 +243,15 @@ class Sorties
         $this->noEtats = $noEtats;
 
         return $this;
+    }
+
+    public function estInscrit(Participants $participant): bool
+    {
+        foreach ($this->getInscriptions() as $inscription) {
+            if ($inscription->getNoParticipants() === $participant) {
+                return true;  // L'utilisateur est inscrit
+            }
+        }
+        return false;  // L'utilisateur n'est pas inscrit
     }
 }

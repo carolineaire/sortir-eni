@@ -4,14 +4,103 @@
 
 {% block body %}
 
+{# Messages d'erreurs, d'avertissement ou de succès #}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
 <div class="container-fluid d-flex justify-content-end">
     <div class="informations text-end">
         <p>Date du jour : <span id="date-du-jour"></span></p>
-        <p>Participant : <span>Prénom N.</span></p>
+        {% if app.user %}
+            <p>
+                Participant :
+                <span>{{ app.user.prenom }} {{ app.user.nom|slice(0,1) }}.</span>
+            </p>
+        {% endif %}
     </div>
 </div>
 
-<div class="container-fluid">
+<div class="filtres mt-4">
+    <!-- Bloc filtre -->
+    <div class="p-4">
+        <h4 class="mb-4">WIP: Filtrer les sorties</h4>
+        <div class="row">
+            <!-- Colonne gauche -->
+            <div class="col-md-6">
+                <!-- Site -->
+                <div class="mb-3">
+                    <label for="site" class="form-label">Ville :</label>
+                    <select id="site" class="form-select">
+                        <option value="" selected disabled>-- Sélectionner une ville --</option>
+                        {% set villes = [] %}
+                        {% for s in sortie %}
+                            {% if s.noLieux.noVilles.nomVille not in villes %}
+                                <option value="{{ s.noLieux.noVilles.nomVille }}">{{ s.noLieux.noVilles.nomVille }}</option>
+                                {% set villes = villes|merge([s.noLieux.noVilles.nomVille]) %}
+                            {% endif %}
+                        {% else %}
+                            <option selected>Aucune ville trouvée</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Nom de la sortie -->
+                <div class="mb-3">
+                    <label for="search" class="form-label">Le nom de la sortie contient :</label>
+                    <div class="input-group">
+                        <span class="input-group-text">🔍</span>
+                        <input type="text" id="search" class="form-control" placeholder="search">
+                    </div>
+                </div>
+                <!-- Dates -->
+                <div class="mb-3">
+                    <label class="form-label d-block">Entre :</label>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <input type="date" id="dateStart" class="form-control">
+                        <span>et</span>
+                        <input type="date" id="dateEnd" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <!-- Colonne droite -->
+            <div class="col-md-6 d-flex flex-column justify-content-center">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="orga">
+                    <label class="form-check-label" for="orga">
+                        Sorties dont je suis l'organisateur/trice
+                    </label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="inscrit">
+                    <label class="form-check-label" for="inscrit">
+                        Sorties auxquelles je suis inscrit/e
+                    </label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="nonInscrit">
+                    <label class="form-check-label" for="nonInscrit">
+                        Sorties auxquelles je ne suis pas inscrit/e
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="passees">
+                    <label class="form-check-label" for="passees">
+                        Sorties passées
+                    </label>
+                </div>
+               <div>
+                    <button id="resetFilters"><i class="fas fa-broom"></i> Nettoyer les filtres</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt-4">
     <table class="table-sm table-bordered">
         <thead>
         <tr>
@@ -21,27 +110,50 @@
             <th scope="col">Fin des inscription</th>
             <th scope="col">Places restantes</th>
             <th scope="col">Lieu</th>
+            <th scope="col">Ville</th>
+            <th scope="col">Organisé par</th>
             <th scope="col">Actions</th>
         </tr>
         </thead>
         <tbody>
         {% for s in sortie %}
-            <tr>
+            <tr data-organisateur="{{ s.organisateur.id }}" data-inscrit="{{ s.estInscrit(app.user) ? '1' : '0' }}">
                 <td>{{ s.nom }}</td>
                 <td>{{ s.duree }}</td>
                 <td>{{ s.dateDebut | date('d/m/Y') }}</td>
                 <td>{{ s.dateCloture | date('d/m/Y') }}</td>
                 <td>{{ s.nbInscriptionMax }}</td>
                 <td>{{ s.noLieux.nomLieu }}</td>
+                <td>{{ s.noLieux.noVilles.nomVille }}</td>
+                <td>{{ s.organisateur.prenom }} {{s.organisateur.nom|slice(0,1)}}.</td>
                 <td>
-                    <a href="#" tooltip="voir le détail de la sortie">
-                        Détails
+                    <a href="{{ path('sortie', { id: s.id }) }}" data-bs-toggle="tooltip" title="Voir le détail">
+                        <i class="fa-regular fa-eye"></i>
                     </a>
-                    <a href="#" tooltip="s'inscrire à la sortie">
-                        S'inscrire
-                    </a>
-                     <a href="#" tooltip="annuler la sortie">
-                        Annuler
+                    {% if app.user %}
+
+                        {% if s.estInscrit(app.user) %}
+
+                           <a href="{{ path('sortie_desinscription', { id: s.id }) }}"
+                                class="btn-desinscription"
+                                data-bs-toggle="tooltip"
+                                title="Se désinscrire">
+                                    <i class="fa-solid fa-user-minus text-danger"></i>
+                            </a>
+
+                        {% else %}
+
+                            <a href="{{ path('sortie_inscription', { id: s.id }) }}"
+                            data-bs-toggle="tooltip"
+                            title="S'inscrire">
+                                <i class="fa-solid fa-user-plus text-success"></i>
+                            </a>
+
+                        {% endif %}
+
+                    {% endif %}
+                     <a href="#" data-bs-toggle="tooltip" title="Annuler">
+                        <i class="fa-solid fa-ban text-danger"></i>
                     </a>
                 </td>
             </tr>
@@ -52,12 +164,141 @@
         {% endfor %}
         </tbody>
     </table>
+</div>
 
+<!-- Modal de confirmation de désinscription -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Êtes-vous sûr de vouloir vous désinscrire ?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Vous êtes sur le point de vous désinscrire de cette sortie. Cette action est irréversible.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                <button type="button" class="btn btn-danger" id="confirmUnsubscribe">Oui, je me désinscris</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-  document.getElementById('date-du-jour')
-    .textContent = new Date().toLocaleDateString('fr-FR');
+    const currentUserId = {{ app.user.id }};
+
+    // Date du jour
+    document.getElementById('date-du-jour')
+        .textContent = new Date().toLocaleDateString('fr-FR');
+
+    // Filtres
+    const selectVille = document.getElementById('site');
+    const searchInput = document.getElementById('search');
+    const dateStartInput = document.getElementById('dateStart');
+    const dateEndInput = document.getElementById('dateEnd');
+    const passeesCheckbox = document.getElementById('passees');
+    const orgaCheckbox = document.getElementById('orga');
+    const inscritCheckbox = document.getElementById('inscrit');
+    const nonInscritCheckbox = document.getElementById('nonInscrit');
+
+    const rows = document.querySelectorAll('table tbody tr');
+
+    function applyFilters() {
+
+        const selectedVille = selectVille.value;
+        const searchValue = searchInput.value.toLowerCase();
+        const startDate = dateStartInput.value ? new Date(dateStartInput.value) : null;
+        const endDate = dateEndInput.value ? new Date(dateEndInput.value) : null;
+        const showPassees = passeesCheckbox.checked;
+        const showOrga = orgaCheckbox.checked;
+        const showInscrit = inscritCheckbox.checked;
+        const showNonInscrit = nonInscritCheckbox.checked;
+
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        rows.forEach(row => {
+
+            const titre = row.cells[0].textContent.toLowerCase();
+            const ville = row.cells[6].textContent;
+            const dateText = row.cells[2].textContent.trim();
+            const [day, month, year] = dateText.split('/');
+            const rowDate = new Date(`${year}-${month}-${day}`);
+            rowDate.setHours(0,0,0,0);
+
+            const orgaId = row.dataset.organisateur;
+            const isInscrit = row.dataset.inscrit === "1";
+
+            let show = true;
+
+            // Filtre ville
+            if (selectedVille && ville !== selectedVille) show = false;
+
+            // Filtre recherche
+            if (searchValue && !titre.includes(searchValue)) show = false;
+
+            // Filtre intervalle de date
+            if (startDate && rowDate < startDate) show = false;
+            if (endDate && rowDate > endDate) show = false;
+
+            // Filtre sorties passées
+            if (showPassees && rowDate >= today) show = false;
+
+            // Filtre organisateur
+            if (showOrga && parseInt(orgaId) !== currentUserId) show = false;
+
+            // Filtre inscrit / non inscrit
+            if (showInscrit && !isInscrit) show = false;
+            if (showNonInscrit && isInscrit) show = false;
+
+            // Si les deux sont cochés → on annule le filtre
+            if (showInscrit && showNonInscrit) show = true;
+
+            row.style.display = show ? '' : 'none';
+        });
+    }
+
+    // Événements
+    selectVille.addEventListener('change', applyFilters);
+    searchInput.addEventListener('input', applyFilters);
+    dateStartInput.addEventListener('change', applyFilters);
+    dateEndInput.addEventListener('change', applyFilters);
+    passeesCheckbox.addEventListener('change', applyFilters);
+    orgaCheckbox.addEventListener('change', applyFilters);
+    inscritCheckbox.addEventListener('change', applyFilters);
+    nonInscritCheckbox.addEventListener('change', applyFilters);
+
+    // Reset filtres
+    const resetBtn = document.getElementById('resetFilters');
+
+    resetBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        selectVille.value = '';
+        searchInput.value = '';
+        dateStartInput.value = '';
+        dateEndInput.value = '';
+        passeesCheckbox.checked = false;
+        orgaCheckbox.checked = false;
+        inscritCheckbox.checked = false;
+        nonInscritCheckbox.checked = false;
+
+        rows.forEach(row => row.style.display = '');
+
+        applyFilters();
+    });
+
+    // Popup désinscription
+    document.querySelectorAll('.btn-desinscription').forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (confirm("Voulez-vous vraiment vous désinscrire ?")) {
+                window.location.href = this.href;
+            }
+        });
+    });
+
 </script>
 {% endblock %}
 
