@@ -2,7 +2,7 @@
 
 namespace App\Tests;
 
-use App\Entity\User;
+use App\Entity\Participants;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -16,7 +16,7 @@ class LoginControllerTest extends WebTestCase
         $this->client = static::createClient();
         $container = static::getContainer();
         $em = $container->get('doctrine.orm.entity_manager');
-        $userRepository = $em->getRepository(User::class);
+        $userRepository = $em->getRepository(Participants::class);
 
         // Remove any existing users from the test database
         foreach ($userRepository->findAll() as $user) {
@@ -25,11 +25,11 @@ class LoginControllerTest extends WebTestCase
 
         $em->flush();
 
-        // Create a User fixture
+        // Create a Participants fixture
         /** @var UserPasswordHasherInterface $passwordHasher */
         $passwordHasher = $container->get('security.user_password_hasher');
 
-        $user = (new User())->setEmail('email@example.com');
+        $user = (new Participants())->setEmail('email@example.com');
         $user->setPassword($passwordHasher->hashPassword($user, 'password'));
 
         $em->persist($user);

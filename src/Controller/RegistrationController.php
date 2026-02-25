@@ -24,8 +24,8 @@ class RegistrationController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response
     {
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $participant = new Participants();
+        $form = $this->createForm(RegistrationFormType::class, $participant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -33,44 +33,50 @@ class RegistrationController extends AbstractController
             // 1) HASH DU MOT DE PASSE
             $plainPassword = $form->get('plainPassword')->getData();
 
-            $user->setPassword(
-                $userPasswordHasher->hashPassword($user, $plainPassword)
+            $participant->setPassword(
+                $userPasswordHasher->hashPassword($participant, $plainPassword)
             );
-            $entityManager->persist($user);
-            $entityManager->flush();
+        if($participant->isAdministrateur()) {
 
-            // 2) CRÉATION DU PARTICIPANT ASSOCIÉ
-            $participant = new Participants();
-            $participant->setUser($user); // Lien OneToOne
-//var_dump($user);
-
-            // Champs Participants (mapped = false dans le form)
-
-            $participant->setNom($form->get('nom')->getData());
-            $participant->setPrenom($form->get('prenom')->getData());
-            $participant->setTelephone($form->get('telephone')->getData());
-            $participant->setMail($form->get('email')->getData());
-            $participant->setMotDePasse($user->getPassword());
-
-            $participant->setAdministrateur($form->get('administrateur')->getData());
-            $participant->setActif($form->get('actif')->getData());
-            $participant->setPseudo($user->getPseudo());
-
-
-//            $siteId = $form->get('site')->getData();
-//            $site = $entityManager->getRepository(Sites::class)->find($siteId);
-//            $participant->setNoSites($site);
-            // $site = $entityManager->getRepository(Sites::class)->find($siteId);
-            // $participant->setNoSites($site);
-            $participant->setNoSites($form->get('site')->getData());
-
-            // 3) PERSISTENCE
-
+            $participant->setRoles(['ROLE_ADMIN']);
+        }else{
+            $participant->setRoles(['ROLE_USER']);
+        }
             $entityManager->persist($participant);
             $entityManager->flush();
 
+//            // 2) CRÉATION DU PARTICIPANT ASSOCIÉ
+//            $participant = new Participants();
+//            $participant->setUser($user); // Lien OneToOne
+////var_dump($user);
+//
+//            // Champs Participants (mapped = false dans le form)
+//
+//            $participant->setNom($form->get('nom')->getData());
+//            $participant->setPrenom($form->get('prenom')->getData());
+//            $participant->setTelephone($form->get('telephone')->getData());
+//            $participant->setMail($form->get('email')->getData());
+//            $participant->setMotDePasse($user->getPassword());
+//
+//            $participant->setAdministrateur($form->get('administrateur')->getData());
+//            $participant->setActif($form->get('actif')->getData());
+//            $participant->setPseudo($user->getPseudo());
+//
+//
+////            $siteId = $form->get('site')->getData();
+////            $site = $entityManager->getRepository(Sites::class)->find($siteId);
+////            $participant->setNoSites($site);
+//            // $site = $entityManager->getRepository(Sites::class)->find($siteId);
+//            // $participant->setNoSites($site);
+//            $participant->setNoSites($form->get('site')->getData());
+//
+//            // 3) PERSISTENCE
+//
+//            $entityManager->persist($participant);
+//            $entityManager->flush();
+
             // 4) LOGIN AUTOMATIQUE
-            return $security->login($user, 'form_login', 'main');
+            return $security->login($participant, 'form_login', 'main');
         }
 
         return $this->render('registration/register.html.twig', [
