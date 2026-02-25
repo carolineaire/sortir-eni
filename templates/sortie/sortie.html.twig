@@ -118,7 +118,7 @@
                 <td>{{ s.noLieux.noVilles.nomVille }}</td>
                 <td>{{ s.organisateur.prenom }} {{s.organisateur.nom|slice(0,1)}}.</td>
                 <td>
-                    <a href="#" data-bs-toggle="tooltip" title="Voir le détail">
+                    <a href="{{ path('sortie', { id: s.id }) }}" data-bs-toggle="tooltip" title="Voir le détail">
                         <i class="fa-regular fa-eye"></i>
                     </a>
                     <a href="#" data-bs-toggle="tooltip" title="S'inscrire">
