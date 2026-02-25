@@ -12,8 +12,8 @@ final class ProfilController extends AbstractController
     #[Route('/monProfil', name: 'app_profil')]
     public function index(ProfilService $profilService): Response
     {
-
-        $user = $profilService->getUserProfil(1);
+        $idCurrent = $this->getUser()->getId();
+        $user = $profilService->getUserProfil($idCurrent);
 
         return $this->render('profil/profil.html.twig', [
             'user' => $user,
