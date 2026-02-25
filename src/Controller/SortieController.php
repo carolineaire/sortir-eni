@@ -9,7 +9,7 @@ use App\Repository\SortiesRepository;
 
 final class SortieController extends AbstractController
 {
-    #[Route('/', name: 'app_sortie')]
+    #[Route('/sortie', name: 'app_sortie')]
     public function index(SortiesRepository $repo): Response
     {
         $sorties = $repo->findAll();
