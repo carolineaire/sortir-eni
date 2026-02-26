@@ -18,7 +18,7 @@
             <h1>Sortir.com</h1>
         </a>
         <div class="nav-links">
-            <a href="#">Villes</a>
+            <a href="{{ path('app_villes') }}">Villes</a>
             <a href="#">Sites</a>
             <a href="/">Accueil</a>
             {% if is_granted('ROLE_ADMIN') %}
