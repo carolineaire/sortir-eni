@@ -78,15 +78,14 @@ final class SortieController extends AbstractController
                 }
                 // Organisateur = utilisateur connecté
                 $organisateur = $this->getUser();
-                $IdOrganisateur = $organisateur->getId();
-                $sortie->setOrganisateur($IdOrganisateur);
+                $sortie->setOrganisateur($organisateur);
                 // État par défaut = "Créée"
                 //  $etatCree = $em->getRepository(Etats::class)->find(1);
                 // $sortie->setNoEtats($etatCree);
 
                 if ($sortieForm->get('enregistrer')->isClicked()) {
 
-                    $etat = $em->getRepository(Etats::class)->find(1);
+                    $etat = $em->getRepository(Etats::class)->find(1); //Créer
                 }
                 if ($sortieForm->get('publier')->isClicked()) {
                     $etat = $em->getRepository(Etats::class)->find(2); // Ouverte
@@ -227,6 +226,40 @@ final class SortieController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Vous avez bien été désinscrit.');
+
+        return $this->redirectToRoute('app_sortie');
+    }
+
+    #[Route('/sortie/{id}/annuler', name: 'sortie_annuler')]
+    public function annuler(int $id, EntityManagerInterface $em): RedirectResponse
+    {
+        $sortie = $em->getRepository(Sorties::class)->find($id);
+
+        if (!$sortie) {
+            $this->addFlash('danger', 'Sortie introuvable.');
+            return $this->redirectToRoute('app_sortie');
+        }
+
+        $user = $this->getUser();
+
+        // Vérification sécurité : organisateur ou admin uniquement
+        if ($sortie->getOrganisateur() !== $user && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas annuler cette sortie.');
+        }
+
+        // Etat "Annulée" (remplace 6 par l'id correct)
+        $etatAnnule = $em->getRepository(Etats::class)->find(5);
+
+        if (!$etatAnnule) {
+            $this->addFlash('danger', 'Etat "Annulée" introuvable.');
+            return $this->redirectToRoute('app_sortie');
+        }
+
+        $sortie->setNoEtats($etatAnnule);
+
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie a bien été annulée.');
 
         return $this->redirectToRoute('app_sortie');
     }
