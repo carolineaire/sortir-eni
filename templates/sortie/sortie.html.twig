@@ -124,27 +124,43 @@
 
                     {% if s.noEtats.libelle == 'Annulée' %}
                         <span class="badge-cancel">Annulée</span>
-                    {% else %}
 
-                        <a href="{{ path('sortie', { id: s.id }) }}" class="action-icon"
-                                    data-bs-toggle="tooltip"
-                                    title="Voir en détail">
+                    {% elseif s.noEtats.id == 1 %}
+                        {# ===== ETAT CREÉE ===== #}
+
+                        {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
+                            <a href="{{ path('sortie_publier', { id: s.id }) }}"
+                            class="badge-success"
+                            data-bs-toggle="tooltip"
+                            title="Publier la sortie"
+                            onclick="return confirm('Publier cette sortie ?');">
+                                Publier <i class="fa-solid fa-upload text-success"></i>
+                            </a>
+                        {% endif %}
+
+                    {% else %}
+                        {# ===== ETAT OUVERTE ET AUTRES ===== #}
+
+                        <a href="{{ path('sortie', { id: s.id }) }}"
+                        class="action-icon"
+                        data-bs-toggle="tooltip"
+                        title="Voir en détail">
                             <i class="fa-regular fa-eye"></i>
                         </a>
 
                         {% if app.user %}
                             {% if s.estInscrit(app.user) %}
                                 <a href="{{ path('sortie_desinscription', { id: s.id, redirect: 'list' }) }}"
-                                   class="btn-desinscription action-icon danger"
-                                   data-bs-toggle="tooltip"
-                                    title="Se désinscrire">
+                                class="btn-desinscription action-icon danger"
+                                data-bs-toggle="tooltip"
+                                title="Se désinscrire">
                                     <i class="fa-solid fa-user-minus text-danger"></i>
                                 </a>
                             {% else %}
                                 <a href="{{ path('sortie_inscription', { id: s.id, redirect: 'list' }) }}"
-                                   class="action-icon success"
-                                   data-bs-toggle="tooltip"
-                                    title="S'inscrire">
+                                class="action-icon success"
+                                data-bs-toggle="tooltip"
+                                title="S'inscrire">
                                     <i class="fa-solid fa-user-plus text-success"></i>
                                 </a>
                             {% endif %}
@@ -152,9 +168,9 @@
 
                         {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
                             <a href="{{ path('sortie_annuler', { id: s.id }) }}"
-                               class="action-icon danger"
-                               data-bs-toggle="tooltip"
-                                title="Annuler">
+                            class="action-icon danger"
+                            data-bs-toggle="tooltip"
+                            title="Annuler">
                                 <i class="fa-solid fa-ban text-danger"></i>
                             </a>
                         {% endif %}
@@ -430,10 +446,25 @@
 
 .badge-cancel {
     color: white;
-    background: #e53935;
+    background: #666666;
     padding: 0.3rem 0.6rem;
     border-radius: 4px;
     font-size: 0.75rem;
+}
+
+.badge-success{
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: 0.2s ease;
+    color: white;
+    background: #4caf50;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.badge-success:hover {
+    transform: scale(1.2);
 }
 
 .empty-row {
