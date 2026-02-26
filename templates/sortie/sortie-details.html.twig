@@ -1,1 +1,289 @@
-<h1>TODO: Détails d'une sortie</h1>
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortie.com{% endblock %}
+
+{% block body %}
+
+    {# Messages d'erreurs, d'avertissement ou de succès #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="sortie-card">
+
+        <h1 class="sortie-title">{{ sortie.nom }}</h1>
+
+        <div class="sortie-grid">
+
+            <!-- COLONNE GAUCHE -->
+            <div class="sortie-section">
+                <div><strong>Date et heure :</strong> {{ sortie.dateDebut|date('d/m/Y H:i') }}</div>
+                <div><strong>Date limite :</strong> {{ sortie.dateCloture|date('d/m/Y') }}</div>
+                <div><strong>Places :</strong> {{ sortie.nbInscriptionMax }}</div>
+                <div><strong>Durée :</strong> {{ sortie.duree }} minutes</div>
+                <div class="description">
+                    <strong>Description :</strong><br>
+                    {{ sortie.description }}
+                </div>
+            </div>
+
+            <!-- COLONNE DROITE -->
+            <div class="sortie-section">
+                <div><strong>Ville :</strong> {{ sortie.noLieux.noVilles.nomVille }}</div>
+                <div><strong>Lieu :</strong> {{ sortie.noLieux.nomLieu }}</div>
+                <div><strong>Rue :</strong> {{ sortie.noLieux.rue }}</div>
+                <div><strong>Code postal :</strong> {{ sortie.noLieux.noVilles.cpo }}</div>
+                <div><strong>Latitude :</strong> {{ sortie.noLieux.latitude }}</div>
+                <div><strong>Longitude :</strong> {{ sortie.noLieux.longitude }}</div>
+            </div>
+
+        </div>
+
+        <!-- BOUTONS -->
+        <div class="sortie-actions">
+
+            {% if sortie.noEtats.libelle != 'Annulée' %}
+
+                {% if app.user %}
+
+                    {% if sortie.estInscrit(app.user) %}
+                        <a href="{{ path('sortie_desinscription', { id: sortie.id, redirect: 'detail' }) }}"
+                        class="action-btn danger"
+                        onclick="return confirm('Voulez-vous vraiment vous désinscrire ?');">
+                            Se désinscrire
+                        </a>
+                    {% else %}
+                        <a href="{{ path('sortie_inscription', { id: sortie.id, redirect: 'detail' }) }}"
+                        class="action-btn success">
+                            S'inscrire
+                        </a>
+                    {% endif %}
+
+                {% endif %}
+
+                {% if app.user 
+                    and (app.user.id == sortie.organisateur.id 
+                        or is_granted('ROLE_ADMIN')) %}
+
+                    <a href="{{ path('sortie_annuler', { id: sortie.id }) }}"
+                    class="action-btn outline-danger"
+                    onclick="return confirm('Voulez-vous vraiment annuler cette sortie ?');">
+                        Annuler la sortie
+                    </a>
+
+                {% endif %}
+
+            {% else %}
+                <div class="cancelled">
+                    Cette sortie est annulée
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- PARTICIPANTS -->
+    <div class="participants-card">
+
+        <h3>Participants inscrits</h3>
+
+        <div class="participants-list">
+            {% for inscription in sortie.inscriptions %}
+                <div class="participant-row">
+                    <span class="pseudo">{{ inscription.noParticipants.pseudo }}</span>
+                    <span>
+                        {{ inscription.noParticipants.prenom }}
+                        {{ inscription.noParticipants.nom }}
+                    </span>
+                </div>
+            {% else %}
+                <div class="no-participant">
+                    Aucun participant inscrit
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    <div class="back-button">
+        <a href="{{ path('app_sortie') }}" class="edit-profile-btn">
+            ← Retour à la liste
+        </a>
+    </div>
+
+    <script>
+        {# Temps d'affichage du message d'erreur, succes, avertissement #}
+    document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () {
+        document.querySelectorAll('.alert').forEach(function (alert) {
+            alert.classList.add('fade-out');
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+});
+    </script>
+
+
+    <style>
+
+    /* ===== CARTE SORTIE ===== */
+.sortie-card {
+    max-width: 900px;
+    margin: 2.5rem auto;
+    padding: 2rem;
+    border-radius: 10px;
+    background: white;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    animation: gentle-fade-in 0.4s ease;
+    transition: 0.3s ease;
+}
+
+.sortie-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+}
+
+/* Titre */
+.sortie-title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: var(--accent);
+    margin-bottom: 2rem;
+}
+
+/* GRID */
+.sortie-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.sortie-section div {
+    padding: 0.85rem 1rem;
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    margin-bottom: 0.8rem;
+    transition: 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.sortie-section div:hover {
+    background: var(--glass);
+    border-color: var(--accent);
+    transform: translateX(4px);
+}
+
+.description {
+    line-height: 1.6;
+}
+
+/* ===== BOUTONS ===== */
+.sortie-actions {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.action-btn {
+    display: inline-block;
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    margin: 0.5rem;
+    transition: 0.3s ease;
+}
+
+.success {
+    background: linear-gradient(135deg, #4caf50, #66bb6a);
+    color: white;
+}
+
+.danger {
+    background: linear-gradient(135deg, #e53935, #ef5350);
+    color: white;
+}
+
+.outline-danger {
+    border: 2px solid #e53935;
+    color: #e53935;
+    background: transparent;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    opacity: 0.9;
+}
+
+/* Annulée */
+.cancelled {
+    color: #e53935;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* ===== PARTICIPANTS ===== */
+.participants-card {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.participants-card h3 {
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.participants-list {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.participant-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.7rem 1rem;
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    margin-bottom: 0.5rem;
+    transition: 0.2s ease;
+}
+
+.participant-row:hover {
+    background: var(--glass);
+    border-color: var(--accent);
+    transform: translateX(4px);
+}
+
+.pseudo {
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.no-participant {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-secondary);
+}
+
+/* Retour */
+.back-button {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+    </style>
+
+{% endblock %}
