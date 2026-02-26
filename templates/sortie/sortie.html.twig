@@ -125,7 +125,9 @@
                 <td>{{ s.nbInscriptionMax }}</td>
                 <td>{{ s.noLieux.nomLieu }}</td>
                 <td>{{ s.noLieux.noVilles.nomVille }}</td>
-                <td>{{ s.organisateur.prenom }} {{s.organisateur.nom|slice(0,1)}}.</td>
+                <td>
+                    <a class="link_profil" href="profil/{{ s.organisateur.id }}">{{ s.organisateur.prenom }} {{s.organisateur.nom|slice(0,1)}}.</a>
+                </td>
                 <td>
                     <a href="{{ path('sortie', { id: s.id }) }}" data-bs-toggle="tooltip" title="Voir le détail">
                         <i class="fa-regular fa-eye"></i>
