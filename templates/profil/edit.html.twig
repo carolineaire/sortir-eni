@@ -78,6 +78,13 @@
                             {{ form_errors(editProfilForm.plainPassword.second) }}
                         </div>
 
+                        <!-- Image -->
+                        <div class="mb-3 form-item">
+                            {{ form_label(editProfilForm.userPicture, 'Image') }}
+                            {{ form_widget(editProfilForm.userPicture, {'attr': {'class': 'form-select edit-input'}}) }}
+                            {{ form_errors(editProfilForm.userPicture) }}
+                        </div>
+
                         <hr class="my-4">
 
                         <!-- Boutons d'action -->

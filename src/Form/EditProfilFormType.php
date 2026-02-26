@@ -15,10 +15,12 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 class EditProfilFormType extends AbstractType
@@ -102,6 +104,19 @@ class EditProfilFormType extends AbstractType
                         'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères',
                         'max' => 4096,
                     ]),
+                ],
+            ])
+
+            ->add('userPicture', FileType::class, [
+                'label' => 'Photo de profil',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new Assert\Image(
+                        maxSize: '1M',
+                        mimeTypes: ['image/jpeg', 'image/png', 'image/gif'],
+                        mimeTypesMessage: 'Please upload a valid image file',
+                    )
                 ],
             ])
         ;

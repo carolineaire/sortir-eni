@@ -5,13 +5,18 @@
 
 {% block body %}
     <div class="user-data">
+        <!-- Image de profil en haut avec animation -->
+        <div class="profile-image-container">
+            <img src="{{ asset('images/user/' ~ user.image) }}" alt="Photo de profil de {{ user.pseudo }}">
+        </div>
+
         <h1 class="tittle">{{ user.pseudo }}</h1> 
         <div class="name">Prénom : {{ user.prenom }}</div>
         <div class="surname">Nom : {{ user.nom }}</div>
         <div class="phone-number">Téléphone : {{ user.telephone }}</div>
         <div class="email">Email : {{ user.email }}</div>
         <div class="city">Ville de rattachement : {{ user.noSites.nomSite }}</div>
-        
+    
         {% if myprofil == true %}
             <a href="{{ path('edit_participant') }}" class="edit-profile-btn">
                 Modifier votre profil
