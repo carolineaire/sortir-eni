@@ -23,10 +23,12 @@
             <a href="/">Accueil</a>
             {% if is_granted('ROLE_ADMIN') %}
                 <a  href="{{ path('app_register') }}">
-                     Ajouter des comptes
+                     Ajouter un compte
                 </a>
             {% endif %}
 
+            <a href="{{ path('lieu_new') }}">Lieux</a>
+            <a href="{{ path('sortie_create') }}">Créer une sortie</a>
             <a href="{{ path('app_profil') }}">Mon profil</a>
             <a href="{{ path('app_logout') }}" class="nav-logout">Déconnexion</a>
         </div>
