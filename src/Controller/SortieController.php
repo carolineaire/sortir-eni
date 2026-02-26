@@ -23,7 +23,18 @@ final class SortieController extends AbstractController
     #[Route('/sortie', name: 'app_sortie')]
     public function index(SortiesRepository $repo): Response
     {
-        $sorties = $repo->findAll();
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $sorties = $repo->findAll();
+        } else {
+            $sorties = $repo->createQueryBuilder('s')
+                ->where('s.noEtats = 2') // Ouverte
+                ->orWhere('s.organisateur = :user')
+                ->setParameter('user', $this->getUser())
+                ->getQuery()
+                ->getResult();
+        }
+
+
         $user = $this->getUser();
 
         $villes = [];
@@ -75,14 +86,19 @@ final class SortieController extends AbstractController
                 // Organisateur = utilisateur connecté
 
 
-                $sortie->setOrganisateur($this->getUser());
+
+                
+
+                $organisateur = $this->getUser();
+                $sortie->setOrganisateur($organisateur);
+
                 // État par défaut = "Créée"
                 //  $etatCree = $em->getRepository(Etats::class)->find(1);
                 // $sortie->setNoEtats($etatCree);
 
                 if ($sortieForm->get('enregistrer')->isClicked()) {
 
-                    $etat = $em->getRepository(Etats::class)->find(1);
+                    $etat = $em->getRepository(Etats::class)->find(1); //Créer
                 }
                 if ($sortieForm->get('publier')->isClicked()) {
                     $etat = $em->getRepository(Etats::class)->find(2); // Ouverte
@@ -142,9 +158,10 @@ final class SortieController extends AbstractController
     }
 
     #[Route('/sortie/{id}/inscription', name: 'sortie_inscription')]
-    public function inscription(int $id, SortiesRepository $sortiesRepository, EntityManagerInterface $em): RedirectResponse {
+    public function inscription(int $id, Request $request, SortiesRepository $sortiesRepository, EntityManagerInterface $em): RedirectResponse {
         $sortie = $sortiesRepository->find($id);
-
+        $redirect = $request->query->get('redirect');
+    
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie introuvable.');
         }
@@ -171,14 +188,20 @@ final class SortieController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Inscrit avec succès!');
-
+    
+        if ($redirect === 'detail') {
+            return $this->redirectToRoute('sortie', ['id' => $id]);
+        }
+        
         return $this->redirectToRoute('app_sortie');
     }
 
     #[Route('/sortie/desinscription/{id}', name: 'sortie_desinscription')]
-    public function desinscription(int $id, EntityManagerInterface $em): Response
+    public function desinscription(int $id, Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
+        $redirect = $request->query->get('redirect');
+
         if (!$user) {
             $this->addFlash('danger', 'Vous devez être connecté pour vous désinscrire.');
             return $this->redirectToRoute('app_login');
@@ -207,6 +230,72 @@ final class SortieController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Vous avez bien été désinscrit.');
+
+        if ($redirect === 'detail') {
+            return $this->redirectToRoute('sortie', ['id' => $id]);
+        }
+        
+        return $this->redirectToRoute('app_sortie');
+    }
+
+    #[Route('/sortie/{id}/annuler', name: 'sortie_annuler')]
+    public function annuler(int $id, EntityManagerInterface $em): RedirectResponse
+    {
+        $sortie = $em->getRepository(Sorties::class)->find($id);
+
+        if (!$sortie) {
+            $this->addFlash('danger', 'Sortie introuvable.');
+            return $this->redirectToRoute('app_sortie');
+        }
+
+        $user = $this->getUser();
+
+        // Vérification sécurité : organisateur ou admin uniquement
+        if ($sortie->getOrganisateur() !== $user && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas annuler cette sortie.');
+        }
+
+        // Etat "Annulée" (remplace 6 par l'id correct)
+        $etatAnnule = $em->getRepository(Etats::class)->find(5);
+
+        if (!$etatAnnule) {
+            $this->addFlash('danger', 'Etat "Annulée" introuvable.');
+            return $this->redirectToRoute('app_sortie');
+        }
+
+        $sortie->setNoEtats($etatAnnule);
+
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie a bien été annulée.');
+
+        return $this->redirectToRoute('app_sortie');
+    }
+
+    // Routes des boutons d'action dans /sortie et /sortie/{id}
+    #[Route('/sortie/{id}/publier', name: 'sortie_publier')]
+    public function publier(Sorties $sortie, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user || 
+            ($user !== $sortie->getOrganisateur() && !$this->isGranted('ROLE_ADMIN'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        // Vérifier que la sortie est bien en état "Créée"
+        if ($sortie->getNoEtats()->getId() !== 1) {
+            $this->addFlash('warning', 'Cette sortie ne peut pas être publiée.');
+            return $this->redirectToRoute('sortie_list');
+        }
+
+        // Récupérer l'état "Ouverte" (id = 2)
+        $etatOuverte = $em->getRepository(Etats::class)->find(2);
+
+        $sortie->setNoEtats($etatOuverte);
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie est maintenant publiée !');
 
         return $this->redirectToRoute('app_sortie');
     }
