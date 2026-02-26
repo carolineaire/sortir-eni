@@ -4,6 +4,15 @@
 
 {% block body %}
 
+{# Messages d'erreurs, d'avertissement ou de succès #}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
 <div class="container-fluid d-flex justify-content-end">
     <div class="informations text-end">
         <p>Date du jour : <span id="date-du-jour"></span></p>
@@ -68,13 +77,13 @@
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" id="inscrit">
                     <label class="form-check-label" for="inscrit">
-                        TODO: Sorties auxquelles je suis inscrit/e
+                        Sorties auxquelles je suis inscrit/e
                     </label>
                 </div>
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" id="nonInscrit">
                     <label class="form-check-label" for="nonInscrit">
-                        TODO: Sorties auxquelles je ne suis pas inscrit/e
+                        Sorties auxquelles je ne suis pas inscrit/e
                     </label>
                 </div>
                 <div class="form-check">
@@ -108,7 +117,7 @@
         </thead>
         <tbody>
         {% for s in sortie %}
-            <tr data-organisateur="{{ s.organisateur.id }}">
+            <tr data-organisateur="{{ s.organisateur.id }}" data-inscrit="{{ s.estInscrit(app.user) ? '1' : '0' }}">
                 <td>{{ s.nom }}</td>
                 <td>{{ s.duree }}</td>
                 <td>{{ s.dateDebut | date('d/m/Y') }}</td>
@@ -123,11 +132,30 @@
                     <a href="{{ path('sortie', { id: s.id }) }}" data-bs-toggle="tooltip" title="Voir le détail">
                         <i class="fa-regular fa-eye"></i>
                     </a>
-                    <a href="#" data-bs-toggle="tooltip" title="S'inscrire">
-                        <i class="fa-solid fa-user-plus"></i>
-                    </a>
+                    {% if app.user %}
+
+                        {% if s.estInscrit(app.user) %}
+
+                           <a href="{{ path('sortie_desinscription', { id: s.id }) }}"
+                                class="btn-desinscription"
+                                data-bs-toggle="tooltip"
+                                title="Se désinscrire">
+                                    <i class="fa-solid fa-user-minus text-danger"></i>
+                            </a>
+
+                        {% else %}
+
+                            <a href="{{ path('sortie_inscription', { id: s.id }) }}"
+                            data-bs-toggle="tooltip"
+                            title="S'inscrire">
+                                <i class="fa-solid fa-user-plus text-success"></i>
+                            </a>
+
+                        {% endif %}
+
+                    {% endif %}
                      <a href="#" data-bs-toggle="tooltip" title="Annuler">
-                        <i class="fa-solid fa-ban"></i>
+                        <i class="fa-solid fa-ban text-danger"></i>
                     </a>
                 </td>
             </tr>
@@ -140,20 +168,42 @@
     </table>
 </div>
 
+<!-- Modal de confirmation de désinscription -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Êtes-vous sûr de vouloir vous désinscrire ?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Vous êtes sur le point de vous désinscrire de cette sortie. Cette action est irréversible.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                <button type="button" class="btn btn-danger" id="confirmUnsubscribe">Oui, je me désinscris</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const currentUserId = {{ app.user.id }};
 
-    {# Date du jour #}
+    // Date du jour
     document.getElementById('date-du-jour')
         .textContent = new Date().toLocaleDateString('fr-FR');
 
-    {# Filtres sur tableau #}
+    // Filtres
     const selectVille = document.getElementById('site');
     const searchInput = document.getElementById('search');
     const dateStartInput = document.getElementById('dateStart');
     const dateEndInput = document.getElementById('dateEnd');
     const passeesCheckbox = document.getElementById('passees');
     const orgaCheckbox = document.getElementById('orga');
+    const inscritCheckbox = document.getElementById('inscrit');
+    const nonInscritCheckbox = document.getElementById('nonInscrit');
+
     const rows = document.querySelectorAll('table tbody tr');
 
     function applyFilters() {
@@ -164,9 +214,11 @@
         const endDate = dateEndInput.value ? new Date(dateEndInput.value) : null;
         const showPassees = passeesCheckbox.checked;
         const showOrga = orgaCheckbox.checked;
+        const showInscrit = inscritCheckbox.checked;
+        const showNonInscrit = nonInscritCheckbox.checked;
 
         const today = new Date();
-        today.setHours(0,0,0,0); 
+        today.setHours(0,0,0,0);
 
         rows.forEach(row => {
 
@@ -176,6 +228,9 @@
             const [day, month, year] = dateText.split('/');
             const rowDate = new Date(`${year}-${month}-${day}`);
             rowDate.setHours(0,0,0,0);
+
+            const orgaId = row.dataset.organisateur;
+            const isInscrit = row.dataset.inscrit === "1";
 
             let show = true;
 
@@ -193,45 +248,59 @@
             if (showPassees && rowDate >= today) show = false;
 
             // Filtre organisateur
-            if (showOrga) {
-                const orgaId = row.dataset.organisateur; 
-                if (parseInt(orgaId) !== currentUserId) show = false;
-            }
+            if (showOrga && parseInt(orgaId) !== currentUserId) show = false;
+
+            // Filtre inscrit / non inscrit
+            if (showInscrit && !isInscrit) show = false;
+            if (showNonInscrit && isInscrit) show = false;
+
+            // Si les deux sont cochés → on annule le filtre
+            if (showInscrit && showNonInscrit) show = true;
 
             row.style.display = show ? '' : 'none';
         });
     }
 
-    // 🔥 Événements automatiques
+    // Événements
     selectVille.addEventListener('change', applyFilters);
     searchInput.addEventListener('input', applyFilters);
     dateStartInput.addEventListener('change', applyFilters);
     dateEndInput.addEventListener('change', applyFilters);
     passeesCheckbox.addEventListener('change', applyFilters);
     orgaCheckbox.addEventListener('change', applyFilters);
+    inscritCheckbox.addEventListener('change', applyFilters);
+    nonInscritCheckbox.addEventListener('change', applyFilters);
 
-    {# Nettoyer les filtres #}
+    // Reset filtres
     const resetBtn = document.getElementById('resetFilters');
 
     resetBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // empêche le href="#"
+        e.preventDefault();
 
-        // Réinitialiser les inputs et select
-        document.getElementById('site').value = '';
-        document.getElementById('search').value = '';
-        document.getElementById('dateStart').value = '';
-        document.getElementById('dateEnd').value = '';
-        document.getElementById('passees').checked = false;
-        document.getElementById('orga').checked = false;
-        document.getElementById('inscrit').checked = false;
-        document.getElementById('nonInscrit').checked = false;
+        selectVille.value = '';
+        searchInput.value = '';
+        dateStartInput.value = '';
+        dateEndInput.value = '';
+        passeesCheckbox.checked = false;
+        orgaCheckbox.checked = false;
+        inscritCheckbox.checked = false;
+        nonInscritCheckbox.checked = false;
 
-        // Réaffiche toutes les lignes
         rows.forEach(row => row.style.display = '');
 
-        // Appliquer les filtres pour remettre à jour le tableau
         applyFilters();
     });
+
+    // Popup désinscription
+    document.querySelectorAll('.btn-desinscription').forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (confirm("Voulez-vous vraiment vous désinscrire ?")) {
+                window.location.href = this.href;
+            }
+        });
+    });
+
 </script>
 {% endblock %}
 

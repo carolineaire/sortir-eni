@@ -15,8 +15,8 @@ class Etats
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idEtat = null;
+//    #[ORM\Column]
+//    private ?int $idEtat = null;
 
     #[ORM\Column(length: 30)]
     private ?string $libelle = null;
@@ -37,17 +37,17 @@ class Etats
         return $this->id;
     }
 
-    public function getIdEtat(): ?int
-    {
-        return $this->idEtat;
-    }
-
-    public function setIdEtat(int $idEtat): static
-    {
-        $this->idEtat = $idEtat;
-
-        return $this;
-    }
+//    public function getIdEtat(): ?int
+//    {
+//        return $this->idEtat;
+//    }
+//
+//    public function setIdEtat(int $idEtat): static
+//    {
+//        $this->idEtat = $idEtat;
+//
+//        return $this;
+//    }
 
     public function getLibelle(): ?string
     {
