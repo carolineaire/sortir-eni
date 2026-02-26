@@ -62,6 +62,10 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 30,unique: true)]
     private ?string $pseudo = null;
 
+    #[Assert\Length(max: 30)]
+    #[ORM\Column(length: 30,nullable: true)]
+    private ?string $image = null;
+
     /**
      * @var Collection<int, Inscriptions>
      */
@@ -243,6 +247,18 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPseudo(string $pseudo): static
     {
         $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }
