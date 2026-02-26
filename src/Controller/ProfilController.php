@@ -32,7 +32,7 @@ final class ProfilController extends AbstractController
         ]);
     }
 
-    #[Route('/profil/{id}', name: 'profil')]
+    #[Route('/profil/{id}', name: 'app_profil_user')]
     public function profil(int $id, ProfilService $profilService): Response
     {
         $user = $profilService->getUserProfil($id);
