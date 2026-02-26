@@ -170,7 +170,8 @@
                             <a href="{{ path('sortie_annuler', { id: s.id }) }}"
                             class="action-icon danger"
                             data-bs-toggle="tooltip"
-                            title="Annuler">
+                            title="Annuler"
+                            onclick="return confirm('Voulez vous vraiment annuler cette sortie ?');">
                                 <i class="fa-solid fa-ban text-danger"></i>
                             </a>
                         {% endif %}
