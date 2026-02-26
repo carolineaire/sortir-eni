@@ -129,34 +129,41 @@
                     <a class="link_profil" href="profil/{{ s.organisateur.id }}">{{ s.organisateur.prenom }} {{s.organisateur.nom|slice(0,1)}}.</a>
                 </td>
                 <td>
-                    <a href="{{ path('sortie', { id: s.id }) }}" data-bs-toggle="tooltip" title="Voir le détail">
-                        <i class="fa-regular fa-eye"></i>
-                    </a>
-                    {% if app.user %}
+                    {% if s.noEtats.libelle == 'Annulée' %}
+                        <span class="text-danger fw-bold">Annulée</span>
+                    {% else %}
 
-                        {% if s.estInscrit(app.user) %}
+                        <a href="{{ path('sortie', { id: s.id }) }}" data-bs-toggle="tooltip" title="Voir le détail">
+                            <i class="fa-regular fa-eye"></i>
+                        </a>
 
-                           <a href="{{ path('sortie_desinscription', { id: s.id }) }}"
+                        {% if app.user %}
+                            {% if s.estInscrit(app.user) %}
+                                <a href="{{ path('sortie_desinscription', { id: s.id }) }}"
                                 class="btn-desinscription"
                                 data-bs-toggle="tooltip"
                                 title="Se désinscrire">
                                     <i class="fa-solid fa-user-minus text-danger"></i>
-                            </a>
+                                </a>
+                            {% else %}
+                                <a href="{{ path('sortie_inscription', { id: s.id }) }}"
+                                data-bs-toggle="tooltip"
+                                title="S'inscrire">
+                                    <i class="fa-solid fa-user-plus text-success"></i>
+                                </a>
+                            {% endif %}
+                        {% endif %}
 
-                        {% else %}
-
-                            <a href="{{ path('sortie_inscription', { id: s.id }) }}"
+                        {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
+                            <a href="{{ path('sortie_annuler', { id: s.id }) }}"
                             data-bs-toggle="tooltip"
-                            title="S'inscrire">
-                                <i class="fa-solid fa-user-plus text-success"></i>
+                            title="Annuler"
+                            onclick="return confirm('Voulez-vous vraiment annuler cette sortie ?');">
+                                <i class="fa-solid fa-ban text-danger"></i>
                             </a>
-
                         {% endif %}
 
                     {% endif %}
-                     <a href="#" data-bs-toggle="tooltip" title="Annuler">
-                        <i class="fa-solid fa-ban text-danger"></i>
-                    </a>
                 </td>
             </tr>
         {% else %}
@@ -166,25 +173,6 @@
         {% endfor %}
         </tbody>
     </table>
-</div>
-
-<!-- Modal de confirmation de désinscription -->
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Êtes-vous sûr de vouloir vous désinscrire ?</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Vous êtes sur le point de vous désinscrire de cette sortie. Cette action est irréversible.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
-                <button type="button" class="btn btn-danger" id="confirmUnsubscribe">Oui, je me désinscris</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
