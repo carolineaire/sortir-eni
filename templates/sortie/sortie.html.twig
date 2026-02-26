@@ -126,19 +126,25 @@
                         <span class="badge-cancel">Annulée</span>
                     {% else %}
 
-                        <a href="{{ path('sortie', { id: s.id }) }}" class="action-icon">
+                        <a href="{{ path('sortie', { id: s.id }) }}" class="action-icon"
+                                    data-bs-toggle="tooltip"
+                                    title="Voir en détail">
                             <i class="fa-regular fa-eye"></i>
                         </a>
 
                         {% if app.user %}
                             {% if s.estInscrit(app.user) %}
                                 <a href="{{ path('sortie_desinscription', { id: s.id, redirect: 'list' }) }}"
-                                   class="action-icon danger">
+                                   class="btn-desinscription action-icon danger"
+                                   data-bs-toggle="tooltip"
+                                    title="Se désinscrire">
                                     <i class="fa-solid fa-user-minus text-danger"></i>
                                 </a>
                             {% else %}
                                 <a href="{{ path('sortie_inscription', { id: s.id, redirect: 'list' }) }}"
-                                   class="action-icon success">
+                                   class="action-icon success"
+                                   data-bs-toggle="tooltip"
+                                    title="S'inscrire">
                                     <i class="fa-solid fa-user-plus text-success"></i>
                                 </a>
                             {% endif %}
@@ -146,7 +152,9 @@
 
                         {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
                             <a href="{{ path('sortie_annuler', { id: s.id }) }}"
-                               class="action-icon danger">
+                               class="action-icon danger"
+                               data-bs-toggle="tooltip"
+                                title="Annuler">
                                 <i class="fa-solid fa-ban text-danger"></i>
                             </a>
                         {% endif %}
