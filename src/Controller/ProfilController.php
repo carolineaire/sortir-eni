@@ -11,6 +11,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\ProfilService;
 use App\Entity\Participants;
 use App\Form\EditProfilFormType;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 
 final class ProfilController extends AbstractController
@@ -54,7 +58,9 @@ final class ProfilController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $userPasswordHasher,
-        ProfilService $profilService
+        ProfilService $profilService,
+        SluggerInterface $slugger,
+        #[Autowire('%kernel.project_dir%/public/images/user')] string $pictureUserDirectory
     ): Response
     {
         // 1) RÉCUPÉRER le participant en base
@@ -81,22 +87,43 @@ final class ProfilController extends AbstractController
                     $userPasswordHasher->hashPassword($participant, $plainPassword)
                 );
             }
+
+            // 5) Gérer l'image
+            $imageFile = $form->get('userPicture')->getData();
+
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                // Move the file to the directory where brochures are stored
+                try {
+                    $imageFile->move($pictureUserDirectory, $newFilename);
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                // updates the 'brochureFilename' property to store the PDF file name
+                // instead of its contents
+                $participant->setImage($newFilename);
+            }
             
-            // 5) METTRE À JOUR les rôles
+            // 6) METTRE À JOUR les rôles
             if ($participant->isAdministrateur()) {
                 $participant->setRoles(['ROLE_ADMIN']);
             } else {
                 $participant->setRoles(['ROLE_USER']);
             }
             
-            // 6) SAUVEGARDER
+            // 7) SAUVEGARDER
             $entityManager->flush();
             
-            // 7) REDIRECTION
+            // 8) REDIRECTION
             return $this->redirectToRoute('app_profil', ['id' => $participant->getId()]);
         }
         
-        // 8) AFFICHER le formulaire
+        // 9) AFFICHER le formulaire
         return $this->render('profil/edit.html.twig', [
             'editProfilForm' => $form,
             'participant' => $participant,
