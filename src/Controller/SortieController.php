@@ -24,11 +24,15 @@ final class SortieController extends AbstractController
     public function index(SortiesRepository $repo): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            $sorties = $repo->findAll();
+            $sorties = $repo->createQueryBuilder('s')
+                ->orderBy('s.dateDebut', 'ASC')
+                ->getQuery()
+                ->getResult();
         } else {
             $sorties = $repo->createQueryBuilder('s')
-                ->where('s.noEtats > 1') // quand différentes de créée
-                ->orWhere('s.organisateur = :user')
+                ->Where('s.noEtats > 1')  // Assurer que l'état n'est pas "Créé"
+                ->orWhere('s.organisateur = :user')  // Ou l'organisateur est l'utilisateur actuel
+                ->orderBy('s.dateDebut', 'ASC') // Trier par la date de début
                 ->setParameter('user', $this->getUser())
                 ->getQuery()
                 ->getResult();
