@@ -119,6 +119,7 @@ final class SortieController extends AbstractController
 
         return 'Ville inconnue';
     }
+
     #[Route('/ajax/lieux/{id}', name: 'ajax_lieux')]
     public function ajaxLieux(Villes $ville): JsonResponse
     {
@@ -161,8 +162,9 @@ final class SortieController extends AbstractController
     }
 
     #[Route('/sortie/{id}/inscription', name: 'sortie_inscription')]
-    public function inscription(int $id, SortiesRepository $sortiesRepository, EntityManagerInterface $em): RedirectResponse {
+    public function inscription(int $id, Request $request, SortiesRepository $sortiesRepository, EntityManagerInterface $em): RedirectResponse {
         $sortie = $sortiesRepository->find($id);
+        $redirect = $request->query->get('redirect');
     
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie introuvable.');
@@ -191,13 +193,19 @@ final class SortieController extends AbstractController
 
         $this->addFlash('success', 'Inscrit avec succès!');
     
+        if ($redirect === 'detail') {
+            return $this->redirectToRoute('sortie', ['id' => $id]);
+        }
+        
         return $this->redirectToRoute('app_sortie');
     }
 
     #[Route('/sortie/desinscription/{id}', name: 'sortie_desinscription')]
-    public function desinscription(int $id, EntityManagerInterface $em): Response
+    public function desinscription(int $id, Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
+        $redirect = $request->query->get('redirect');
+
         if (!$user) {
             $this->addFlash('danger', 'Vous devez être connecté pour vous désinscrire.');
             return $this->redirectToRoute('app_login');
@@ -227,6 +235,10 @@ final class SortieController extends AbstractController
 
         $this->addFlash('success', 'Vous avez bien été désinscrit.');
 
+        if ($redirect === 'detail') {
+            return $this->redirectToRoute('sortie', ['id' => $id]);
+        }
+        
         return $this->redirectToRoute('app_sortie');
     }
 
