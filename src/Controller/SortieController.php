@@ -27,7 +27,7 @@ final class SortieController extends AbstractController
             $sorties = $repo->findAll();
         } else {
             $sorties = $repo->createQueryBuilder('s')
-                ->where('s.noEtats = 2') // Ouverte
+                ->where('s.noEtats > 1') // quand différentes de créée
                 ->orWhere('s.organisateur = :user')
                 ->setParameter('user', $this->getUser())
                 ->getQuery()
