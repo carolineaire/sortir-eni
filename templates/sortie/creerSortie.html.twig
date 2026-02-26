@@ -62,7 +62,14 @@
             <div class="submit-container">
                 {{ form_widget(sortieForm.enregistrer) }}
                 {{ form_widget(sortieForm.publier) }}
-                {{ form_widget(sortieForm.annuler) }}
+{#                {{ form_widget(sortieForm.annuler) }}#}
+
+
+
+                    <a href="{{ path('app_sortie') }}" class="btn-primary ">
+                        Annuler
+                    </a>
+
             </div>
 
 
@@ -118,6 +125,10 @@
                     lonField.value = data.longitude ?? '';
                 });
         });
+
+
+
+
     </script>
 
 
@@ -269,6 +280,15 @@ button[name="sorties[annuler]"] {
     color: white;
 }
 
+.btn-primary {
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    background: #e74c3c;
+    color: white;
+}
 
 </style>
 
@@ -314,137 +334,3 @@ button[name="sorties[annuler]"] {
 
 
 
-
-{#{% extends 'base.html.twig' %}#}
-
-{#{% block title %}Créer une sortie{% endblock %}#}
-
-{#{% block body %}#}
-{#    <h1>Créer une sortie</h1>#}
-
-{#    <div class="container mt-4">#}
-{#        {{ form_start(sortieForm) }}#}
-
-{#        <div class="row">#}
-
-{#            <div class="col-md-6">#}
-{#                {{ form_row(sortieForm.nom) }}#}
-{#            </div>#}
-
-{#            <div class="row">#}
-{#                <div class="col-md-6">#}
-{#                    {{ form_row(sortieForm.dateDebut) }}#}
-{#                </div>#}
-{#                <div class="col-md-6">#}
-{#                    {{ form_row(sortieForm.dateCloture) }}#}
-{#                </div>#}
-{#            </div>#}
-
-{#            <div class="row">#}
-{#                <div class="col-md-4">#}
-{#                    {{ form_row(sortieForm.nbInscriptionMax) }}#}
-{#                </div>#}
-{#                <div class="col-md-4">#}
-{#                    {{ form_row(sortieForm.duree) }}#}
-{#                </div>#}
-
-{#            </div>#}
-
-{#            {{ form_row(sortieForm.description) }}#}
-
-{#            <div class="col-md-6">#}
-{#            {{ form_row(sortieForm.villeOrganisatrice) }}#}
-{#            </div>#}
-{#            <div class="col-md-6">#}
-{#                {{ form_row(sortieForm.noVilles) }}#}
-{#            </div>#}
-
-{#            <div class="col-md-6">#}
-{#                {{ form_row(sortieForm.noLieux) }}#}
-{#            </div>#}
-{#        </div>#}
-
-{#        <div class="row">#}
-{#            <div class="col-md-6">#}
-{#                {{ form_row(sortieForm.rue) }}#}
-{#            </div>#}
-{#            <div class="col-md-6">#}
-{#                {{ form_row(sortieForm.codePostal) }}#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="row">#}
-{#            <div class="col-md-6">#}
-{#                {{ form_row(sortieForm.latitude) }}#}
-{#            </div>#}
-{#            <div class="col-md-6">#}
-{#                {{ form_row(sortieForm.longitude) }}#}
-{#            </div>#}
-{#        </div>#}
-
-
-
-{#        <button class="btn btn-primary mt-3">Créer la sortie</button>#}
-
-{#        {{ form_end(sortieForm) }}#}
-
-
-
-{#        <script>#}
-{#            const villeSelect = document.querySelector('#sorties_noVilles');#}
-{#            const lieuSelect = document.querySelector('#sorties_noLieux');#}
-
-{#            const rueField = document.querySelector('#sorties_rue');#}
-{#            const cpField = document.querySelector('#sorties_codePostal');#}
-{#            const latField = document.querySelector('#sorties_latitude');#}
-{#            const lonField = document.querySelector('#sorties_longitude');#}
-
-{#            // Fonction pour vider les champs#}
-{#            function resetLieuFields() {#}
-{#                lieuSelect.innerHTML = '<option value="">Choisir un lieu</option>';#}
-{#                rueField.value = '';#}
-{#                cpField.value = '';#}
-{#                latField.value = '';#}
-{#                lonField.value = '';#}
-{#            }#}
-
-{#            // 1. Quand la ville change → charger les lieux + vider les champs#}
-{#            villeSelect.addEventListener('change', function () {#}
-
-{#                // On vide tout immédiatement#}
-{#                resetLieuFields();#}
-
-{#                if (!this.value) {#}
-{#                    return;#}
-{#                }#}
-
-{#                fetch('/ajax/lieux/' + this.value)#}
-{#                    .then(response => response.json())#}
-{#                    .then(data => {#}
-{#                        data.forEach(lieu => {#}
-{#                            lieuSelect.innerHTML += `<option value="${lieu.id}">${lieu.nom}</option>`;#}
-{#                        });#}
-{#                    });#}
-{#            });#}
-
-{#            // 2. Quand le lieu change → remplir les champs#}
-{#            lieuSelect.addEventListener('change', function () {#}
-
-{#                // Si aucun lieu sélectionné → on vide#}
-{#                if (!this.value) {#}
-{#                    resetLieuFields();#}
-{#                    return;#}
-{#                }#}
-
-{#                fetch('/ajax/lieu/' + this.value)#}
-{#                    .then(response => response.json())#}
-{#                    .then(data => {#}
-{#                        rueField.value = data.rue ?? '';#}
-{#                        cpField.value = data.cp ?? '';#}
-{#                        latField.value = data.latitude ?? '';#}
-{#                        lonField.value = data.longitude ?? '';#}
-{#                    });#}
-{#            });#}
-{#        </script>#}
-
-{#    </div>#}
-{#{% endblock %}#}

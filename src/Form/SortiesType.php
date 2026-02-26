@@ -21,14 +21,19 @@ class SortiesType extends AbstractType
             ->add('nom')
             ->add('dateDebut', null, [
                 'widget' => 'single_text',
+                'label' => 'Date et heure de la sortie',
             ])
             ->add('dateCloture', null, [
                 'widget' => 'single_text',
+                'label' => 'Date limite d\'inscription'
             ])
             ->add('nbInscriptionMax',null,[
             'label' => 'Nombre de palces',
         ])
-            ->add('duree')
+            ->add('duree', null, [
+
+        'label' => 'Durée (minutes)',
+    ])
             ->add('description')
 
 
@@ -85,9 +90,7 @@ class SortiesType extends AbstractType
             ->add('publier', SubmitType::class, [
                 'label' => 'Publier',
             ])
-            ->add('annuler', SubmitType::class, [
-                'label' => 'Annuler',
-            ])
+
 
         ;
     }

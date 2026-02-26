@@ -52,7 +52,7 @@ final class SortieController extends AbstractController
     {
         $user = $this->getUser();
         $site = $user->getNoSites(); // instance de Sites
-        $ville = $this->deduireVilleDepuisSite($site->getNomSite());
+        $ville = $site->getNomSite();
         $sortie = new Sorties();
 
 
@@ -63,23 +63,19 @@ final class SortieController extends AbstractController
 
         if ($sortieForm->isSubmitted()) {
 
-            if ($sortieForm->get('annuler')->isClicked()) {
-
-                return $this->redirectToRoute('app_sortie');
-            }
             if ($sortieForm->isValid()) {
                 $dateDebut = $sortie->getDateDebut();
                 $dateCloture = $sortie->getDateCloture();
 
-                if ($dateDebut >= $dateCloture) {
-                    $this->addFlash('error', 'La date de clôture doit être supérieure à la date de debut.');
+                if ($dateDebut <= $dateCloture) {
+                    $this->addFlash('error', 'La date et heure de la sortie doit être supérieure à la date limite d\'inscription !');
                     return $this->redirectToRoute('sortie_create');
 
                 }
                 // Organisateur = utilisateur connecté
-                $organisateur = $this->getUser();
-                $IdOrganisateur = $organisateur->getId();
-                $sortie->setOrganisateur($IdOrganisateur);
+
+
+                $sortie->setOrganisateur($this->getUser());
                 // État par défaut = "Créée"
                 //  $etatCree = $em->getRepository(Etats::class)->find(1);
                 // $sortie->setNoEtats($etatCree);
@@ -103,23 +99,7 @@ final class SortieController extends AbstractController
             ]);
         }
 
-    private function deduireVilleDepuisSite(string $nomSite): string
-    {
-        if (str_contains($nomSite, 'Nantes')) {
-            return 'Nantes';
-        }
-        if (str_contains($nomSite, 'Rennes')) {
-            return 'Rennes';
-        }
-        if (str_contains($nomSite, 'Quimper')) {
-            return 'Quimper';
-        }
-        if (str_contains($nomSite, 'Niort')) {
-            return 'Niort';
-        }
 
-        return 'Ville inconnue';
-    }
     #[Route('/ajax/lieux/{id}', name: 'ajax_lieux')]
     public function ajaxLieux(Villes $ville): JsonResponse
     {
@@ -164,34 +144,34 @@ final class SortieController extends AbstractController
     #[Route('/sortie/{id}/inscription', name: 'sortie_inscription')]
     public function inscription(int $id, SortiesRepository $sortiesRepository, EntityManagerInterface $em): RedirectResponse {
         $sortie = $sortiesRepository->find($id);
-    
+
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie introuvable.');
         }
-    
+
         $user = $this->getUser();
-    
+
         if (!$user instanceof \App\Entity\Participants) {
             throw new \LogicException('L\'utilisateur doit être un participant.');
         }
-    
+
         // Vérifier si déjà inscrit
         foreach ($sortie->getInscriptions() as $inscription) {
             if ($inscription->getNoParticipants() === $user) {
                 return $this->redirectToRoute('app_sortie');
             }
         }
-    
+
         $inscription = new Inscriptions();
         $inscription->setNoParticipants($user);
         $inscription->setNoSorties($sortie);
         $inscription->setDateInscription(new \DateTimeImmutable());
-    
+
         $em->persist($inscription);
         $em->flush();
 
         $this->addFlash('success', 'Inscrit avec succès!');
-    
+
         return $this->redirectToRoute('app_sortie');
     }
 
@@ -230,4 +210,109 @@ final class SortieController extends AbstractController
 
         return $this->redirectToRoute('app_sortie');
     }
+
+
+
+
+    #[Route('/sortie/{id}/modifier', name: 'sortie_edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Sorties $sortie,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response
+    {
+
+        $organisateur = $sortie->getOrganisateur();
+        $siteOrganisateur = $organisateur->getNoSites() ;
+        $nomSite = $siteOrganisateur->getNomSite() ;
+
+        $villeOrganisatrice =  $nomSite ;
+
+
+        $form = $this->createForm(SortiesType::class, $sortie);
+
+
+        if ($villeOrganisatrice) {
+            $form->get('villeOrganisatrice')->setData($villeOrganisatrice);
+        }
+
+
+        $lieu = $sortie->getNoLieux();
+        if ($lieu) {
+            $form->get('noLieux')->setData($lieu);
+
+            $villeDuLieu = $lieu->getNoVilles();
+            if ($villeDuLieu) {
+                $form->get('noVilles')->setData($villeDuLieu);
+                $rue = $lieu->getRue();
+                $cp = $villeDuLieu->getCpo();
+                $latitude = $lieu->getLatitude();
+                $longitude = $lieu->getLongitude();
+            }
+        }
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // Vérification des dates
+            if ($sortie->getDateDebut() <= $sortie->getDateCloture()) {
+                $this->addFlash('error', 'La date de début doit être supérieure à la date limite d\'inscription.');
+                return $this->redirectToRoute('sortie_edit', ['id' => $sortie->getId()]);
+            }
+
+            // Gestion des boutons
+            if ($form->get('enregistrer')->isClicked()) {
+                $etat = $em->getRepository(Etats::class)->find(1); // Créée
+            }
+
+            if ($form->get('publier')->isClicked()) {
+                $etat = $em->getRepository(Etats::class)->find(2); // Ouverte
+            }
+
+            if (isset($etat)) {
+                $sortie->setNoEtats($etat);
+            }
+
+            // Pas de persist() l'entité existe déjà
+            $em->flush();
+
+            return $this->redirectToRoute('app_sortie');
+        }
+
+        return $this->render('sortie/modifierSortie.html.twig', [
+            'sortieForm' => $form,
+            'sortie' => $sortie,
+            'rue' => $lieu ? $lieu->getRue() : '',
+            'codePostal' => $villeDuLieu ? $villeDuLieu->getCpo() : '',
+            'latitude' => $lieu ? $lieu->getLatitude() : '',
+            'longitude' => $lieu ? $lieu->getLongitude() : '',
+            'ville' => $villeDuLieu ? $villeDuLieu->getNomVille() : '',
+        ]);
+    }
+
+
+
+    #[Route('/sortie/{id}/delete', name: 'sortie_delete', methods: ['GET'])]
+    public function delete(Sorties $sortie, EntityManagerInterface $em): Response
+    {
+        //  check si l'utilisateur est l'organisateur
+        // if ($this->getUser() !== $sortie->getOrganisateur()) {
+        //     $this->addFlash('error', 'Vous ne pouvez pas supprimer cette sortie.');
+        //     return $this->redirectToRoute('app_sortie');
+        // }
+
+        $em->remove($sortie);
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie a bien été supprimée.');
+
+        return $this->redirectToRoute('app_sortie');
+    }
+
+
+
+
+
+
 }
