@@ -61,10 +61,10 @@
 
             <div class="submit-container">
                 {{ form_widget(sortieForm.enregistrer) }}
-                {{ form_widget(sortieForm.publier) }}
+
                 {#                {{ form_widget(sortieForm.annuler) }}#}
 
-
+                {{ form_widget(sortieForm.publier, {'attr': {'style': 'display:none'}}) }}
 
                 <a href="{{ path('app_sortie') }}" class="btn-primary ">
                     Annuler
