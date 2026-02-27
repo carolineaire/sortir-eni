@@ -1,0 +1,389 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialiser mon mot de passe{% endblock %}
+
+{% block body %}
+    <div class="page-container">
+        <div class="content">
+            <div class="forgot-container">
+                <div class="forgot-card">
+                    
+                    <!-- Messages de succès -->
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success animate-slide-down">
+                            <div class="alert-icon">✓</div>
+                            <div class="alert-content">
+                                <strong>Succès!</strong>
+                                <p>{{ message }}</p>
+                            </div>
+                            <button type="button" class="alert-close" data-dismiss="alert">&times;</button>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Messages d'erreur -->
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger animate-slide-down">
+                            <div class="alert-icon">!</div>
+                            <div class="alert-content">
+                                <strong>Erreur</strong>
+                                <p>{{ message }}</p>
+                            </div>
+                            <button type="button" class="alert-close" data-dismiss="alert">&times;</button>
+                        </div>
+                    {% endfor %}
+
+                    <div class="forgot-header">
+                        <h2>Réinitialiser votre mot de passe</h2>
+                        <p class="forgot-subtitle">Entrez votre email et votre téléphone pour réinitialiser votre mot de passe</p>
+                    </div>
+
+                    <form method="post" class="forgot-form">
+                        {{ form_start(forgotForm) }}
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            {{ form_widget(forgotForm.email, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'votre@email.com',
+                                    'id': 'email'
+                                }
+                            }) }}
+                            {% if forgotForm.email.vars.errors %}
+                                <span class="error-message">
+                                    {{ form_errors(forgotForm.email) }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telephone" class="form-label">Numéro de téléphone</label>
+                            {{ form_widget(forgotForm.telephone, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': '+33 6 12 34 56 78',
+                                    'id': 'telephone'
+                                }
+                            }) }}
+                            {% if forgotForm.telephone.vars.errors %}
+                                <span class="error-message">
+                                    {{ form_errors(forgotForm.telephone) }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <span>Réinitialiser mon mot de passe</span>
+                            <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+
+                        {{ form_end(forgotForm) }}
+
+                        <div class="forgot-footer">
+                            <p>Vous vous souvenez de votre mot de passe?</p>
+                            <a href="{{ path('app_login') }}" class="back-link">Retourner à la connexion</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .forgot-container {
+            max-width: 600px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .forgot-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid #eaeaea;
+            animation: gentle-fade-in 0.5s ease;
+        }
+
+        .forgot-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .forgot-header h2 {
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .forgot-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Formulaire */
+        .forgot-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            padding: 0.85rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: #f9f9f9;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(184, 163, 209, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Bouton de soumission */
+        .submit-btn {
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent) 0%, #a892c2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(184, 163, 209, 0.3);
+            margin-top: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(184, 163, 209, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .submit-btn:hover .btn-icon {
+            transform: translateX(4px);
+        }
+
+        /* Footer du formulaire */
+        .forgot-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .forgot-footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .back-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .back-link:hover {
+            color: #a892c2;
+            transform: translateX(-4px);
+        }
+
+        /* Alertes */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid;
+            animation: animate-slide-down 0.4s ease;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            width: 24px;
+            text-align: center;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-content strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .alert-content p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .alert-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: inherit;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .alert-close:hover {
+            opacity: 1;
+        }
+
+        /* Section info */
+        .forgot-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(184, 163, 209, 0.15);
+        }
+
+        .info-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* Animation */
+        @keyframes animate-slide-down {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .forgot-card {
+                padding: 1.5rem;
+            }
+
+            .forgot-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .forgot-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        // Fermer les alertes au clic sur le bouton
+        document.querySelectorAll('.alert-close').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.closest('.alert').style.animation = 'animate-slide-down 0.4s ease reverse forwards';
+                setTimeout(() => this.closest('.alert').remove(), 400);
+            });
+        });
+
+        // Fermer automatiquement les alertes après 5 secondes
+        document.querySelectorAll('.alert').forEach(alert => {
+            setTimeout(() => {
+                if (alert && alert.parentNode) {
+                    alert.style.animation = 'animate-slide-down 0.4s ease reverse forwards';
+                    setTimeout(() => alert.remove(), 400);
+                }
+            }, 5000);
+        });
+    </script>
+{% endblock %}
