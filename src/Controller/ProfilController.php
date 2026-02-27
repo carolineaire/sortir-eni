@@ -46,6 +46,11 @@ final class ProfilController extends AbstractController
         } else {
             $user = $profilService->getUserProfil($id);
 
+            //si pas d'user connecté, redirection vers la page de connexion
+            if (!$this->getUser()) {
+                return $this->redirectToRoute('app_login');
+            }
+
             return $this->render('profil/profil.html.twig', [
                 'user' => $user,
                 'myprofil' => false
@@ -121,6 +126,11 @@ final class ProfilController extends AbstractController
             
             // 8) REDIRECTION
             return $this->redirectToRoute('app_profil', ['id' => $participant->getId()]);
+        }
+
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
         }
         
         // 9) AFFICHER le formulaire

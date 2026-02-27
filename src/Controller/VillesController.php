@@ -29,6 +29,11 @@ final class VillesController extends AbstractController
             $villes = $repository->findAll();
         }
 
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('villes/gererVille.html.twig', [
             'villes' => $villes,
         ]);
@@ -47,6 +52,11 @@ final class VillesController extends AbstractController
             return $this->redirectToRoute('app_villes');
         }
 
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('villes/formVille.html.twig', [
             'villeForm' => $form,
             'titre' => 'Ajouter une ville'
@@ -63,6 +73,11 @@ final class VillesController extends AbstractController
             $em->flush();
             $this->addFlash('success', 'Ville modifiée avec succès !');
             return $this->redirectToRoute('app_villes');
+        }
+
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('villes/modifierVille.html.twig', [

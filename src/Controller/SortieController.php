@@ -87,12 +87,8 @@ final class SortieController extends AbstractController
                     return $this->redirectToRoute('sortie_create');
 
                 }
+
                 // Organisateur = utilisateur connecté
-
-
-
-
-
                 $organisateur = $this->getUser();
                 $sortie->setOrganisateur($organisateur);
 
@@ -111,6 +107,12 @@ final class SortieController extends AbstractController
 
                 $em->persist($sortie);
                 $em->flush();
+
+                //si pas d'user connecté, redirection vers la page de connexion
+                if (!$this->getUser()) {
+                    return $this->redirectToRoute('app_login');
+                }
+
                 return $this->redirectToRoute('app_sortie');
             }
         }
@@ -154,6 +156,11 @@ final class SortieController extends AbstractController
 
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie introuvable.');
+        }
+
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('sortie/sortie-details.html.twig', [
@@ -370,6 +377,11 @@ final class SortieController extends AbstractController
             // Pas de persist() l'entité existe déjà
             $em->flush();
 
+            //si pas d'user connecté, redirection vers la page de connexion
+            if (!$this->getUser()) {
+                return $this->redirectToRoute('app_login');
+            }
+
             return $this->redirectToRoute('app_sortie');
         }
 
@@ -399,10 +411,5 @@ final class SortieController extends AbstractController
 
         return $this->redirectToRoute('app_sortie');
     }
-
-
-
-
-
 
 }
