@@ -120,14 +120,15 @@
                     </a>
                 </td>
 
+                {# Affichage des bouton d'actions ou des badges d'états #}
                 <td class="actions-cell">
 
+                    {# Etat "Annulée" #}
                     {% if s.noEtats.id == 5 %}
                         <span class="badge-cancel">Annulée</span>
 
+                    {# Etat "Créée" #}
                     {% elseif s.noEtats.id == 1 %}
-                        {# ===== ETAT CREÉE ===== #}
-
                         {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
                             <a href="{{ path('sortie_publier', { id: s.id }) }}"
                             class="badge-success"
@@ -136,11 +137,30 @@
                             onclick="return confirm('Publier cette sortie ?');">
                                 Publier <i class="fa-solid fa-upload text-success"></i>
                             </a>
+                            <a href="{{ path('sortie_edit', { id: s.id }) }}"
+                                class="action-icon warn"
+                                data-bs-toggle="tooltip"
+                                title="Voir en détail">
+                                    <i class="fa-regular fa-pen"></i>
+                            </a>
                         {% endif %}
+                    
+                                        
+                    {% elseif s.noEtats.id == 3 %}
+                        {# Etat "Cloturée" #}
+                        <span class="badge bg-danger">Clôturée</span>
 
+                    {% elseif s.noEtats.id == 4 %}
+                        {# Etat "Activité en cours" #}
+                        <span class="badge bg-success">En cours</span>
+
+                    {% elseif s.noEtats.id == 6 %}
+                        {# Etat "Passée" #}
+                        <span class="badge bg-secondary">Terminé</span>
+
+
+                    {# Etat "Ouverte" - Bouton d'action dispo #}
                     {% else %}
-                        {# ===== ETAT OUVERTE ET AUTRES ===== #}
-
                         <a href="{{ path('sortie', { id: s.id }) }}"
                         class="action-icon"
                         data-bs-toggle="tooltip"
