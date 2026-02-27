@@ -62,8 +62,8 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 30,unique: true)]
     private ?string $pseudo = null;
 
-    #[Assert\Length(max: 30)]
-    #[ORM\Column(length: 30,nullable: true)]
+    #[Assert\Length(max: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $image = null;
 
     /**
