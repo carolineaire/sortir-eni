@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mot de passe oublié{% endblock %}
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+
+                        <h2 class="text-center mb-4">Créer un compte !</h2>
+
+                        {{ form_start(ForgotForm) }}
+
+                        <div class="mb-3">
+                            {{ form_label(ForgotForm.email) }}
+                            {{ form_widget(ForgotForm.email, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(ForgotForm.email) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(ForgotForm.telephone) }}
+                            {{ form_widget(ForgotForm.telephone, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(ForgotForm.telephone) }}
+                        </div>
+
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            S'inscrire
+                        </button>
+
+                        {{ form_end(ForgotForm) }}
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
