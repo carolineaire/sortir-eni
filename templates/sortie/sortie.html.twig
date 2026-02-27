@@ -100,113 +100,158 @@
                 <th>Actions</th>
             </tr>
         </thead>
-
         <tbody>
-        {% for s in sortie %}
-            <tr data-organisateur="{{ s.organisateur.id }}"
-                data-inscrit="{{ s.estInscrit(app.user) ? '1' : '0' }}">
+            {# =======================
+            1) Toutes les sorties sauf archivées
+            ======================= #}
+           {% for s in sortie %}
+                {% if s.noEtats.id != 7 %}
+                    <tr data-organisateur="{{ s.organisateur.id }}"
+                        data-inscrit="{{ s.estInscrit(app.user) ? '1' : '0' }}">
 
-                <td class="title-cell">{{ s.nom }}</td>
-                <td>{{ s.duree }}</td>
-                <td>{{ s.dateDebut | date('d/m/Y') }}</td>
-                <td>{{ s.dateCloture | date('d/m/Y') }}</td>
-                <td>{{ s.nbInscriptionMax }}</td>
-                <td>{{ s.noLieux.nomLieu }}</td>
-                <td>{{ s.noLieux.noVilles.nomVille }}</td>
-                <td>
-                    <a class="link_profil"
-                       href="profil/{{ s.organisateur.id }}">
-                        {{ s.organisateur.prenom }} {{ s.organisateur.nom|slice(0,1) }}.
-                    </a>
-                </td>
-
-                {# Affichage des bouton d'actions ou des badges d'états #}
-                <td class="actions-cell">
-
-                    {# Etat "Annulée" #}
-                    {% if s.noEtats.id == 5 %}
-                        <span class="badge-cancel">Annulée</span>
-
-                    {# Etat "Créée" #}
-                    {% elseif s.noEtats.id == 1 %}
-                        {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
-                            <a href="{{ path('sortie_publier', { id: s.id }) }}"
-                            class="badge-success"
-                            data-bs-toggle="tooltip"
-                            title="Publier la sortie"
-                            onclick="return confirm('Publier cette sortie ?');">
-                                Publier
+                        <td class="title-cell">
+                            <a class="text-link" href="{{ path('sortie', { id: s.id }) }}">
+                                {{ s.nom }}
                             </a>
-                            <a href="{{ path('sortie_edit', { id: s.id }) }}"
-                                class="action-icon text-warning"
+                        </td>
+                        <td>{{ s.duree }}</td>
+                        <td>{{ s.dateDebut | date('d/m/Y') }}</td>
+                        <td>{{ s.dateCloture | date('d/m/Y') }}</td>
+                        <td>{{ s.nbInscriptionMax }}</td>
+                        <td>{{ s.noLieux.nomLieu }}</td>
+                        <td>{{ s.noLieux.noVilles.nomVille }}</td>
+                        <td>
+                            <a class="text-link" href="profil/{{ s.organisateur.id }}">
+                                {{ s.organisateur.prenom }} {{ s.organisateur.nom|slice(0,1) }}.
+                            </a>
+                        </td>
+
+                        {# =======================
+                        Actions / Badges
+                        ======================= #}
+                        <td class="actions-cell">
+
+                            {% if s.noEtats.id == 5 %}
+                                <span class="badge bg-secondary">Annulée</span>
+
+                            {% elseif s.noEtats.id == 1 %}
+                                {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
+                                    <a href="{{ path('sortie_publier', { id: s.id }) }}"
+                                    class="badge-success"
+                                    data-bs-toggle="tooltip"
+                                    title="Publier la sortie"
+                                    onclick="return confirm('Publier cette sortie ?');">
+                                        Publier
+                                    </a>
+                                    <a href="{{ path('sortie_edit', { id: s.id }) }}"
+                                    class="action-icon text-warning"
+                                    data-bs-toggle="tooltip"
+                                    title="Modifier">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                {% endif %}
+
+                            {% elseif s.noEtats.id == 3 %}
+                                <span class="badge bg-danger">Clôturée</span>
+
+                            {% elseif s.noEtats.id == 4 %}
+                                <span class="badge bg-success">En cours</span>
+
+                            {% elseif s.noEtats.id == 6 %}
+                                <span class="badge bg-primary">Terminé</span>
+
+                            {% else %}
+                                {# Etat Ouverte - boutons inscription / désinscription / annuler / modifier #}
+                                <a href="{{ path('sortie', { id: s.id }) }}"
+                                class="action-icon"
                                 data-bs-toggle="tooltip"
                                 title="Voir en détail">
-                                    <i class="fa-solid fa-pen"></i>
-                            </a>
-                        {% endif %}
-                    
-                                        
-                    {% elseif s.noEtats.id == 3 %}
-                        {# Etat "Cloturée" #}
-                        <span class="badge bg-danger">Clôturée</span>
-
-                    {% elseif s.noEtats.id == 4 %}
-                        {# Etat "Activité en cours" #}
-                        <span class="badge bg-success">En cours</span>
-
-                    {% elseif s.noEtats.id == 6 %}
-                        {# Etat "Passée" #}
-                        <span class="badge bg-secondary">Terminé</span>
-
-
-                    {# Etat "Ouverte" - Bouton d'action dispo #}
-                    {% else %}
-                        <a href="{{ path('sortie', { id: s.id }) }}"
-                        class="action-icon"
-                        data-bs-toggle="tooltip"
-                        title="Voir en détail">
-                            <i class="fa-regular fa-eye"></i>
-                        </a>
-
-                        {% if app.user %}
-                            {% if s.estInscrit(app.user) %}
-                                <a href="{{ path('sortie_desinscription', { id: s.id, redirect: 'list' }) }}"
-                                class="btn-desinscription action-icon danger"
-                                data-bs-toggle="tooltip"
-                                title="Se désinscrire">
-                                    <i class="fa-solid fa-user-minus text-danger"></i>
+                                    <i class="fa-regular fa-eye"></i>
                                 </a>
-                            {% else %}
-                                <a href="{{ path('sortie_inscription', { id: s.id, redirect: 'list' }) }}"
-                                class="action-icon success"
-                                data-bs-toggle="tooltip"
-                                title="S'inscrire">
-                                    <i class="fa-solid fa-user-plus text-success"></i>
-                                </a>
+
+                                {% if app.user %}
+                                    {% if s.estInscrit(app.user) %}
+                                        <a href="{{ path('sortie_desinscription', { id: s.id, redirect: 'list' }) }}"
+                                        class="btn-desinscription action-icon danger"
+                                        data-bs-toggle="tooltip"
+                                        title="Se désinscrire">
+                                            <i class="fa-solid fa-user-minus text-danger"></i>
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ path('sortie_inscription', { id: s.id, redirect: 'list' }) }}"
+                                        class="action-icon success"
+                                        data-bs-toggle="tooltip"
+                                        title="S'inscrire">
+                                            <i class="fa-solid fa-user-plus text-success"></i>
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
+                                    <a href="{{ path('sortie_annuler', { id: s.id }) }}"
+                                    class="action-icon danger"
+                                    data-bs-toggle="tooltip"
+                                    title="Annuler"
+                                    onclick="return confirm('Voulez-vous vraiment annuler cette sortie ?');">
+                                        <i class="fa-solid fa-ban text-danger"></i>
+                                    </a>
+                                    <a href="{{ path('sortie_edit', { id: s.id }) }}"
+                                    class="action-icon text-warning"
+                                    data-bs-toggle="tooltip"
+                                    title="Modifier">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                {% endif %}
+
                             {% endif %}
-                        {% endif %}
 
-                        {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
-                            <a href="{{ path('sortie_annuler', { id: s.id }) }}"
-                            class="action-icon danger"
-                            data-bs-toggle="tooltip"
-                            title="Annuler"
-                            onclick="return confirm('Voulez vous vraiment annuler cette sortie ?');">
-                                <i class="fa-solid fa-ban text-danger"></i>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+
+            {# =======================
+            2) Sorties archivées - visibles seulement pour organisateur ou admin
+            ======================= #}
+            {% for s in sortie %}
+                {% if s.noEtats.id == 7 and app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
+                    <tr data-organisateur="{{ s.organisateur.id }}"
+                        data-inscrit="{{ s.estInscrit(app.user) ? '1' : '0' }}">
+                        
+                        <td class="title-cell">
+                            <a class="text-link" href="{{ path('sortie', { id: s.id }) }}">
+                                {{ s.nom }}
                             </a>
-                        {% endif %}
+                        </td>
+                        <td>{{ s.duree }}</td>
+                        <td>{{ s.dateDebut | date('d/m/Y') }}</td>
+                        <td>{{ s.dateCloture | date('d/m/Y') }}</td>
+                        <td>{{ s.nbInscriptionMax }}</td>
+                        <td>{{ s.noLieux.nomLieu }}</td>
+                        <td>{{ s.noLieux.noVilles.nomVille }}</td>
+                        <td>
+                            <a class="text-link" href="profil/{{ s.organisateur.id }}">
+                                {{ s.organisateur.prenom }} {{ s.organisateur.nom|slice(0,1) }}.
+                            </a>
+                        </td>
 
-                    {% endif %}
+                        <td class="actions-cell">
+                            <span class="badge bg-warning">Archivée</span>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
 
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="9" class="empty-row">
-                    Aucune sortie disponible
-                </td>
-            </tr>
-        {% endfor %}
+            {# =======================
+            3) Si aucune sortie
+            ======================= #}
+            {% if sortie|length == 0 %}
+                <tr>
+                    <td colspan="9" class="empty-row">
+                        Aucune sortie disponible
+                    </td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
 
@@ -372,6 +417,17 @@
     text-align: center;
     margin-bottom: 1.5rem;
     color: var(--accent);
+}
+
+.text-link {
+    text-decoration: none;
+    color: #4B0082;
+    transition: 0.2s ease;
+}
+
+.text-link:hover {
+    font-weight: bold;
+    color: var(--accent-dark);
 }
 
 .filter-grid {
