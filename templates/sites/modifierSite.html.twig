@@ -1,0 +1,112 @@
+{# templates/villes/formVille.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulaire Site{% endblock %}
+
+{% block body %}
+    <div class="form-container">
+        <h1>{{ titre }}</h1>
+
+        {{ form_start(siteForm) }}
+        {{ form_widget(siteForm) }}
+
+        <div class="btn-group">
+            <button type="submit" class="btn-submit">
+                {{ titre }}
+            </button>
+
+            <a href="{{ path('app_sites') }}" class="btn-cancel">
+                Annuler
+            </a>
+        </div>
+        {{ form_end(siteForm) }}
+    </div>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+        }
+
+        .form-container {
+            max-width: 450px;
+            margin: 60px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+
+        /* Labels */
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+            color: #34495e;
+        }
+
+        /* Inputs */
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 18px;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Boutons */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-submit {
+            flex: 1;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 10px;
+            background-color: #95a5a6;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background-color: #7f8c8d;
+        }
+    </style>
+{% endblock %}

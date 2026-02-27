@@ -16,21 +16,24 @@
             <img src="{{ asset('images/logo.png') }}" alt="Logo Sorti">
             <h1>Sortir.com</h1>
         </a>
-        
+
         <div class="user-image">
             <img src="{{ asset('images/user/' ~ app.user.image) }}" alt="Votre photo de profil">
         </div>
 
         <div class="nav-links">
-            <a href="#">Villes</a>
-            <a href="#">Sites</a>
             <a href="/">Accueil</a>
+
             {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_register') }}">
-                    Ajouter des comptes
+            <a href="{{ path('app_villes') }}">Villes</a>
+            <a href="{{ path('app_sites') }}">Sites</a>
+                <a  href="{{ path('app_register') }}">
+                     Ajouter un compte
                 </a>
             {% endif %}
 
+            <a href="{{ path('lieu_new') }}">Lieux</a>
+            <a href="{{ path('sortie_create') }}">Créer une sortie</a>
             <a href="{{ path('app_profil') }}">Mon profil</a>
             <a href="{{ path('app_logout') }}" class="nav-logout">Déconnexion</a>
         </div>

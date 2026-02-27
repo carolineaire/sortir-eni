@@ -48,4 +48,17 @@ class ParticipantsRepository extends ServiceEntityRepository implements Password
             ->getQuery()
             ->getOneOrNullResult();
     }
+    
+    public function findParticipantWithMailAndPhoneNumber(string $email, string $phoneNumber): ?Participants
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.noSites', 's')
+            ->addSelect('s')
+            ->andWhere('p.email = :email')
+            ->andWhere('p.telephone = :phoneNumber')
+            ->setParameter('email', $email)
+            ->setParameter('phoneNumber', $phoneNumber)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

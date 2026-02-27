@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Importer des utilisateurs{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Importer des utilisateurs via CSV</h1>
+
+        {# Flash messages #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        {{ form_start(form) }}
+        {{ form_row(form.csv_file, {'attr': {'class': 'form-control'}}) }}
+        <button class="btn btn-primary mt-3">Importer</button>
+        <a href="{{ path('app_participants') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

@@ -76,7 +76,8 @@ class RegistrationController extends AbstractController
 //            $entityManager->flush();
 
             // 4) LOGIN AUTOMATIQUE
-            return $security->login($participant, 'form_login', 'main');
+            //return $security->login($participant, 'form_login', 'main');
+            return $this->redirectToRoute('app_login');
         }
 
         //si pas d'user connecté, redirection vers la page de connexion
