@@ -136,7 +136,7 @@
 
                             {% elseif s.noEtats.id == 1 %}
                                 {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
-                                    <a href="{{ path('sortie_publier', { id: s.id }) }}"
+                                    <a href="{{ path('sortie_publier', { id: s.id, redirect: 'list' }) }}"
                                     class="badge-success"
                                     data-bs-toggle="tooltip"
                                     title="Publier la sortie"
@@ -188,7 +188,7 @@
                                 {% endif %}
 
                                 {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
-                                    <a href="{{ path('sortie_annuler', { id: s.id }) }}"
+                                    <a href="{{ path('sortie_annuler', { id: s.id, redirect: 'list' }) }}"
                                     class="action-icon danger"
                                     data-bs-toggle="tooltip"
                                     title="Annuler"
