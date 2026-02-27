@@ -1,25 +1,25 @@
 {# templates/villes/formVille.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Formulaire Ville{% endblock %}
+{% block title %}Formulaire Site{% endblock %}
 
 {% block body %}
     <div class="form-container">
         <h1>{{ titre }}</h1>
 
-        {{ form_start(villeForm) }}
-        {{ form_widget(villeForm) }}
+        {{ form_start(siteForm) }}
+        {{ form_widget(siteForm) }}
 
         <div class="btn-group">
             <button type="submit" class="btn-submit">
-               Modifier
+                {{ titre }}
             </button>
 
-            <a href="{{ path('app_villes') }}" class="btn-cancel">
+            <a href="{{ path('app_sites') }}" class="btn-cancel">
                 Annuler
             </a>
         </div>
-        {{ form_end(villeForm) }}
+        {{ form_end(siteForm) }}
     </div>
 
     <style>

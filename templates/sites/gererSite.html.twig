@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gérer les sites{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="page-title">Gérer les sites</h1>
+
+        <div style="margin-bottom: 20px;">
+            <a href="{{ path('site_new') }}" class="btn btn-success">Ajouter un site</a>
+        </div>
+
+        {# Barre de recherche #}
+        <form method="get" action="{{ path('app_sites') }}" class="search-form">
+            <input type="text" name="search"
+                   value="{{ app.request.get('search') }}"
+                   placeholder="Rechercher un site...">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Nom du site </th>
+
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for site in sites %}
+                <tr>
+                    <td>{{ site.nomSite }}</td>
+
+                    <td>
+                        <a href="{{ path('site_edit', {'id': site.idSite}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                        <a href="{{ path('site_delete', {'id': site.idSite}) }}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Voulez-vous vraiment supprimer ce site ?');">
+                            Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">Aucun site trouvée.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <style>
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-form input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .search-form input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52,152,219,0.3);
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-success { background-color: #2ecc71; }
+        .btn-success:hover { background-color: #27ae60; }
+
+        .btn-primary { background-color: #3498db; }
+        .btn-primary:hover { background-color: #2980b9; }
+
+        .btn-danger { background-color: #e74c3c; }
+        .btn-danger:hover { background-color: #c0392b; }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .table th, .table td {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+    </style>
+{% endblock %}

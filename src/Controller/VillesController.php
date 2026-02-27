@@ -14,7 +14,6 @@ use Symfony\Component\Routing\Attribute\Route;
 final class VillesController extends AbstractController
 {
     #[Route('/villes', name: 'app_villes')]
-    #[Route('/villes', name: 'app_villes')]
     public function index(Request $request, VillesRepository $repository): Response
     {
         $search = $request->query->get('search');
@@ -72,7 +71,7 @@ final class VillesController extends AbstractController
         ]);
     }
 
-    // 🔹 Supprimer une ville
+    //  Supprimer une ville
     #[Route('/villes/{id}/delete', name: 'ville_delete', methods: ['POST','GET'])]
     public function delete(Villes $ville, EntityManagerInterface $em): Response
     {
