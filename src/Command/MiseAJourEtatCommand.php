@@ -1,5 +1,4 @@
 <?php
-// src/Command/UpdateSortieStatesCommand.php
 namespace App\Command;
 
 use App\Repository\SortiesRepository;
@@ -10,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use DateTime;
 
-class UpdateSortieStatesCommand extends Command
+class MiseAJourEtatCommand extends Command
 {
     protected static $defaultName = 'app:update-sortie-states';
 
@@ -20,10 +19,10 @@ class UpdateSortieStatesCommand extends Command
 
     public function __construct(SortiesRepository $sortieRepository, EtatsRepository $etatRepository, EntityManagerInterface $em)
     {
-        parent::__construct();
         $this->sortieRepository = $sortieRepository;
         $this->etatRepository = $etatRepository;
         $this->em = $em;
+        parent::__construct(); // <-- à la fin
     }
 
     protected function configure()

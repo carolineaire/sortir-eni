@@ -135,13 +135,13 @@
                             data-bs-toggle="tooltip"
                             title="Publier la sortie"
                             onclick="return confirm('Publier cette sortie ?');">
-                                Publier <i class="fa-solid fa-upload text-success"></i>
+                                Publier
                             </a>
                             <a href="{{ path('sortie_edit', { id: s.id }) }}"
-                                class="action-icon warn"
+                                class="action-icon text-warning"
                                 data-bs-toggle="tooltip"
                                 title="Voir en détail">
-                                    <i class="fa-regular fa-pen"></i>
+                                    <i class="fa-solid fa-pen"></i>
                             </a>
                         {% endif %}
                     
