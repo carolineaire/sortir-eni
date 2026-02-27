@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des participants{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Liste des participants</h1>
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Pseudo</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Actif</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.pseudo }}</td>
+                    <td>{{ user.nom }}</td>
+                    <td>{{ user.prenom }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.actif ? 'Oui' : 'Non' }}</td>
+                    <td>
+                        {# Bouton Activer/Désactiver #}
+                        <a href="{{ path('participants_toggleUser', {'id': user.id}) }}"
+                           class="btn btn-sm {{ user.actif ? 'btn-warning' : 'btn-success' }}">
+                            {{ user.actif ? 'Désactiver' : 'Activer' }}
+                        </a>
+
+                        {# Bouton Supprimer #}
+                        <a href="{{ path('participants_deleteUser', {'id': user.id}) }}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
+                            Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">Aucun utilisateur trouvé.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <style>
+        .flash-success { background-color: #27ae60; color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .flash-error { background-color: #e74c3c; color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .flash-warning { background-color: #f39c12; color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .flash-info { background-color: #3498db; color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+    </style>
+
+
+{% endblock %}

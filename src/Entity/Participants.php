@@ -49,13 +49,13 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 15)]
     private ?string $telephone = null;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ["default" => true])]
     private ?bool $administrateur = null;
 
 
 
     #[ORM\Column]
-    private ?bool $actif = null;
+    private ?bool $actif = true;
 
     #[Assert\NotBlank]
     #[Assert\Length(max: 30)]
@@ -304,4 +304,10 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function isEnabled(): bool
+    {
+        return $this->actif === true;
+    }
+
 }
