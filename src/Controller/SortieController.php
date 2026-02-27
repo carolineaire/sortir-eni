@@ -91,7 +91,7 @@ final class SortieController extends AbstractController
 
 
 
-                
+
 
                 $organisateur = $this->getUser();
                 $sortie->setOrganisateur($organisateur);
@@ -165,7 +165,7 @@ final class SortieController extends AbstractController
     public function inscription(int $id, Request $request, SortiesRepository $sortiesRepository, EntityManagerInterface $em): RedirectResponse {
         $sortie = $sortiesRepository->find($id);
         $redirect = $request->query->get('redirect');
-    
+
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie introuvable.');
         }
@@ -192,11 +192,11 @@ final class SortieController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Inscrit avec succès!');
-    
+
         if ($redirect === 'detail') {
             return $this->redirectToRoute('sortie', ['id' => $id]);
         }
-        
+
         return $this->redirectToRoute('app_sortie');
     }
 
@@ -238,7 +238,7 @@ final class SortieController extends AbstractController
         if ($redirect === 'detail') {
             return $this->redirectToRoute('sortie', ['id' => $id]);
         }
-        
+
         return $this->redirectToRoute('app_sortie');
     }
 
@@ -282,7 +282,7 @@ final class SortieController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!$user || 
+        if (!$user ||
             ($user !== $sortie->getOrganisateur() && !$this->isGranted('ROLE_ADMIN'))) {
             throw $this->createAccessDeniedException();
         }
@@ -355,17 +355,17 @@ final class SortieController extends AbstractController
             }
 
             // Gestion des boutons
-            if ($form->get('enregistrer')->isClicked()) {
-                $etat = $em->getRepository(Etats::class)->find(1); // Créée
-            }
+//            if ($form->get('enregistrer')->isClicked()) {
+////                $etat = $em->getRepository(Etats::class)->find(1); // Créée
+//            }
 
-            if ($form->get('publier')->isClicked()) {
-                $etat = $em->getRepository(Etats::class)->find(2); // Ouverte
-            }
+//            if ($form->get('publier')->isClicked()) {
+////                $etat = $em->getRepository(Etats::class)->find(2); // Ouverte
+//            }
 
-            if (isset($etat)) {
-                $sortie->setNoEtats($etat);
-            }
+//            if (isset($etat)) {
+//                $sortie->setNoEtats($etat);
+//            }
 
             // Pas de persist() l'entité existe déjà
             $em->flush();
@@ -383,9 +383,6 @@ final class SortieController extends AbstractController
             'ville' => $villeDuLieu ? $villeDuLieu->getNomVille() : '',
         ]);
     }
-
-
-
     #[Route('/sortie/{id}/delete', name: 'sortie_delete', methods: ['GET'])]
     public function delete(Sorties $sortie, EntityManagerInterface $em): Response
     {

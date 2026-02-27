@@ -106,6 +106,51 @@ nav .logo img {
     object-fit: contain;
 }
 
+/* Image de profil dans la navbar */
+nav .user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--accent-soft) 0%, var(--accent) 100%);
+    padding: 2px;
+    box-shadow: 0 4px 12px rgba(184, 163, 209, 0.2);
+    border: 1.5px solid var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+nav .user-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    border-radius: 8px;
+    animation: profileBounceNav 3s ease-in-out infinite;
+    transition: animation-duration 0.3s ease;
+}
+
+/* Animation légère pour la navbar */
+@keyframes profileBounceNav {
+    0% {
+        transform: scale(1) rotateZ(0deg);
+    }
+    50% {
+        transform: scale(1.08) rotateZ(2deg);
+    }
+    100% {
+        transform: scale(1) rotateZ(0deg);
+    }
+}
+
+/* Accélère l'animation au hover */
+nav .user-image:hover img {
+    animation: profileBounceNav 1.5s ease-in-out infinite;
+}
+
 /* Links */
 nav .nav-links {
     display: flex;
@@ -274,6 +319,75 @@ h1 {
 
 .user-data {
     animation: gentle-fade-in 0.4s ease;
+}
+
+/* ===== IMAGE DE PROFIL ===== */
+.profile-image-container {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 1.5rem;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--accent-soft) 0%, var(--accent) 100%);
+    padding: 3px;
+    box-shadow: 0 8px 24px rgba(184, 163, 209, 0.25);
+    border: 2px solid var(--accent-soft);
+}
+
+.profile-image-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    pointer-events: none;
+    animation: shimmer 3s infinite;
+    z-index: 10;
+}
+
+.profile-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    border-radius: 9px;
+    animation: profileBounce 4s ease-in-out infinite;
+}
+
+/* Animation rigolote de rebond */
+@keyframes profileBounce {
+    0% {
+        transform: scale(1) rotateZ(0deg);
+    }
+    25% {
+        transform: scale(1.05) rotateZ(-1deg);
+    }
+    50% {
+        transform: scale(1) rotateZ(0deg);
+    }
+    75% {
+        transform: scale(1.05) rotateZ(1deg);
+    }
+    100% {
+        transform: scale(1) rotateZ(0deg);
+    }
+}
+
+/* Animation de brillance */
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Hover pour plus de fun */
+.profile-image-container:hover img {
+    animation: profileBounce 2s ease-in-out infinite;
 }
 
 /* ===== BOUTON MODIFIER PROFIL ===== */

@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9afbf6cd-9f6e-4598-887d-2160b719671c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/templates/sortie/modifierSortie.html.twig" afterDir="false" />
+    <list default="true" id="9afbf6cd-9f6e-4598-887d-2160b719671c" name="Changes" comment="suppression du button publier dans ecran  modifier une sortie">
+      <change afterPath="$PROJECT_DIR$/templates/villes/formVille.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/villes/gererVille.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/villes/modifierVille.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SortieController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SortieController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/SortiesType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/SortiesType.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/lieux/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/lieux/new.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sortie/creerSortie.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sortie/creerSortie.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,12 +43,12 @@
     &quot;assignee&quot;: &quot;CMoiEnfaite&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/carolineaire/sortir-eni.git",
-    "accountId": "0909a636-0d96-4272-9f3f-ffa0ec1fff82"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/carolineaire/sortir-eni.git&quot;,
+    &quot;accountId&quot;: &quot;0909a636-0d96-4272-9f3f-ffa0ec1fff82&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -208,7 +206,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "KatiModifierSortie",
+    "git-widget-placeholder": "KatiGererVille",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "C:/sortir-eni",
     "node.js.detected.package.eslint": "true",
@@ -220,6 +218,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\wamp64\www\sortir-eni\templates\villes" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -237,14 +240,61 @@
       <workItem from="1771855452269" duration="73000" />
       <workItem from="1771957681613" duration="11580000" />
     </task>
+    <task id="LOCAL-00001" summary="Modifier et supprimer une sortie">
+      <option name="closed" value="true" />
+      <created>1772111858323</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1772111858323</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Ajout chemain modifier une sortie">
+      <option name="closed" value="true" />
+      <created>1772113457266</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1772113457266</updated>
+    </task>
+    <task id="LOCAL-00003" summary="suppression du button publier dans ecran  modifier une sortie">
+      <option name="closed" value="true" />
+      <created>1772117376112</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1772117376112</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="8eb861c4-a8af-44da-b8b9-96c5cd87ba5b" value="TOOL_WINDOW" />
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
+        <entry key="8eb861c4-a8af-44da-b8b9-96c5cd87ba5b">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State>
@@ -264,5 +314,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Modifier et supprimer une sortie" />
+    <MESSAGE value="Ajout chemain modifier une sortie" />
+    <MESSAGE value="suppression du button publier dans ecran  modifier une sortie" />
+    <option name="LAST_COMMIT_MESSAGE" value="suppression du button publier dans ecran  modifier une sortie" />
   </component>
 </project>
