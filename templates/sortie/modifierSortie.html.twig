@@ -66,7 +66,7 @@
 
                 {{ form_widget(sortieForm.publier, {'attr': {'style': 'display:none'}}) }}
 
-                <a href="{{ path('app_sortie') }}" class="btn-primary ">
+                <a href="{{ path('sortie', { id: sortie.id }) }}" class="btn-primary ">
                     Annuler
                 </a>
                 {# Bouton supprimer simple #}

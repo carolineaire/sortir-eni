@@ -87,12 +87,8 @@ final class SortieController extends AbstractController
                     return $this->redirectToRoute('sortie_create');
 
                 }
+
                 // Organisateur = utilisateur connecté
-
-
-
-
-
                 $organisateur = $this->getUser();
                 $sortie->setOrganisateur($organisateur);
 
@@ -111,6 +107,12 @@ final class SortieController extends AbstractController
 
                 $em->persist($sortie);
                 $em->flush();
+
+                //si pas d'user connecté, redirection vers la page de connexion
+                if (!$this->getUser()) {
+                    return $this->redirectToRoute('app_login');
+                }
+
                 return $this->redirectToRoute('app_sortie');
             }
         }
@@ -154,6 +156,11 @@ final class SortieController extends AbstractController
 
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie introuvable.');
+        }
+
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('sortie/sortie-details.html.twig', [
@@ -243,9 +250,10 @@ final class SortieController extends AbstractController
     }
 
     #[Route('/sortie/{id}/annuler', name: 'sortie_annuler')]
-    public function annuler(int $id, EntityManagerInterface $em): RedirectResponse
+    public function annuler(int $id, Request $request, EntityManagerInterface $em): RedirectResponse
     {
         $sortie = $em->getRepository(Sorties::class)->find($id);
+        $redirect = $request->query->get('redirect');
 
         if (!$sortie) {
             $this->addFlash('danger', 'Sortie introuvable.');
@@ -273,14 +281,19 @@ final class SortieController extends AbstractController
 
         $this->addFlash('success', 'La sortie a bien été annulée.');
 
+        if ($redirect === 'detail') {
+            return $this->redirectToRoute('sortie', ['id' => $id]);
+        }
+
         return $this->redirectToRoute('app_sortie');
     }
 
     // Routes des boutons d'action dans /sortie et /sortie/{id}
     #[Route('/sortie/{id}/publier', name: 'sortie_publier')]
-    public function publier(Sorties $sortie, EntityManagerInterface $em): Response
+    public function publier(Sorties $sortie, Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
+        $redirect = $request->query->get('redirect');
 
         if (!$user ||
             ($user !== $sortie->getOrganisateur() && !$this->isGranted('ROLE_ADMIN'))) {
@@ -290,7 +303,11 @@ final class SortieController extends AbstractController
         // Vérifier que la sortie est bien en état "Créée"
         if ($sortie->getNoEtats()->getId() !== 1) {
             $this->addFlash('warning', 'Cette sortie ne peut pas être publiée.');
-            return $this->redirectToRoute('sortie_list');
+            if ($redirect === 'detail') {
+                return $this->redirectToRoute('sortie', ['id' => $id]);
+            }
+    
+            return $this->redirectToRoute('app_sortie');
         }
 
         // Récupérer l'état "Ouverte" (id = 2)
@@ -300,6 +317,10 @@ final class SortieController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'La sortie est maintenant publiée !');
+
+        if ($redirect === 'detail') {
+            return $this->redirectToRoute('sortie', ['id' => $id]);
+        }
 
         return $this->redirectToRoute('app_sortie');
     }
@@ -370,6 +391,11 @@ final class SortieController extends AbstractController
             // Pas de persist() l'entité existe déjà
             $em->flush();
 
+            //si pas d'user connecté, redirection vers la page de connexion
+            if (!$this->getUser()) {
+                return $this->redirectToRoute('app_login');
+            }
+
             return $this->redirectToRoute('app_sortie');
         }
 
@@ -399,10 +425,5 @@ final class SortieController extends AbstractController
 
         return $this->redirectToRoute('app_sortie');
     }
-
-
-
-
-
 
 }
