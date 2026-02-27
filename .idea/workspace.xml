@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9afbf6cd-9f6e-4598-887d-2160b719671c" name="Changes" comment="Gerer l'acces a la gestion des villes et des sites" />
+    <list default="true" id="9afbf6cd-9f6e-4598-887d-2160b719671c" name="Changes" comment="Suppression de la connexion automatique après inscription">
+      <change afterPath="$PROJECT_DIR$/src/Security/UserChecker.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/participants/users_importCsv.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Participants.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Participants.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/profil/profil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/profil/profil.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/registration/register.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/register.html.twig" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,6 +27,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="PHP File" />
         <option value="HTML File" />
       </list>
     </option>
@@ -200,7 +209,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "KatiGestionDesUtilisateur",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "C:/sortir-eni",
     "node.js.detected.package.eslint": "true",
@@ -266,7 +275,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772187472788</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Suppression de la connexion automatique après inscription">
+      <option name="closed" value="true" />
+      <created>1772187989716</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1772187989716</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -322,6 +339,7 @@
     <MESSAGE value="Ajout chemain modifier une sortie" />
     <MESSAGE value="suppression du button publier dans ecran  modifier une sortie" />
     <MESSAGE value="Gerer l'acces a la gestion des villes et des sites" />
-    <option name="LAST_COMMIT_MESSAGE" value="Gerer l'acces a la gestion des villes et des sites" />
+    <MESSAGE value="Suppression de la connexion automatique après inscription" />
+    <option name="LAST_COMMIT_MESSAGE" value="Suppression de la connexion automatique après inscription" />
   </component>
 </project>
