@@ -88,18 +88,23 @@
             {# Sortie ouverte - Options inscriptions, désinscription, modifiée, annulation disponnible #}
             {% else %}
                 {% if app.user %}
-                    {% if sortie.estInscrit(app.user) %}
+
+                    {% set placesRestantes = sortie.nbInscriptionMax - sortie.inscriptions|length %}
+                    {% set inscrit = sortie.estInscrit(app.user) %}
+
+                    {% if inscrit %}
                         <a href="{{ path('sortie_desinscription', { id: sortie.id, redirect: 'detail' }) }}"
                         class="action-btn danger"
                         onclick="return confirm('Voulez-vous vraiment vous désinscrire ?');">
                             Se désinscrire
                         </a>
-                    {% else %}
+                    {% elseif placesRestantes > 0 %}
                         <a href="{{ path('sortie_inscription', { id: sortie.id, redirect: 'detail' }) }}"
                         class="action-btn success">
                             S'inscrire
                         </a>
                     {% endif %}
+
                 {% endif %}
 
                 {% if app.user and (app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN')) %}
