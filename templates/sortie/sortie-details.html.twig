@@ -121,11 +121,19 @@
         <div class="participants-list">
             {% for inscription in sortie.inscriptions %}
                 <div class="participant-row">
-                    <span class="pseudo">{{ inscription.noParticipants.pseudo }}</span>
+                    
+                    <span class="pseudo">
+                        <a class="pseudo"
+                        href="{{ path('app_profil_user', { id: inscription.noParticipants.id }) }}">
+                            {{ inscription.noParticipants.pseudo }}
+                        </a>
+                    </span>
+
                     <span>
                         {{ inscription.noParticipants.prenom }}
                         {{ inscription.noParticipants.nom }}
                     </span>
+
                 </div>
             {% else %}
                 <div class="no-participant">
