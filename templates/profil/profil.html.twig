@@ -6,10 +6,11 @@
 {% block body %}
     <div class="user-data">
         <!-- Image de profil en haut avec animation -->
+        {% if user.image %}
         <div class="profile-image-container">
             <img src="{{ asset('images/user/' ~ user.image) }}" alt="Photo de profil de {{ user.pseudo }}">
         </div>
-
+        {% endif %}
         <h1 class="tittle">{{ user.pseudo }}</h1>
         <div class="name">Prénom : {{ user.prenom }}</div>
         <div class="surname">Nom : {{ user.nom }}</div>
