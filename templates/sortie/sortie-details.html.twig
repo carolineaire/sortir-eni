@@ -117,7 +117,9 @@
         <div class="participants-list">
             {% for inscription in sortie.inscriptions %}
                 <div class="participant-row">
-                    <span class="pseudo">{{ inscription.noParticipants.pseudo }}</span>
+                    <a href="../profil/{{ inscription.noParticipants.id }}">
+                        <span class="pseudo">{{ inscription.noParticipants.pseudo }}</span>
+                    </a>
                     <span>
                         {{ inscription.noParticipants.prenom }}
                         {{ inscription.noParticipants.nom }}
@@ -297,6 +299,16 @@
 .pseudo {
     font-weight: 600;
     color: var(--accent);
+}
+
+.participant-row a {
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.participant-row a:hover .pseudo {
+    color: #66bb6a;
+    text-decoration: underline;
 }
 
 .no-participant {
