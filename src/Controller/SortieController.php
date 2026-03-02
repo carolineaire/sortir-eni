@@ -285,14 +285,16 @@ final class SortieController extends AbstractController
             throw $this->createAccessDeniedException('Vous ne pouvez pas annuler cette sortie.');
         }
 
+        // Récupérer le motif depuis le formulaire
+        $motif = $request->request->get('motifAnnulation', null);
+        $sortie->setMotifAnnulation($motif);
+
         // Etat "Annulée" (remplace 6 par l'id correct)
         $etatAnnule = $em->getRepository(Etats::class)->find(5);
-
         if (!$etatAnnule) {
             $this->addFlash('danger', 'Etat "Annulée" introuvable.');
             return $this->redirectToRoute('app_sortie');
         }
-
         $sortie->setNoEtats($etatAnnule);
 
         $em->flush();
