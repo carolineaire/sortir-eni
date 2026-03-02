@@ -291,7 +291,7 @@
 
 /* ===== PARTICIPANTS ===== */
 .participants-card {
-    max-width: 700px;
+    max-width: 800px;
     margin: 2rem auto;
     padding: 1.5rem;
     border-radius: 8px;
@@ -307,7 +307,8 @@
 }
 
 .participants-list {
-    max-height: 250px;
+    max-height: 300px;
+    weight: 80%;
     overflow-y: auto;
 }
 
@@ -325,12 +326,24 @@
 .participant-row:hover {
     background: var(--glass);
     border-color: var(--accent);
-    transform: translateX(4px);
+}
+
+.participant-row span {
+    text-decoration: none;
+}
+
+.participant-row-link {
+    text-decoration: none;
+}
+
+.participant-row-link .participant-row span {
+    color: var(--accent);
 }
 
 .pseudo {
     font-weight: 600;
     color: var(--accent);
+    text-decoration: none;
 }
 
 .no-participant {
