@@ -24,7 +24,7 @@
                 <div><strong>Date et heure :</strong> {{ sortie.dateDebut|date('d/m/Y H:i') }}</div>
                 <div><strong>Date limite :</strong> {{ sortie.dateCloture|date('d/m/Y') }}</div>
                 <div><strong>Places :</strong> {{ sortie.nbInscriptionMax - sortie.inscriptions|length}}</div>
-                <div><strong>Durée :</strong> {{ sortie.duree }} minutes</div>
+                <div><strong>Durée :</strong> {{ sortie.duree }} heures</div>
                 <div class="description">
                     <strong>Description :</strong><br>
                     {{ sortie.description }}
