@@ -93,7 +93,7 @@
                 <th>Durée</th>
                 <th>Date</th>
                 <th>Clôture</th>
-                <th>Places</th>
+                <th>Places restantes</th>
                 <th>Lieu</th>
                 <th>Ville</th>
                 <th>Organisateur</th>
@@ -117,7 +117,7 @@
                         <td>{{ s.duree }}</td>
                         <td>{{ s.dateDebut | date('d/m/Y') }}</td>
                         <td>{{ s.dateCloture | date('d/m/Y') }}</td>
-                        <td>{{ s.nbInscriptionMax }}</td>
+                        <td>{{ s.nbInscriptionMax  - s.inscriptions|length }}</td>
                         <td>{{ s.noLieux.nomLieu }}</td>
                         <td>{{ s.noLieux.noVilles.nomVille }}</td>
                         <td>
