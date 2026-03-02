@@ -344,8 +344,6 @@ final class SortieController extends AbstractController
     }
 
 
-
-
     #[Route('/sortie/{id}/modifier', name: 'sortie_edit', methods: ['GET', 'POST'])]
     public function edit(
         Sorties $sortie,
