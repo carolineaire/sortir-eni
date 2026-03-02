@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Participants;
 use App\Entity\Sites;
+use App\Repository\EtatsRepository;
 use App\Repository\ParticipantsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,24 +50,64 @@ final class ParticipantsController extends AbstractController
         return $this->redirectToRoute('app_participants');
     }
 
+//    #[Route('/participants/{id}/delete', name: 'participants_deleteUser')]
+//    public function deleteUser(Participants $user, EntityManagerInterface $em): Response
+//    {
+//        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+//
+//        // Empêche un admin de se supprimer lui-même
+//        if ($this->getUser() === $user) {
+//            $this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+//            return $this->redirectToRoute('app_participants');
+//        }
+//
+//        $em->remove($user);
+//        $em->flush();
+//
+//        $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+//
+//        return $this->redirectToRoute('app_participants');
+//    }
+
+
     #[Route('/participants/{id}/delete', name: 'participants_deleteUser')]
-    public function deleteUser(Participants $user, EntityManagerInterface $em): Response
+    public function deleteUser(
+        Participants $user,
+        EntityManagerInterface $em,
+        EtatsRepository $etatsRepository
+    ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        $admin = $this->getUser();
+
         // Empêche un admin de se supprimer lui-même
-        if ($this->getUser() === $user) {
+        if ($admin === $user) {
             $this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte.');
             return $this->redirectToRoute('app_participants');
         }
 
+        // Récupérer l'état "Annulée" (id = 5)
+        $etatAnnule = $etatsRepository->find(5);
+
+        // Transférer les sorties
+        foreach ($user->getSorties() as $sortie) {
+            $sortie->setOrganisateur($admin);
+            $sortie->setNoEtats($etatAnnule);
+        }
+
+        // Suppri  mer l'utilisateur
         $em->remove($user);
         $em->flush();
 
-        $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+        $this->addFlash(
+            'success',
+            'Utilisateur supprimé avec succès. Ses sorties ont été transférées à l\'administrateur et mises en état annulé.'
+        );
 
         return $this->redirectToRoute('app_participants');
     }
+
 
 
     #[Route('/participants/importcsv', name: 'participants_importCsv')]
