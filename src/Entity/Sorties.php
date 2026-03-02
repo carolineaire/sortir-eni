@@ -61,6 +61,9 @@ class Sorties
     #[ORM\JoinColumn(nullable: false)]
     private ?Etats $noEtats = null;
 
+    #[ORM\Column(type: "text", nullable: true)]
+    private ?string $motifAnnulation = null;
+
     public function __construct()
     {
         $this->inscriptions = new ArrayCollection();
@@ -176,6 +179,17 @@ class Sorties
     {
         $this->urlPhoto = $urlPhoto;
 
+        return $this;
+    }
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): self
+    {
+        $this->motifAnnulation = $motifAnnulation;
         return $this;
     }
 
