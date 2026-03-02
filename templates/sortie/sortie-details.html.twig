@@ -24,7 +24,7 @@
                 <div><strong>Date et heure :</strong> {{ sortie.dateDebut|date('d/m/Y H:i') }}</div>
                 <div><strong>Date limite :</strong> {{ sortie.dateCloture|date('d/m/Y') }}</div>
                 <div><strong>Places :</strong> {{ sortie.nbInscriptionMax - sortie.inscriptions|length}}</div>
-                <div><strong>Durée :</strong> {{ sortie.duree }} minutes</div>
+                <div><strong>Durée :</strong> {{ sortie.duree }} heures</div>
                 <div class="description">
                     <strong>Description :</strong><br>
                     {{ sortie.description }}
@@ -344,6 +344,16 @@
     font-weight: 600;
     color: var(--accent);
     text-decoration: none;
+}
+
+.participant-row a {
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.participant-row a:hover .pseudo {
+    color: #66bb6a;
+    text-decoration: underline;
 }
 
 .no-participant {
