@@ -75,7 +75,7 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Sorties>
      */
-    #[ORM\OneToMany(targetEntity: Sorties::class, mappedBy: 'organisateur', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Sorties::class, mappedBy: 'organisateur')]
     private Collection $sorties;
 
     public function __construct()
@@ -308,6 +308,14 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
     public function isEnabled(): bool
     {
         return $this->actif === true;
+    }
+
+    /**
+     * @return Collection<int, Sorties>
+     */
+    public function getSorties(): Collection
+    {
+        return $this->sorties;
     }
 
 }
