@@ -19,7 +19,6 @@ final class SitesController extends AbstractController
     #[Route('/sites', name: 'app_sites')]
     public function index(Request $request, SitesRepository $repository): Response
     {
-
         $search = $request->query->get('search');
 
         if ($search) {
@@ -31,6 +30,12 @@ final class SitesController extends AbstractController
         } else {
             $sites = $repository->findAll();
         }
+
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('sites/gererSite.html.twig', [
             'sites' => $sites,
         ]);

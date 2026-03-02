@@ -61,6 +61,9 @@ class Sorties
     #[ORM\JoinColumn(nullable: false)]
     private ?Etats $noEtats = null;
 
+    #[ORM\Column(type: "text", nullable: true)]
+    private ?string $motifAnnulation = null;
+
     public function __construct()
     {
         $this->inscriptions = new ArrayCollection();
@@ -179,6 +182,17 @@ class Sorties
         return $this;
     }
 
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): self
+    {
+        $this->motifAnnulation = $motifAnnulation;
+        return $this;
+    }
+
     /**
      * @return Collection<int, Inscriptions>
      */
@@ -253,5 +267,15 @@ class Sorties
             }
         }
         return false;  // L'utilisateur n'est pas inscrit
+    }
+
+    public function getPlacesRestantes(): int
+    {
+        return $this->getNbMaxParticipants() - $this->getInscriptions()->count();
+    }
+
+    public function isComplete(): bool
+    {
+        return $this->getPlacesRestantes() <= 0;
     }
 }

@@ -21,6 +21,12 @@ final class LieuxController extends AbstractController
             $em->persist($lieu); $em->flush();
             return $this->redirectToRoute('sortie_create');
         }
+
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+        
         return $this->render('lieux/new.html.twig', [
             'form' => $form->createView(),
             ]);

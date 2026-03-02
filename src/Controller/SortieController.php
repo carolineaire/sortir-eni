@@ -87,12 +87,8 @@ final class SortieController extends AbstractController
                     return $this->redirectToRoute('sortie_create');
 
                 }
+
                 // Organisateur = utilisateur connecté
-
-
-
-
-
                 $organisateur = $this->getUser();
                 $sortie->setOrganisateur($organisateur);
 
@@ -111,6 +107,12 @@ final class SortieController extends AbstractController
 
                 $em->persist($sortie);
                 $em->flush();
+
+                //si pas d'user connecté, redirection vers la page de connexion
+                if (!$this->getUser()) {
+                    return $this->redirectToRoute('app_login');
+                }
+
                 return $this->redirectToRoute('app_sortie');
             }
         }
@@ -156,13 +158,24 @@ final class SortieController extends AbstractController
             throw $this->createNotFoundException('Sortie introuvable.');
         }
 
+        //si pas d'user connecté, redirection vers la page de connexion
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('sortie/sortie-details.html.twig', [
             'sortie' => $sortie
         ]);
     }
 
     #[Route('/sortie/{id}/inscription', name: 'sortie_inscription')]
-    public function inscription(int $id, Request $request, SortiesRepository $sortiesRepository, EntityManagerInterface $em): RedirectResponse {
+    public function inscription(
+        int $id,
+        Request $request,
+        SortiesRepository $sortiesRepository,
+        EntityManagerInterface $em
+    ): RedirectResponse {
+
         $sortie = $sortiesRepository->find($id);
         $redirect = $request->query->get('redirect');
 
@@ -176,11 +189,23 @@ final class SortieController extends AbstractController
             throw new \LogicException('L\'utilisateur doit être un participant.');
         }
 
-        // Vérifier si déjà inscrit
+        // 🔒 Déjà inscrit ?
         foreach ($sortie->getInscriptions() as $inscription) {
             if ($inscription->getNoParticipants() === $user) {
+                $this->addFlash('warning', 'Vous êtes déjà inscrit.');
                 return $this->redirectToRoute('app_sortie');
             }
+        }
+
+        // 🔥 Vérifier si sortie complète
+        if ($sortie->getInscriptions()->count() >= $sortie->getNbInscriptionMax()) {
+            $this->addFlash('danger', 'Il n\'y a plus de place disponible.');
+
+            if ($redirect === 'detail') {
+                return $this->redirectToRoute('sortie', ['id' => $id]);
+            }
+
+            return $this->redirectToRoute('app_sortie');
         }
 
         $inscription = new Inscriptions();
@@ -191,7 +216,7 @@ final class SortieController extends AbstractController
         $em->persist($inscription);
         $em->flush();
 
-        $this->addFlash('success', 'Inscrit avec succès!');
+        $this->addFlash('success', 'Inscrit avec succès !');
 
         if ($redirect === 'detail') {
             return $this->redirectToRoute('sortie', ['id' => $id]);
@@ -243,9 +268,10 @@ final class SortieController extends AbstractController
     }
 
     #[Route('/sortie/{id}/annuler', name: 'sortie_annuler')]
-    public function annuler(int $id, EntityManagerInterface $em): RedirectResponse
+    public function annuler(int $id, Request $request, EntityManagerInterface $em): RedirectResponse
     {
         $sortie = $em->getRepository(Sorties::class)->find($id);
+        $redirect = $request->query->get('redirect');
 
         if (!$sortie) {
             $this->addFlash('danger', 'Sortie introuvable.');
@@ -259,28 +285,35 @@ final class SortieController extends AbstractController
             throw $this->createAccessDeniedException('Vous ne pouvez pas annuler cette sortie.');
         }
 
+        // Récupérer le motif depuis le formulaire
+        $motif = $request->request->get('motifAnnulation', null);
+        $sortie->setMotifAnnulation($motif);
+
         // Etat "Annulée" (remplace 6 par l'id correct)
         $etatAnnule = $em->getRepository(Etats::class)->find(5);
-
         if (!$etatAnnule) {
             $this->addFlash('danger', 'Etat "Annulée" introuvable.');
             return $this->redirectToRoute('app_sortie');
         }
-
         $sortie->setNoEtats($etatAnnule);
 
         $em->flush();
 
         $this->addFlash('success', 'La sortie a bien été annulée.');
 
+        if ($redirect === 'detail') {
+            return $this->redirectToRoute('sortie', ['id' => $id]);
+        }
+
         return $this->redirectToRoute('app_sortie');
     }
 
     // Routes des boutons d'action dans /sortie et /sortie/{id}
     #[Route('/sortie/{id}/publier', name: 'sortie_publier')]
-    public function publier(Sorties $sortie, EntityManagerInterface $em): Response
+    public function publier(Sorties $sortie, Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
+        $redirect = $request->query->get('redirect');
 
         if (!$user ||
             ($user !== $sortie->getOrganisateur() && !$this->isGranted('ROLE_ADMIN'))) {
@@ -290,7 +323,11 @@ final class SortieController extends AbstractController
         // Vérifier que la sortie est bien en état "Créée"
         if ($sortie->getNoEtats()->getId() !== 1) {
             $this->addFlash('warning', 'Cette sortie ne peut pas être publiée.');
-            return $this->redirectToRoute('sortie_list');
+            if ($redirect === 'detail') {
+                return $this->redirectToRoute('sortie', ['id' => $id]);
+            }
+    
+            return $this->redirectToRoute('app_sortie');
         }
 
         // Récupérer l'état "Ouverte" (id = 2)
@@ -301,10 +338,12 @@ final class SortieController extends AbstractController
 
         $this->addFlash('success', 'La sortie est maintenant publiée !');
 
+        if ($redirect === 'detail') {
+            return $this->redirectToRoute('sortie', ['id' => $id]);
+        }
+
         return $this->redirectToRoute('app_sortie');
     }
-
-
 
 
     #[Route('/sortie/{id}/modifier', name: 'sortie_edit', methods: ['GET', 'POST'])]
@@ -370,6 +409,11 @@ final class SortieController extends AbstractController
             // Pas de persist() l'entité existe déjà
             $em->flush();
 
+            //si pas d'user connecté, redirection vers la page de connexion
+            if (!$this->getUser()) {
+                return $this->redirectToRoute('app_login');
+            }
+
             return $this->redirectToRoute('app_sortie');
         }
 
@@ -399,10 +443,5 @@ final class SortieController extends AbstractController
 
         return $this->redirectToRoute('app_sortie');
     }
-
-
-
-
-
 
 }
