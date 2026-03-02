@@ -169,7 +169,13 @@ final class SortieController extends AbstractController
     }
 
     #[Route('/sortie/{id}/inscription', name: 'sortie_inscription')]
-    public function inscription(int $id, Request $request, SortiesRepository $sortiesRepository, EntityManagerInterface $em): RedirectResponse {
+    public function inscription(
+        int $id,
+        Request $request,
+        SortiesRepository $sortiesRepository,
+        EntityManagerInterface $em
+    ): RedirectResponse {
+
         $sortie = $sortiesRepository->find($id);
         $redirect = $request->query->get('redirect');
 
@@ -183,11 +189,23 @@ final class SortieController extends AbstractController
             throw new \LogicException('L\'utilisateur doit être un participant.');
         }
 
-        // Vérifier si déjà inscrit
+        // 🔒 Déjà inscrit ?
         foreach ($sortie->getInscriptions() as $inscription) {
             if ($inscription->getNoParticipants() === $user) {
+                $this->addFlash('warning', 'Vous êtes déjà inscrit.');
                 return $this->redirectToRoute('app_sortie');
             }
+        }
+
+        // 🔥 Vérifier si sortie complète
+        if ($sortie->getInscriptions()->count() >= $sortie->getNbInscriptionMax()) {
+            $this->addFlash('danger', 'Il n\'y a plus de place disponible.');
+
+            if ($redirect === 'detail') {
+                return $this->redirectToRoute('sortie', ['id' => $id]);
+            }
+
+            return $this->redirectToRoute('app_sortie');
         }
 
         $inscription = new Inscriptions();
@@ -198,7 +216,7 @@ final class SortieController extends AbstractController
         $em->persist($inscription);
         $em->flush();
 
-        $this->addFlash('success', 'Inscrit avec succès!');
+        $this->addFlash('success', 'Inscrit avec succès !');
 
         if ($redirect === 'detail') {
             return $this->redirectToRoute('sortie', ['id' => $id]);
@@ -324,8 +342,6 @@ final class SortieController extends AbstractController
 
         return $this->redirectToRoute('app_sortie');
     }
-
-
 
 
     #[Route('/sortie/{id}/modifier', name: 'sortie_edit', methods: ['GET', 'POST'])]

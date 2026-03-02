@@ -16,6 +16,16 @@ class InscriptionsRepository extends ServiceEntityRepository
         parent::__construct($registry, Inscriptions::class);
     }
 
+    public function countBySortie(Sorties $sortie): int
+    {
+        return $this->createQueryBuilder('i')
+            ->select('COUNT(i.id)')
+            ->where('i.noSorties = :sortie')
+            ->setParameter('sortie', $sortie)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Inscriptions[] Returns an array of Inscriptions objects
     //     */

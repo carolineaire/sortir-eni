@@ -254,4 +254,14 @@ class Sorties
         }
         return false;  // L'utilisateur n'est pas inscrit
     }
+
+    public function getPlacesRestantes(): int
+    {
+        return $this->getNbMaxParticipants() - $this->getInscriptions()->count();
+    }
+
+    public function isComplete(): bool
+    {
+        return $this->getPlacesRestantes() <= 0;
+    }
 }
