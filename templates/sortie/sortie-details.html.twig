@@ -13,13 +13,14 @@
         {% endfor %}
     {% endfor %}
 
+    {# Bloc détails de la sortie avec toutes les informations #}
     <div class="sortie-card">
 
         <h1 class="sortie-title">{{ sortie.nom }}</h1>
 
         <div class="sortie-grid">
 
-            <!-- COLONNE GAUCHE -->
+            {# COLONNE GAUCHE #}
             <div class="sortie-section">
                 <div><strong>Date et heure :</strong> {{ sortie.dateDebut|date('d/m/Y H:i') }}</div>
                 <div><strong>Date limite :</strong> {{ sortie.dateCloture|date('d/m/Y') }}</div>
@@ -31,7 +32,7 @@
                 </div>
             </div>
 
-            <!-- COLONNE DROITE -->
+            {# COLONNE DROITE #}
             <div class="sortie-section">
                 <div><strong>Ville :</strong> {{ sortie.noLieux.noVilles.nomVille }}</div>
                 <div><strong>Lieu :</strong> {{ sortie.noLieux.nomLieu }}</div>
@@ -43,7 +44,7 @@
 
         </div>
 
-        <!-- BOUTONS -->
+        {# Bontons d'action et badges d'état #}
         <div class="sortie-actions">
 
             {# Sortie annulée #}
@@ -55,7 +56,7 @@
                     </p>
                 {% endif %}
 
-            {# Sortie créée - Option publiée disponible #}
+            {# Sortie créée - Option publiée & modifier disponible (seulement pour les admins & l'organisateur) #}
             {% elseif sortie.noEtats.id == 1 %}
                 {% if app.user and (app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN')) %}
                     <a href="{{ path('sortie_publier', { id: sortie.id, redirect: 'detail' }) }}"
@@ -73,31 +74,33 @@
             {% elseif sortie.noEtats.id == 3 %}
                 <span class="badge bg-danger">Inscription clôturée</span>
 
-            {# Sortie en cours #}
+            {# Sortie en cours (début de la sortie + durée) #}
             {% elseif sortie.noEtats.id == 4 %}
                 <span class="badge bg-success">Activité en cours</span>
 
-            {# Sortie passée #}
+            {# Sortie passée (après début de la sortie + durée) #}
             {% elseif sortie.noEtats.id == 6 %}
                 <span class="badge bg-primary">Activité terminée</span>
 
-            {# Sortie archivée #}
+            {# Sortie archivée (1 mois après la fin de la sortie) #}
             {% elseif sortie.noEtats.id == 7 %}
                 <span class="badge bg-warning">Archivée</span>
 
-            {# Sortie ouverte - Options inscriptions, désinscription, modifiée, annulation disponnible #}
+            {# Sortie ouverte - Options inscriptions, désinscription, modifiée, annulation disponnible (visible par tout les participants) #}
             {% else %}
                 {% if app.user %}
 
                     {% set placesRestantes = sortie.nbInscriptionMax - sortie.inscriptions|length %}
                     {% set inscrit = sortie.estInscrit(app.user) %}
 
+                    {# Si sortie complète, le btn inscription n'est plus disponible (et desinscription seulement pour les inscrits) #}
                     {% if inscrit %}
                         <a href="{{ path('sortie_desinscription', { id: sortie.id, redirect: 'detail' }) }}"
                         class="action-btn danger"
                         onclick="return confirm('Voulez-vous vraiment vous désinscrire ?');">
                             Se désinscrire
                         </a>
+
                     {% elseif placesRestantes > 0 %}
                         <a href="{{ path('sortie_inscription', { id: sortie.id, redirect: 'detail' }) }}"
                         class="action-btn success">
@@ -123,7 +126,7 @@
         </div>
     </div>
 
-    <!-- PARTICIPANTS -->
+    {# Bloc liste des participants inscrits à la sortie (pas disponible si pas publiée ou si annulée) #}
     {% if sortie.noEtats.id != 1 and sortie.noEtats.id != 5 %}
     <div class="participants-card">
 
@@ -178,15 +181,15 @@
     </div>
 
     <script>
-        {# Temps d'affichage du message d'erreur, succes, avertissement #}
+    {# Temps d'affichage du message d'erreur, succes, avertissement #}
     document.addEventListener("DOMContentLoaded", function () {
-    setTimeout(function () {
-        document.querySelectorAll('.alert').forEach(function (alert) {
-            alert.classList.add('fade-out');
-            setTimeout(() => alert.remove(), 500);
-        });
-    }, 5000);
-});
+        setTimeout(function () {
+            document.querySelectorAll('.alert').forEach(function (alert) {
+                alert.classList.add('fade-out');
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    });
     </script>
 
 
