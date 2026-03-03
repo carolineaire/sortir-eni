@@ -27,7 +27,7 @@ final class LieuxController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
         
-        return $this->render('lieux/new.html.twig', [
+        return $this->render('lieux/creer-lieu.html.twig', [
             'form' => $form->createView(),
             ]);
     }

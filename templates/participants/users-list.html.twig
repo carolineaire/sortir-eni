@@ -3,15 +3,19 @@
 {% block title %}Liste des participants{% endblock %}
 
 {% block body %}
+
+    {# Messages d'erreurs, d'avertissement ou de succès #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
     <div class="container">
         <h1>Liste des participants</h1>
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="flash-{{ label }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endfor %}
+        
         <table class="table table-striped">
             <thead>
             <tr>
@@ -64,4 +68,8 @@
     </style>
 
 
+{% endblock %}
+
+{% block javascripts %}
+    <script type="module" src="{{ asset('js/message.js') }}"></script>
 {% endblock %}
