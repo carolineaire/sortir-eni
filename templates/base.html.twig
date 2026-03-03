@@ -1,59 +1,37 @@
 {# templates/base.html.twig #}
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Sorti{% endblock %}</title>
+    <title>{% block title %}Sortir.com{% endblock %}</title>
+
+    {# CSS Global #}
     <link rel="stylesheet" href="/css/style.css">
+
+    {# Bootstrap & FontAwesome #}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    {% block stylesheets %}{% endblock %}
 </head>
+
 <body>
-    {% if app.user %}
-    <nav>
-        <a class="logo" href="/">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo Sorti">
-            <h1>Sortir.com</h1>
-        </a>
-
-        <div class="user-image">
-            <img src="{{ asset('images/user/' ~ app.user.image) }}" alt="Votre photo de profil">
-        </div>
-
-        <div class="nav-links">
-            <a href="/">Accueil</a>
-            <a href="{{ path('lieu_new') }}">Ajouter un lieux</a>
-            <a href="{{ path('sortie_create') }}">Créer une sortie</a>
-            <a href="{{ path('app_profil') }}">Mon profil</a>
-            {% if is_granted('ROLE_ADMIN') %}
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        Menu admin
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                        <li><a class="dropdown-item" href="{{ path('app_villes') }}">Villes</a></li>
-                        <li><a class="dropdown-item" href="{{ path('app_sites') }}">Sites</a></li>
-                        <li><a class="dropdown-item" href="{{ path('app_register') }}">Ajouter un compte</a></li>
-                        <li><a class="dropdown-item" href="{{ path('app_participants') }}">Gérer les comptes</a></li>
-                    </ul>
-                </div>
-            {% endif %}
-            <a href="{{ path('app_logout') }}" class="nav-logout">Déconnexion</a>
-        </div>
-    </nav>
-    {% endif %}
+    
+    {# Barre de navigation #}
+    {% include 'partials/nav.html.twig' %}
 
     <div class="page-container">
         <main class="content">
             {% block body %}{% endblock %}
-        </main>
+        </main> 
 
-        <footer class="footer">
-            <p>© 2025 Sortie.com | Fait avec ❤️ par Kati, Lukas et Caroline</p>
-        </footer>
+        {# Footer #}
+        {% include 'partials/footer.html.twig' %}
     </div>
 
+    {# Bootstrap #}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    {% block javascripts %}{% endblock %}
 </body>
 </html>

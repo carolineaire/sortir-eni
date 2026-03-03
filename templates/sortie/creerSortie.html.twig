@@ -74,13 +74,10 @@
             <div class="submit-container">
                 {{ form_widget(sortieForm.enregistrer) }}
                 {{ form_widget(sortieForm.publier) }}
-{#                {{ form_widget(sortieForm.annuler) }}#}
 
-
-
-                    <a href="{{ path('app_sortie') }}" class="btn-primary ">
-                        Annuler
-                    </a>
+                <a href="{{ path('app_sortie') }}" class="btn-primary ">
+                    Annuler
+                </a>
 
             </div>
 
@@ -343,6 +340,10 @@ button[name="sorties[annuler]"] {
 
 
 
+{% endblock %}
+
+{% block javascripts %}
+    <script type="module" src="{{ asset('js/creer-sortie.js') }}"></script>
 {% endblock %}
 
 
