@@ -4,10 +4,13 @@ namespace App\Form;
 
 use App\Entity\Etats;
 use App\Entity\Lieux;
+use App\Entity\Participants;
 use App\Entity\Sorties;
 use App\Entity\Villes;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -90,7 +93,23 @@ class SortiesType extends AbstractType
             ->add('publier', SubmitType::class, [
                 'label' => 'Publier',
             ])
-
+            ->add('isPrivate', CheckboxType::class, [
+                'label' => 'Sortie privée',
+                'required' => false,
+            ])
+            ->add('invites', EntityType::class, [
+                'class' => Participants::class,
+                'choice_label' => fn(Participants $participant) => $participant->getNom().' '.$participant->getPrenom(),
+                'multiple' => true,
+                'expanded' => true,
+                'required' => false,
+                'query_builder' => function(EntityRepository $er) {
+                    return $er->createQueryBuilder('p')
+                        ->where('p.pseudo NOT LIKE :deleted')
+                        ->setParameter('deleted', 'supprime%')
+                        ->orderBy('p.nom', 'ASC');
+                },
+            ])
 
         ;
     }

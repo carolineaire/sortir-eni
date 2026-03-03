@@ -90,6 +90,15 @@ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(groups: ['registration'])]
     #[Assert\Length(min: 6, max: 255)]
     private ?string $plainPassword = null;
+
+
+
+
+
+
+
+
+
     public function getPlainPassword(): ?string {
         return $this->plainPassword;
     }

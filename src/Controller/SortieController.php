@@ -23,23 +23,56 @@ final class SortieController extends AbstractController
     #[Route('/sortie', name: 'app_sortie')]
     public function index(SortiesRepository $repo): Response
     {
+
+        $user = $this->getUser();
+
+        // Redirection si pas connecté
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
         if ($this->isGranted('ROLE_ADMIN')) {
+            // Admin voit toutes les sorties
             $sorties = $repo->createQueryBuilder('s')
                 ->orderBy('s.dateDebut', 'ASC')
                 ->getQuery()
                 ->getResult();
         } else {
-            $sorties = $repo->createQueryBuilder('s')
-                ->Where('s.noEtats > 1')  // Assurer que l'état n'est pas "Créé"
-                ->orWhere('s.organisateur = :user')  // Ou l'organisateur est l'utilisateur actuel
-                ->orderBy('s.dateDebut', 'ASC') // Trier par la date de début
-                ->setParameter('user', $this->getUser())
+//
+//                 $sorties = $repo->createQueryBuilder('s')
+//                ->Where('s.noEtats > 1')  // Assurer que l'état n'est pas "Créé"
+//                ->orWhere('s.organisateur = :user')  // Ou l'organisateur est l'utilisateur actuel
+//                ->orderBy('s.dateDebut', 'ASC') // Trier par la date de début
+//                ->setParameter('user', $this->getUser())
+//                ->getQuery()
+//                ->getResult();
+
+            // 1 Sorties publiques
+            $publicSorties = $repo->createQueryBuilder('s')
+                ->where('s.isPrivate = false')
+                ->andWhere('s.noEtats > 1') // optionnel, filtrer les sorties "créées"
+                ->orderBy('s.dateDebut', 'ASC')
                 ->getQuery()
                 ->getResult();
+
+            // 2 Sorties privées pour lesquelles l'utilisateur est organisateur ou inscrit
+            $privateSorties = $repo->createQueryBuilder('s')
+                ->leftJoin('s.inscriptions', 'i')
+                ->where('s.isPrivate= true')
+                ->andWhere('s.noEtats > 1')
+                ->andWhere('s.organisateur = :user OR i.noParticipants = :user')
+                ->setParameter('user', $user)
+                ->orderBy('s.dateDebut', 'ASC')
+                ->getQuery()
+                ->getResult();
+
+            // 3 Fusionner les deux tableaux et enlever les doublons
+            $sorties = array_unique(array_merge($publicSorties, $privateSorties), SORT_REGULAR);
+
         }
 
 
-        $user = $this->getUser();
+        //$user = $this->getUser();
 
         $villes = [];
         foreach ($sorties as $s) {
@@ -50,9 +83,9 @@ final class SortieController extends AbstractController
         }
 
         //si pas d'user connecté, redirection vers la page de connexion
-        if (!$this->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
+//        if (!$this->getUser()) {
+//            return $this->redirectToRoute('app_login');
+//        }
 
         return $this->render('sortie/sortie.html.twig', [
             'sortie' => $sorties,
@@ -91,6 +124,40 @@ final class SortieController extends AbstractController
                 // Organisateur = utilisateur connecté
                 $organisateur = $this->getUser();
                 $sortie->setOrganisateur($organisateur);
+
+
+                // Si la sortie est privée
+                if ($sortie->isPrivate()) {
+
+                    $invites = $sortie->getInvites();
+
+                    // Sécurité : si privé mais aucun invité sélectionné
+                    if ($invites->isEmpty()) {
+                        $this->addFlash('error', 'Vous devez sélectionner au moins un participant pour une sortie privée.');
+                        return $this->redirectToRoute('sortie_create');
+                    }
+
+                    // Optionnel : ajouter automatiquement l'organisateur dans les invités
+                    if (!$invites->contains($organisateur)) {
+                        $sortie->addInvite($organisateur);
+                    }
+
+                    foreach ($sortie->getInvites() as $participant) {
+                        $inscription = new \App\Entity\Inscriptions();
+                        $inscription->setNoSorties($sortie);
+                        $inscription->setNoParticipants($participant);
+                        $inscription->setDateInscription(new \DateTimeImmutable());
+
+                        // Ajouter à la collection Sorties->inscriptions (optionnel mais pratique)
+                        $sortie->addInscription($inscription);
+
+                        // Persister l'inscription
+                        $em->persist($inscription);
+                    }
+
+
+
+                }
 
                 // État par défaut = "Créée"
                 //  $etatCree = $em->getRepository(Etats::class)->find(1);
@@ -326,7 +393,7 @@ final class SortieController extends AbstractController
             if ($redirect === 'detail') {
                 return $this->redirectToRoute('sortie', ['id' => $id]);
             }
-    
+
             return $this->redirectToRoute('app_sortie');
         }
 
