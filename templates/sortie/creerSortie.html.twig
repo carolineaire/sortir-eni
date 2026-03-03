@@ -14,7 +14,19 @@
             {% endfor %}
 
             {{ form_start(sortieForm) }}
+            <div class="form-check">
+                {{ form_widget(sortieForm.isPrivate) }}
+                {{ form_label(sortieForm.isPrivate) }}
+            </div>
 
+            <div id="invites-list">
+                {% for invite in sortieForm.invites %}
+                    <div class="invite-item">
+                        {{ form_widget(invite) }}
+                        {{ form_label(invite) }}
+                    </div>
+                {% endfor %}
+            </div>
             <section class="form-section">
                 <h2>Informations générales</h2>
 
@@ -81,6 +93,21 @@
 
 
     <script>
+        const checkbox = document.querySelector('#sorties_isPrivate');
+        const invitesDiv = document.querySelector('#invites-list');
+
+        function toggleInvites() {
+            if (checkbox.checked) {
+                invitesDiv.style.display = 'block';   // privée → montrer
+            } else {
+                invitesDiv.style.display = 'none';    // publique → cacher
+            }
+        }
+
+        toggleInvites();
+        checkbox.addEventListener('change', toggleInvites);
+
+
         const villeSelect = document.querySelector('#sorties_noVilles');
         const lieuSelect = document.querySelector('#sorties_noLieux');
 
@@ -133,6 +160,28 @@
 
 
 <style>
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;       /* espace entre case et texte */
+    }
+
+    #sorties_isPrivate {
+        width: auto;
+        margin: 0;      /* supprime les marges par défaut */
+    }
+    /* Checkbox sur la même ligne que le label */
+    input[type="checkbox"] {
+        width: auto;
+        margin-right: 8px;
+    }
+
+    /* Pour les invites */
+    #invites-list div {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
 /* --- PAGE STRUCTURE --- */
 .page-title {

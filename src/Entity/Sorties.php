@@ -64,9 +64,30 @@ class Sorties
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $motifAnnulation = null;
 
+
+
+    #[ORM\ManyToMany(targetEntity: Participants::class)]
+    #[ORM\JoinTable(name: "sorties_invites")]
+    private Collection $invites;
+
+    #[ORM\Column(type: "boolean")]
+    private ?bool $isPrivate = false;
+
+    public function isPrivate(): ?bool
+    {
+        return $this->isPrivate;
+    }
+
+    public function setIsPrivate(bool $isPrivate): static
+    {
+        $this->isPrivate = $isPrivate;
+        return $this;
+    }
+
     public function __construct()
     {
         $this->inscriptions = new ArrayCollection();
+        $this->invites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -277,5 +298,25 @@ class Sorties
     public function isComplete(): bool
     {
         return $this->getPlacesRestantes() <= 0;
+    }
+
+
+    public function getInvites(): Collection
+    {
+        return $this->invites;
+    }
+
+    public function addInvite(Participants $participant): static
+    {
+        if (!$this->invites->contains($participant)) {
+            $this->invites->add($participant);
+        }
+        return $this;
+    }
+
+    public function removeInvite(Participants $participant): static
+    {
+        $this->invites->removeElement($participant);
+        return $this;
     }
 }
