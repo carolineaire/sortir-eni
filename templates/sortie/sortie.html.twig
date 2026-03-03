@@ -4,6 +4,9 @@
 
 {% block body %}
 
+<div id="sortie-page"
+    data-user-id="{{ app.user ? app.user.id : 0 }}">
+
     {# Messages d'erreurs, d'avertissement ou de succès #}
     {% for label, messages in app.flashes %}
         {% for message in messages %}
@@ -302,297 +305,179 @@
         </div>
     {% endfor %}
 
-    <script>
-        const currentUserId = {{ app.user.id }};
+    <style>
+    /* ===== TOP BAR ===== */
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1100px;
+        margin: 1.5rem auto;
+    }
 
-        // Date du jour
-        document.getElementById('date-du-jour')
-            .textContent = new Date().toLocaleDateString('fr-FR');
+    .date-box,
+    .user-box {
+        background: white;
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
 
-        // Filtres
-        const selectVille = document.getElementById('site');
-        const searchInput = document.getElementById('search');
-        const dateStartInput = document.getElementById('dateStart');
-        const dateEndInput = document.getElementById('dateEnd');
-        const passeesCheckbox = document.getElementById('passees');
-        const orgaCheckbox = document.getElementById('orga');
-        const inscritCheckbox = document.getElementById('inscrit');
-        const nonInscritCheckbox = document.getElementById('nonInscrit');
+    /* ===== FILTER CARD ===== */
+    .filter-card {
+        max-width: 1100px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
 
-        const rows = document.querySelectorAll('table tbody tr');
+    .filter-title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: var(--accent);
+    }
 
-        function applyFilters() {
+    .text-link {
+        text-decoration: none;
+        color: #4B0082;
+        transition: 0.2s ease;
+    }
 
-            const selectedVille = selectVille.value;
-            const searchValue = searchInput.value.toLowerCase();
-            const startDate = dateStartInput.value ? new Date(dateStartInput.value) : null;
-            const endDate = dateEndInput.value ? new Date(dateEndInput.value) : null;
-            const showPassees = passeesCheckbox.checked;
-            const showOrga = orgaCheckbox.checked;
-            const showInscrit = inscritCheckbox.checked;
-            const showNonInscrit = nonInscritCheckbox.checked;
+    .text-link:hover {
+        font-weight: bold;
+        color: var(--accent-dark);
+    }
 
-            const today = new Date();
-            today.setHours(0,0,0,0);
+    .filter-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
 
-            rows.forEach(row => {
+    .filter-group {
+        margin-bottom: 1rem;
+    }
 
-                const titre = row.cells[0].textContent.toLowerCase();
-                const ville = row.cells[6].textContent;
-                const dateText = row.cells[2].textContent.trim();
-                const [day, month, year] = dateText.split('/');
-                const rowDate = new Date(`${year}-${month}-${day}`);
-                rowDate.setHours(0,0,0,0);
+    .filter-group input,
+    .filter-group select {
+        width: 100%;
+        padding: 0.6rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+    }
 
-                const orgaId = row.dataset.organisateur;
-                const isInscrit = row.dataset.inscrit === "1";
+    /* Bouton reset */
+    .reset-btn {
+        margin-top: 1rem;
+        padding: 0.6rem 1.5rem;
+        border-radius: 6px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
 
-                let show = true;
+    .reset-btn:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
 
-                // Filtre ville
-                if (selectedVille && ville !== selectedVille) show = false;
+    /* ===== TABLE CARD ===== */
+    .table-card {
+        max-width: 1500px;
+        margin: 2rem auto;
+        background: white;
+        border-radius: 10px;
+        padding: 1rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
 
-                // Filtre recherche
-                if (searchValue && !titre.includes(searchValue)) show = false;
+    .modern-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-                // Filtre intervalle de date
-                if (startDate && rowDate < startDate) show = false;
-                if (endDate && rowDate > endDate) show = false;
+    .modern-table th {
+        background: var(--bg-secondary);
+        padding: 0.8rem;
+        text-align: left;
+    }
 
-                // Filtre sorties passées
-                if (showPassees && rowDate >= today) show = false;
+    .modern-table td {
+        padding: 0.8rem;
+        border-top: 1px solid var(--border-color);
+    }
 
-                // Filtre organisateur
-                if (showOrga && parseInt(orgaId) !== currentUserId) show = false;
+    .modern-table tbody tr {
+        transition: 0.2s ease;
+    }
 
-                // Filtre inscrit / non inscrit
-                if (showInscrit && !isInscrit) show = false;
-                if (showNonInscrit && isInscrit) show = false;
+    .modern-table tbody tr:hover {
+        background: var(--glass);
+        transform: scale(1.01);
+    }
 
-                // Si les deux sont cochés → on annule le filtre
-                if (showInscrit && showNonInscrit) show = true;
+    /* Actions */
+    .actions-cell {
+        display: flex;
+        gap: 0.5rem;
+    }
 
-                row.style.display = show ? '' : 'none';
-            });
-        }
+    .action-icon {
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: 0.2s ease;
+    }
 
-        // Événements
-        selectVille.addEventListener('change', applyFilters);
-        searchInput.addEventListener('input', applyFilters);
-        dateStartInput.addEventListener('change', applyFilters);
-        dateEndInput.addEventListener('change', applyFilters);
-        passeesCheckbox.addEventListener('change', applyFilters);
-        orgaCheckbox.addEventListener('change', applyFilters);
-        inscritCheckbox.addEventListener('change', applyFilters);
-        nonInscritCheckbox.addEventListener('change', applyFilters);
+    .action-icon:hover {
+        transform: scale(1.2);
+    }
 
-        // Reset filtres
-        const resetBtn = document.getElementById('resetFilters');
+    .success { color: #4caf50; }
+    .danger { color: #e53935; }
 
-        resetBtn.addEventListener('click', (e) => {
-            e.preventDefault();
+    .badge-cancel {
+        color: white;
+        background: #666666;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
 
-            selectVille.value = '';
-            searchInput.value = '';
-            dateStartInput.value = '';
-            dateEndInput.value = '';
-            passeesCheckbox.checked = false;
-            orgaCheckbox.checked = false;
-            inscritCheckbox.checked = false;
-            nonInscritCheckbox.checked = false;
+    .badge-success{
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: 0.2s ease;
+        color: white;
+        background: #4caf50;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
 
-            rows.forEach(row => row.style.display = '');
+    .badge-success:hover {
+        transform: scale(1.2);
+    }
 
-            applyFilters();
-        });
+    .empty-row {
+        text-align: center;
+        padding: 1rem;
+        color: var(--text-secondary);
+    }
+    </style>
+</div>
+{% endblock %}
 
-        // Popup désinscription
-        document.querySelectorAll('.btn-desinscription').forEach(function(link) {
-            link.addEventListener('click', function(event) {
-                event.preventDefault();
-                if (confirm("Voulez-vous vraiment vous désinscrire ?")) {
-                    window.location.href = this.href;
-                }
-            });
-        });
-
-        {# Temps d'affichage du message d'erreur, succes, avertissement #}
-        document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(function () {
-            document.querySelectorAll('.alert').forEach(function (alert) {
-                alert.classList.add('fade-out');
-                setTimeout(() => alert.remove(), 500);
-            });
-        }, 5000);
-    });
-    </script>
-
-<style>
-/* ===== TOP BAR ===== */
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1100px;
-    margin: 1.5rem auto;
-}
-
-.date-box,
-.user-box {
-    background: white;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-/* ===== FILTER CARD ===== */
-.filter-card {
-    max-width: 1100px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: white;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-}
-
-.filter-title {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: var(--accent);
-}
-
-.text-link {
-    text-decoration: none;
-    color: #4B0082;
-    transition: 0.2s ease;
-}
-
-.text-link:hover {
-    font-weight: bold;
-    color: var(--accent-dark);
-}
-
-.filter-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-}
-
-.filter-group {
-    margin-bottom: 1rem;
-}
-
-.filter-group input,
-.filter-group select {
-    width: 100%;
-    padding: 0.6rem;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    background: var(--bg-secondary);
-}
-
-/* Bouton reset */
-.reset-btn {
-    margin-top: 1rem;
-    padding: 0.6rem 1.5rem;
-    border-radius: 6px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
-.reset-btn:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-}
-
-/* ===== TABLE CARD ===== */
-.table-card {
-    max-width: 1500px;
-    margin: 2rem auto;
-    background: white;
-    border-radius: 10px;
-    padding: 1rem;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-}
-
-.modern-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.modern-table th {
-    background: var(--bg-secondary);
-    padding: 0.8rem;
-    text-align: left;
-}
-
-.modern-table td {
-    padding: 0.8rem;
-    border-top: 1px solid var(--border-color);
-}
-
-.modern-table tbody tr {
-    transition: 0.2s ease;
-}
-
-.modern-table tbody tr:hover {
-    background: var(--glass);
-    transform: scale(1.01);
-}
-
-/* Actions */
-.actions-cell {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.action-icon {
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: 0.2s ease;
-}
-
-.action-icon:hover {
-    transform: scale(1.2);
-}
-
-.success { color: #4caf50; }
-.danger { color: #e53935; }
-
-.badge-cancel {
-    color: white;
-    background: #666666;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-}
-
-.badge-success{
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: 0.2s ease;
-    color: white;
-    background: #4caf50;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-}
-
-.badge-success:hover {
-    transform: scale(1.2);
-}
-
-.empty-row {
-    text-align: center;
-    padding: 1rem;
-    color: var(--text-secondary);
-}
-</style>
+{% block javascripts %}
+    {{ importmap('app') }}
+    <script type="module" src="{{ asset('js/sortie.js') }}"></script>
+    <script type="module" src="{{ asset('js/message.js') }}"></script>
 {% endblock %}
 

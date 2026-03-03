@@ -1,0 +1,33 @@
+{% if app.user %}
+    <nav>
+        <a class="logo" href="/">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Sorti">
+            <h1>Sortir.com</h1>
+        </a>
+
+        <div class="user-image">
+            <img src="{{ asset('images/user/' ~ app.user.image) }}" alt="Votre photo de profil">
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Accueil</a>
+            <a href="{{ path('lieu_new') }}">Ajouter un lieux</a>
+            <a href="{{ path('sortie_create') }}">Créer une sortie</a>
+            <a href="{{ path('app_profil') }}">Mon profil</a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Menu admin
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                        <li><a class="dropdown-item" href="{{ path('app_villes') }}">Villes</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_sites') }}">Sites</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_register') }}">Ajouter un compte</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_participants') }}">Gérer les comptes</a></li>
+                    </ul>
+                </div>
+            {% endif %}
+            <a href="{{ path('app_logout') }}" class="nav-logout">Déconnexion</a>
+        </div>
+    </nav>
+{% endif %}
