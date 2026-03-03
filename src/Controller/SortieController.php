@@ -116,7 +116,7 @@ final class SortieController extends AbstractController
                 return $this->redirectToRoute('app_sortie');
             }
         }
-            return $this->render('sortie/creerSortie.html.twig', [
+            return $this->render('sortie/creer-sortie.html.twig', [
                 'sortieForm' => $sortieForm
             ]);
         }
