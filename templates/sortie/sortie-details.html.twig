@@ -13,13 +13,14 @@
         {% endfor %}
     {% endfor %}
 
+    {# Bloc détails de la sortie avec toutes les informations #}
     <div class="sortie-card">
 
         <h1 class="sortie-title">{{ sortie.nom }}</h1>
 
         <div class="sortie-grid">
 
-            <!-- COLONNE GAUCHE -->
+            {# COLONNE GAUCHE #}
             <div class="sortie-section">
                 <div><strong>Date et heure :</strong> {{ sortie.dateDebut|date('d/m/Y H:i') }}</div>
                 <div><strong>Date limite :</strong> {{ sortie.dateCloture|date('d/m/Y') }}</div>
@@ -31,7 +32,7 @@
                 </div>
             </div>
 
-            <!-- COLONNE DROITE -->
+            {# COLONNE DROITE #}
             <div class="sortie-section">
                 <div><strong>Ville :</strong> {{ sortie.noLieux.noVilles.nomVille }}</div>
                 <div><strong>Lieu :</strong> {{ sortie.noLieux.nomLieu }}</div>
@@ -43,7 +44,7 @@
 
         </div>
 
-        <!-- BOUTONS -->
+        {# Bontons d'action et badges d'état #}
         <div class="sortie-actions">
 
             {# Sortie annulée #}
@@ -55,7 +56,7 @@
                     </p>
                 {% endif %}
 
-            {# Sortie créée - Option publiée disponible #}
+            {# Sortie créée - Option publiée & modifier disponible (seulement pour les admins & l'organisateur) #}
             {% elseif sortie.noEtats.id == 1 %}
                 {% if app.user and (app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN')) %}
                     <a href="{{ path('sortie_publier', { id: sortie.id, redirect: 'detail' }) }}"
@@ -73,33 +74,40 @@
             {% elseif sortie.noEtats.id == 3 %}
                 <span class="badge bg-danger">Inscription clôturée</span>
 
-            {# Sortie en cours #}
+            {# Sortie en cours (début de la sortie + durée) #}
             {% elseif sortie.noEtats.id == 4 %}
                 <span class="badge bg-success">Activité en cours</span>
 
-            {# Sortie passée #}
+            {# Sortie passée (après début de la sortie + durée) #}
             {% elseif sortie.noEtats.id == 6 %}
                 <span class="badge bg-primary">Activité terminée</span>
 
-            {# Sortie archivée #}
+            {# Sortie archivée (1 mois après la fin de la sortie) #}
             {% elseif sortie.noEtats.id == 7 %}
                 <span class="badge bg-warning">Archivée</span>
 
-            {# Sortie ouverte - Options inscriptions, désinscription, modifiée, annulation disponnible #}
+            {# Sortie ouverte - Options inscriptions, désinscription, modifiée, annulation disponnible (visible par tout les participants) #}
             {% else %}
                 {% if app.user %}
-                    {% if sortie.estInscrit(app.user) %}
+
+                    {% set placesRestantes = sortie.nbInscriptionMax - sortie.inscriptions|length %}
+                    {% set inscrit = sortie.estInscrit(app.user) %}
+
+                    {# Si sortie complète, le btn inscription n'est plus disponible (et desinscription seulement pour les inscrits) #}
+                    {% if inscrit %}
                         <a href="{{ path('sortie_desinscription', { id: sortie.id, redirect: 'detail' }) }}"
                         class="action-btn danger"
                         onclick="return confirm('Voulez-vous vraiment vous désinscrire ?');">
                             Se désinscrire
                         </a>
-                    {% else %}
+
+                    {% elseif placesRestantes > 0 %}
                         <a href="{{ path('sortie_inscription', { id: sortie.id, redirect: 'detail' }) }}"
                         class="action-btn success">
                             S'inscrire
                         </a>
                     {% endif %}
+
                 {% endif %}
 
                 {% if app.user and (app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN')) %}
@@ -118,7 +126,7 @@
         </div>
     </div>
 
-    <!-- PARTICIPANTS -->
+    {# Bloc liste des participants inscrits à la sortie (pas disponible si pas publiée ou si annulée) #}
     {% if sortie.noEtats.id != 1 and sortie.noEtats.id != 5 %}
     <div class="participants-card">
 
@@ -150,211 +158,202 @@
 
     {# Modal pour le motif d'annulation #}
     <div class="modal fade" id="annulerModal{{ sortie.id }}" tabindex="-1" aria-labelledby="annulerModalLabel{{ sortie.id }}" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <form method="post" action="{{ path('sortie_annuler', { id: sortie.id }) }}">
-            <div class="modal-header">
-            <h5 class="modal-title" id="annulerModalLabel{{ sortie.id }}">Motif d'annulation</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="{{ path('sortie_annuler', { id: sortie.id }) }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="annulerModalLabel{{ sortie.id }}">Motif d'annulation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="motifAnnulation{{ sortie.id }}" class="form-label">Veuillez indiquer un motif</label>
+                            <textarea class="form-control" name="motifAnnulation" id="motifAnnulation{{ sortie.id }}" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-danger">Confirmer l'annulation</button>
+                    </div>
+                </form>
             </div>
-            <div class="modal-body">
-            <div class="mb-3">
-                <label for="motifAnnulation{{ sortie.id }}" class="form-label">Veuillez indiquer un motif</label>
-                <textarea class="form-control" name="motifAnnulation" id="motifAnnulation{{ sortie.id }}" rows="3" required></textarea>
-            </div>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-danger">Confirmer l'annulation</button>
-            </div>
-        </form>
         </div>
     </div>
-    </div>
 
-    <script>
-        {# Temps d'affichage du message d'erreur, succes, avertissement #}
-    document.addEventListener("DOMContentLoaded", function () {
-    setTimeout(function () {
-        document.querySelectorAll('.alert').forEach(function (alert) {
-            alert.classList.add('fade-out');
-            setTimeout(() => alert.remove(), 500);
-        });
-    }, 5000);
-});
-    </script>
-
-
-    <style>
+<style>
 
     /* ===== CARTE SORTIE ===== */
-.sortie-card {
-    max-width: 900px;
-    margin: 2.5rem auto;
-    padding: 2rem;
-    border-radius: 10px;
-    background: white;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-    animation: gentle-fade-in 0.4s ease;
-    transition: 0.3s ease;
-}
+    .sortie-card {
+        max-width: 900px;
+        margin: 2.5rem auto;
+        padding: 2rem;
+        border-radius: 10px;
+        background: white;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        animation: gentle-fade-in 0.4s ease;
+        transition: 0.3s ease;
+    }
 
-.sortie-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
-}
+    .sortie-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+    }
 
-/* Titre */
-.sortie-title {
-    text-align: center;
-    font-size: 1.8rem;
-    color: var(--accent);
-    margin-bottom: 2rem;
-}
+    /* Titre */
+    .sortie-title {
+        text-align: center;
+        font-size: 1.8rem;
+        color: var(--accent);
+        margin-bottom: 2rem;
+    }
 
-/* GRID */
-.sortie-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-}
+    /* GRID */
+    .sortie-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
 
-.sortie-section div {
-    padding: 0.85rem 1rem;
-    border-radius: 6px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    margin-bottom: 0.8rem;
-    transition: 0.2s ease;
-    font-size: 0.9rem;
-}
+    .sortie-section div {
+        padding: 0.85rem 1rem;
+        border-radius: 6px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        margin-bottom: 0.8rem;
+        transition: 0.2s ease;
+        font-size: 0.9rem;
+    }
 
-.sortie-section div:hover {
-    background: var(--glass);
-    border-color: var(--accent);
-    transform: translateX(4px);
-}
+    .sortie-section div:hover {
+        background: var(--glass);
+        border-color: var(--accent);
+        transform: translateX(4px);
+    }
 
-.description {
-    line-height: 1.6;
-}
+    .description {
+        line-height: 1.6;
+    }
 
-/* ===== BOUTONS ===== */
-.sortie-actions {
-    margin-top: 2rem;
-    text-align: center;
-}
+    /* ===== BOUTONS ===== */
+    .sortie-actions {
+        margin-top: 2rem;
+        text-align: center;
+    }
 
-.action-btn {
-    display: inline-block;
-    padding: 0.8rem 1.8rem;
-    border-radius: 8px;
-    font-weight: 600;
-    text-decoration: none;
-    margin: 0.5rem;
-    transition: 0.3s ease;
-}
+    .action-btn {
+        display: inline-block;
+        padding: 0.8rem 1.8rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        margin: 0.5rem;
+        transition: 0.3s ease;
+    }
 
-.success {
-    background: linear-gradient(135deg, #4caf50, #66bb6a);
-    color: white;
-}
+    .success {
+        background: linear-gradient(135deg, #4caf50, #66bb6a);
+        color: white;
+    }
 
-.danger {
-    background: linear-gradient(135deg, #e53935, #ef5350);
-    color: white;
-}
+    .danger {
+        background: linear-gradient(135deg, #e53935, #ef5350);
+        color: white;
+    }
 
-.outline-danger {
-    border: 2px solid #e53935;
-    color: #e53935;
-    background: transparent;
-}
+    .outline-danger {
+        border: 2px solid #e53935;
+        color: #e53935;
+        background: transparent;
+    }
 
-.btn-warning {
-    background: linear-gradient(135deg, #ff9800, #ffb74d);
-    color: white;
-}
+    .btn-warning {
+        background: linear-gradient(135deg, #ff9800, #ffb74d);
+        color: white;
+    }
 
-.action-btn:hover {
-    transform: translateY(-3px);
-    opacity: 0.9;
-}
+    .action-btn:hover {
+        transform: translateY(-3px);
+        opacity: 0.9;
+    }
 
-/* Annulée */
-.cancelled {
-    color: #e53935;
-    font-weight: 600;
-    font-size: 1rem;
-}
+    /* Annulée */
+    .cancelled {
+        color: #e53935;
+        font-weight: 600;
+        font-size: 1rem;
+    }
 
-/* ===== PARTICIPANTS ===== */
-.participants-card {
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 1.5rem;
-    border-radius: 8px;
-    background: white;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
+    /* ===== PARTICIPANTS ===== */
+    .participants-card {
+        max-width: 700px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+        border-radius: 8px;
+        background: white;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
 
-.participants-card h3 {
-    text-align: center;
-    color: var(--accent);
-    margin-bottom: 1rem;
-}
+    .participants-card h3 {
+        text-align: center;
+        color: var(--accent);
+        margin-bottom: 1rem;
+    }
 
-.participants-list {
-    max-height: 250px;
-    overflow-y: auto;
-}
+    .participants-list {
+        max-height: 250px;
+        overflow-y: auto;
+    }
 
-.participant-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.7rem 1rem;
-    border-radius: 6px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    margin-bottom: 0.5rem;
-    transition: 0.2s ease;
-}
+    .participant-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.7rem 1rem;
+        border-radius: 6px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        margin-bottom: 0.5rem;
+        transition: 0.2s ease;
+    }
 
-.participant-row:hover {
-    background: var(--glass);
-    border-color: var(--accent);
-    transform: translateX(4px);
-}
+    .participant-row:hover {
+        background: var(--glass);
+        border-color: var(--accent);
+        transform: translateX(4px);
+    }
 
-.pseudo {
-    font-weight: 600;
-    color: var(--accent);
-}
+    .pseudo {
+        font-weight: 600;
+        color: var(--accent);
+    }
 
-.participant-row a {
-    text-decoration: none;
-    transition: 0.2s ease;
-}
+    .participant-row a {
+        text-decoration: none;
+        transition: 0.2s ease;
+    }
 
-.participant-row a:hover .pseudo {
-    color: #66bb6a;
-    text-decoration: underline;
-}
+    .participant-row a:hover .pseudo {
+        color: #66bb6a;
+        text-decoration: underline;
+    }
 
-.no-participant {
-    text-align: center;
-    padding: 1rem;
-    color: var(--text-secondary);
-}
+    .no-participant {
+        text-align: center;
+        padding: 1rem;
+        color: var(--text-secondary);
+    }
 
-/* Retour */
-.back-button {
-    text-align: center;
-    margin: 2rem 0;
-}
+    /* Retour */
+    .back-button {
+        text-align: center;
+        margin: 2rem 0;
+    }
 
-    </style>
+</style>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script type="module" src="{{ asset('js/message.js') }}"></script>
 {% endblock %}
