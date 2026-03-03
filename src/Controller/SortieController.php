@@ -116,7 +116,7 @@ final class SortieController extends AbstractController
                 return $this->redirectToRoute('app_sortie');
             }
         }
-            return $this->render('sortie/creer-sortie.html.twig', [
+            return $this->render('sortie/creerSortie.html.twig', [
                 'sortieForm' => $sortieForm
             ]);
         }
@@ -417,7 +417,7 @@ final class SortieController extends AbstractController
             return $this->redirectToRoute('app_sortie');
         }
 
-        return $this->render('sortie/modifier-sortie.html.twig', [
+        return $this->render('sortie/modifierSortie.html.twig', [
             'sortieForm' => $form,
             'sortie' => $sortie,
             'rue' => $lieu ? $lieu->getRue() : '',

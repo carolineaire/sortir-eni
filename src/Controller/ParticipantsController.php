@@ -25,7 +25,7 @@ final class ParticipantsController extends AbstractController
         // Récupère tous les utilisateurs
         $users = $repo->findAll();
 
-        return $this->render('participants/users-list.html.twig', [
+        return $this->render('participants/usersList.html.twig', [
             'users' => $users,
         ]);
     }
@@ -192,7 +192,7 @@ final class ParticipantsController extends AbstractController
             return $this->redirectToRoute('app_participants');
         }
 
-        return $this->render('participants/users-import-csv.html.twig', [
+        return $this->render('participants/users_importCsv.html.twig', [
             'form' => $form->createView(),
         ]);
     }
