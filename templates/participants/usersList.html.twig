@@ -2,6 +2,10 @@
 
 {% block title %}Liste des participants{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/user-list.css">
+{% endblock %}
+
 {% block body %}
 
     {# Messages d'erreurs, d'avertissement ou de succès #}
@@ -58,15 +62,6 @@
             </tbody>
         </table>
     </div>
-
-
-    <style>
-        .flash-success { background-color: #27ae60; color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
-        .flash-error { background-color: #e74c3c; color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
-        .flash-warning { background-color: #f39c12; color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
-        .flash-info { background-color: #3498db; color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
-    </style>
-
 
 {% endblock %}
 

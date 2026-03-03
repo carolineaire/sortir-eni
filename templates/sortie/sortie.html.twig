@@ -2,477 +2,314 @@
 
 {% block title %}Sortie.com{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/sortie.css">
+{% endblock %}
+
 {% block body %}
 
-<div id="sortie-page"
-    data-user-id="{{ app.user ? app.user.id : 0 }}">
+    <div id="sortie-page"
+        data-user-id="{{ app.user ? app.user.id : 0 }}">
 
-    {# Messages d'erreurs, d'avertissement ou de succès #}
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ label }}">
-                {{ message }}
-            </div>
+        {# Messages d'erreurs, d'avertissement ou de succès #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
 
-    {# Bloc date du jour & Nomm du participant connecté #}
-    <div class="top-bar">
-        <div class="date-box">
-            Date du jour : <span id="date-du-jour"></span>
-        </div>
-        {% if app.user %}
-            <div class="user-box">
-                Vous êtes : {{ app.user.prenom }} {{ app.user.nom|slice(0,1) }}.
+        {# Bloc date du jour & Nomm du participant connecté #}
+        <div class="top-bar">
+            <div class="date-box">
+                Date du jour : <span id="date-du-jour"></span>
             </div>
-        {% endif %}
-    </div>
-
-    {# Bloc filtres sur la liste des sorties #}
-    <div class="filter-card">
-
-        <h3 class="filter-title">Filtrer les sorties</h3>
-
-        <div class="filter-grid">
-            <div class="filter-left">
-                <div class="filter-group">
-
-                    <label>Ville :</label>
-                    <select id="site">
-                        <option value="" selected disabled>-- Sélectionner une ville --</option>
-                        {% set villes = [] %}
-                        {% for s in sortie %}
-                            {% if s.noLieux.noVilles.nomVille not in villes %}
-                                <option value="{{ s.noLieux.noVilles.nomVille }}">
-                                    {{ s.noLieux.noVilles.nomVille }}
-                                </option>
-                                {% set villes = villes|merge([s.noLieux.noVilles.nomVille]) %}
-                            {% endif %}
-                        {% endfor %}
-                    </select>
+            {% if app.user %}
+                <div class="user-box">
+                    Vous êtes : {{ app.user.prenom }} {{ app.user.nom|slice(0,1) }}.
                 </div>
+            {% endif %}
+        </div>
 
-                <div class="filter-group">
-                    <label>Le nom de la sortie contient :</label>
-                    <input type="text" id="search" placeholder="Rechercher...">
-                </div>
+        {# Bloc filtres sur la liste des sorties #}
+        <div class="filter-card">
 
-                <div class="filter-group">
-                    <label>Entre</label>
-                    <div class="date-range">
-                        <input type="date" id="dateStart">
-                        <span>et</span>
-                        <input type="date" id="dateEnd">
+            <h3 class="filter-title">Filtrer les sorties</h3>
+
+            <div class="filter-grid">
+                <div class="filter-left">
+                    <div class="filter-group">
+
+                        <label>Ville :</label>
+                        <select id="site">
+                            <option value="" selected disabled>-- Sélectionner une ville --</option>
+                            {% set villes = [] %}
+                            {% for s in sortie %}
+                                {% if s.noLieux.noVilles.nomVille not in villes %}
+                                    <option value="{{ s.noLieux.noVilles.nomVille }}">
+                                        {{ s.noLieux.noVilles.nomVille }}
+                                    </option>
+                                    {% set villes = villes|merge([s.noLieux.noVilles.nomVille]) %}
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Le nom de la sortie contient :</label>
+                        <input type="text" id="search" placeholder="Rechercher...">
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Entre</label>
+                        <div class="date-range">
+                            <input type="date" id="dateStart">
+                            <span>et</span>
+                            <input type="date" id="dateEnd">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="filter-right">
+                <div class="filter-right">
 
-                <label><input type="checkbox" id="orga"> Je suis l'organisateur.ice </label>
-                <label><input type="checkbox" id="inscrit"> Je suis inscrit.e</label>
-                <label><input type="checkbox" id="nonInscrit"> Non inscrit.e </label>
-                <label><input type="checkbox" id="passees"> Sorties passées </label>
+                    <label><input type="checkbox" id="orga"> Je suis l'organisateur.ice </label>
+                    <label><input type="checkbox" id="inscrit"> Je suis inscrit.e</label>
+                    <label><input type="checkbox" id="nonInscrit"> Non inscrit.e </label>
+                    <label><input type="checkbox" id="passees"> Sorties passées </label>
 
-                <button id="resetFilters" class="reset-btn">
-                    <i class="fas fa-broom"></i> Nettoyer les filtres
-                </button>
+                    <button id="resetFilters" class="reset-btn">
+                        <i class="fas fa-broom"></i> Nettoyer les filtres
+                    </button>
 
+                </div>
             </div>
         </div>
-    </div>
 
-    {# Bloc liste des sorties #}
-    <div class="table-card">
+        {# Bloc liste des sorties #}
+        <div class="table-card">
 
-        <table class="modern-table">
+            <table class="modern-table">
 
-            <thead>
-                <tr>
-                    <th>Titre</th>
-                    <th>Durée</th>
-                    <th>Date</th>
-                    <th>Clôture</th>
-                    <th>Places restantes</th>
-                    <th>Lieu</th>
-                    <th>Ville</th>
-                    <th>Organisateur</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Durée</th>
+                        <th>Date</th>
+                        <th>Clôture</th>
+                        <th>Places restantes</th>
+                        <th>Lieu</th>
+                        <th>Ville</th>
+                        <th>Organisateur</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
 
-            <tbody>
+                <tbody>
 
-                {# -----------------------------------
-                1) Toutes les sorties sauf archivées
-                -------------------------------------- #}
+                    {# -----------------------------------
+                    1) Toutes les sorties sauf archivées
+                    -------------------------------------- #}
 
-                {% for s in sortie %}
-                    {% if s.noEtats.id != 7 %}
-                        <tr data-organisateur="{{ s.organisateur.id }}"
-                            data-inscrit="{{ s.estInscrit(app.user) ? '1' : '0' }}">
+                    {% for s in sortie %}
+                        {% if s.noEtats.id != 7 %}
+                            <tr data-organisateur="{{ s.organisateur.id }}"
+                                data-inscrit="{{ s.estInscrit(app.user) ? '1' : '0' }}">
 
-                            <td class="title-cell">
-                                <a class="text-link" href="{{ path('sortie', { id: s.id }) }}">
-                                    {{ s.nom }}
-                                </a>
-                            </td>
-
-                            <td>{{ s.duree }}</td>
-                            <td>{{ s.dateDebut | date('d/m/Y') }}</td>
-                            <td>{{ s.dateCloture | date('d/m/Y') }}</td>
-
-                            {% set placesRestantes = s.nbInscriptionMax - s.inscriptions|length %}
-                            <td>
-                                {% if placesRestantes <= 0 %}
-                                    <span class="badge bg-danger">COMPLET</span>
-                                {% else %}
-                                    {{ placesRestantes }}
-                                {% endif %}
-                            </td>
-
-                            <td>{{ s.noLieux.nomLieu }}</td>
-                            <td>{{ s.noLieux.noVilles.nomVille }}</td>
-
-                            <td>
-                                <a class="text-link" href="profil/{{ s.organisateur.id }}">
-                                    {{ s.organisateur.prenom }} {{ s.organisateur.nom|slice(0,1) }}.
-                                </a>
-                            </td>
-
-                            {# ---------------
-                            Actions / Badges
-                            ------------------ #}
-
-                            <td class="actions-cell">
-
-                                {% if s.noEtats.id == 5 %}
-                                    <span class="badge bg-secondary">Annulée</span>
-
-                                {% elseif s.noEtats.id == 1 %}
-                                    {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
-                                        <a href="{{ path('sortie_publier', { id: s.id, redirect: 'list' }) }}"
-                                        class="badge-success"
-                                        data-bs-toggle="tooltip"
-                                        title="Publier la sortie"
-                                        onclick="return confirm('Publier cette sortie ?');">
-                                            Publier
-                                        </a>
-                                        <a href="{{ path('sortie_edit', { id: s.id }) }}"
-                                        class="action-icon text-warning"
-                                        data-bs-toggle="tooltip"
-                                        title="Modifier">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </a>
-                                    {% endif %}
-
-                                {% elseif s.noEtats.id == 3 %}
-                                    <span class="badge bg-danger">Clôturée</span>
-
-                                {% elseif s.noEtats.id == 4 %}
-                                    <span class="badge bg-success">En cours</span>
-
-                                {% elseif s.noEtats.id == 6 %}
-                                    <span class="badge bg-primary">Terminé</span>
-
-                                {% else %}
-                                    {# Etat Ouverte - boutons inscription / désinscription / annuler / modifier #}
-                                    <a href="{{ path('sortie', { id: s.id }) }}"
-                                    class="action-icon"
-                                    data-bs-toggle="tooltip"
-                                    title="Voir en détail">
-                                        <i class="fa-regular fa-eye"></i>
+                                <td class="title-cell">
+                                    <a class="text-link" href="{{ path('sortie', { id: s.id }) }}">
+                                        {{ s.nom }}
                                     </a>
+                                </td>
 
-                                {% if app.user %}
+                                <td>{{ s.duree }}</td>
+                                <td>{{ s.dateDebut | date('d/m/Y') }}</td>
+                                <td>{{ s.dateCloture | date('d/m/Y') }}</td>
 
-                                        {% set placesRestantes = s.nbInscriptionMax - s.inscriptions|length %}
-                                        {% set inscrit = s.estInscrit(app.user) %}
+                                {% set placesRestantes = s.nbInscriptionMax - s.inscriptions|length %}
+                                <td>
+                                    {% if placesRestantes <= 0 %}
+                                        <span class="badge bg-danger">COMPLET</span>
+                                    {% else %}
+                                        {{ placesRestantes }}
+                                    {% endif %}
+                                </td>
 
-                                        {% if inscrit %}
-                                            <a href="{{ path('sortie_desinscription', { id: s.id, redirect: 'list' }) }}"
-                                            class="btn-desinscription action-icon danger"
+                                <td>{{ s.noLieux.nomLieu }}</td>
+                                <td>{{ s.noLieux.noVilles.nomVille }}</td>
+
+                                <td>
+                                    <a class="text-link" href="profil/{{ s.organisateur.id }}">
+                                        {{ s.organisateur.prenom }} {{ s.organisateur.nom|slice(0,1) }}.
+                                    </a>
+                                </td>
+
+                                {# ---------------
+                                Actions / Badges
+                                ------------------ #}
+
+                                <td class="actions-cell">
+
+                                    {% if s.noEtats.id == 5 %}
+                                        <span class="badge bg-secondary">Annulée</span>
+
+                                    {% elseif s.noEtats.id == 1 %}
+                                        {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
+                                            <a href="{{ path('sortie_publier', { id: s.id, redirect: 'list' }) }}"
+                                            class="badge-success"
                                             data-bs-toggle="tooltip"
-                                            title="Se désinscrire">
-                                                <i class="fa-solid fa-user-minus text-danger"></i>
+                                            title="Publier la sortie"
+                                            onclick="return confirm('Publier cette sortie ?');">
+                                                Publier
                                             </a>
-
-                                        {% elseif placesRestantes > 0 %}
-                                            <a href="{{ path('sortie_inscription', { id: s.id, redirect: 'list' }) }}"
-                                            class="action-icon success"
+                                            <a href="{{ path('sortie_edit', { id: s.id }) }}"
+                                            class="action-icon text-warning"
                                             data-bs-toggle="tooltip"
-                                            title="S'inscrire">
-                                                <i class="fa-solid fa-user-plus text-success"></i>
+                                            title="Modifier">
+                                                <i class="fa-solid fa-pen"></i>
                                             </a>
                                         {% endif %}
 
-                                    {% endif %}
+                                    {% elseif s.noEtats.id == 3 %}
+                                        <span class="badge bg-danger">Clôturée</span>
 
-                                    {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
-                                        <a href="{{ path('sortie_annuler', { id: s.id, redirect: 'list' }) }}"
-                                        class="action-icon danger"
-                                        data-bs-toggle="modal" data-bs-target="#annulerModal{{ s.id }}"
+                                    {% elseif s.noEtats.id == 4 %}
+                                        <span class="badge bg-success">En cours</span>
+
+                                    {% elseif s.noEtats.id == 6 %}
+                                        <span class="badge bg-primary">Terminé</span>
+
+                                    {% else %}
+                                        {# Etat Ouverte - boutons inscription / désinscription / annuler / modifier #}
+                                        <a href="{{ path('sortie', { id: s.id }) }}"
+                                        class="action-icon"
                                         data-bs-toggle="tooltip"
-                                        title="Annuler"
-                                        onclick="return confirm('Voulez-vous vraiment annuler cette sortie ?');">
-                                            <i class="fa-solid fa-ban text-danger"></i>
+                                        title="Voir en détail">
+                                            <i class="fa-regular fa-eye"></i>
                                         </a>
-                                        <a href="{{ path('sortie_edit', { id: s.id }) }}"
-                                        class="action-icon text-warning"
-                                        data-bs-toggle="tooltip"
-                                        title="Modifier">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </a>
+
+                                    {% if app.user %}
+
+                                            {% set placesRestantes = s.nbInscriptionMax - s.inscriptions|length %}
+                                            {% set inscrit = s.estInscrit(app.user) %}
+
+                                            {% if inscrit %}
+                                                <a href="{{ path('sortie_desinscription', { id: s.id, redirect: 'list' }) }}"
+                                                class="btn-desinscription action-icon danger"
+                                                data-bs-toggle="tooltip"
+                                                title="Se désinscrire">
+                                                    <i class="fa-solid fa-user-minus text-danger"></i>
+                                                </a>
+
+                                            {% elseif placesRestantes > 0 %}
+                                                <a href="{{ path('sortie_inscription', { id: s.id, redirect: 'list' }) }}"
+                                                class="action-icon success"
+                                                data-bs-toggle="tooltip"
+                                                title="S'inscrire">
+                                                    <i class="fa-solid fa-user-plus text-success"></i>
+                                                </a>
+                                            {% endif %}
+
+                                        {% endif %}
+
+                                        {% if app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
+                                            <a href="{{ path('sortie_annuler', { id: s.id, redirect: 'list' }) }}"
+                                            class="action-icon danger"
+                                            data-bs-toggle="modal" data-bs-target="#annulerModal{{ s.id }}"
+                                            data-bs-toggle="tooltip"
+                                            title="Annuler"
+                                            onclick="return confirm('Voulez-vous vraiment annuler cette sortie ?');">
+                                                <i class="fa-solid fa-ban text-danger"></i>
+                                            </a>
+                                            <a href="{{ path('sortie_edit', { id: s.id }) }}"
+                                            class="action-icon text-warning"
+                                            data-bs-toggle="tooltip"
+                                            title="Modifier">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+
+                    {# ------------------------------------------------------------------
+                    2) Sorties archivées - visibles seulement pour organisateur ou admin
+                    --------------------------------------------------------------------- #}
+
+                    {% for s in sortie %}
+                        {% if s.noEtats.id == 7 and app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
+                            <tr data-organisateur="{{ s.organisateur.id }}"
+                                data-inscrit="{{ s.estInscrit(app.user) ? '1' : '0' }}">
+                                
+                                <td class="title-cell">
+                                    <a class="text-link" href="{{ path('sortie', { id: s.id }) }}">
+                                        {{ s.nom }}
+                                    </a>
+                                </td>
+                                <td>{{ s.duree }}</td>
+                                <td>{{ s.dateDebut | date('d/m/Y') }}</td>
+                                <td>{{ s.dateCloture | date('d/m/Y') }}</td>
+                                <td>{{ s.nbInscriptionMax }}</td>
+                                <td>{{ s.noLieux.nomLieu }}</td>
+                                <td>{{ s.noLieux.noVilles.nomVille }}</td>
+                                <td>
+                                    <a class="text-link" href="profil/{{ s.organisateur.id }}">
+                                        {{ s.organisateur.prenom }} {{ s.organisateur.nom|slice(0,1) }}.
+                                    </a>
+                                </td>
+
+                                <td class="actions-cell">
+                                    <span class="badge bg-warning">Archivée</span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+
+                    {# -----------------
+                    3) Si aucune sortie
+                    ------------------- #}
+
+                    {% if sortie|length == 0 %}
+                        <tr>
+                            <td colspan="9" class="empty-row">
+                                Aucune sortie disponible
                             </td>
                         </tr>
                     {% endif %}
-                {% endfor %}
 
-                {# ------------------------------------------------------------------
-                2) Sorties archivées - visibles seulement pour organisateur ou admin
-                --------------------------------------------------------------------- #}
+                </tbody>
+            </table>
+        </div>
 
-                {% for s in sortie %}
-                    {% if s.noEtats.id == 7 and app.user and (app.user.id == s.organisateur.id or is_granted('ROLE_ADMIN')) %}
-                        <tr data-organisateur="{{ s.organisateur.id }}"
-                            data-inscrit="{{ s.estInscrit(app.user) ? '1' : '0' }}">
-                            
-                            <td class="title-cell">
-                                <a class="text-link" href="{{ path('sortie', { id: s.id }) }}">
-                                    {{ s.nom }}
-                                </a>
-                            </td>
-                            <td>{{ s.duree }}</td>
-                            <td>{{ s.dateDebut | date('d/m/Y') }}</td>
-                            <td>{{ s.dateCloture | date('d/m/Y') }}</td>
-                            <td>{{ s.nbInscriptionMax }}</td>
-                            <td>{{ s.noLieux.nomLieu }}</td>
-                            <td>{{ s.noLieux.noVilles.nomVille }}</td>
-                            <td>
-                                <a class="text-link" href="profil/{{ s.organisateur.id }}">
-                                    {{ s.organisateur.prenom }} {{ s.organisateur.nom|slice(0,1) }}.
-                                </a>
-                            </td>
-
-                            <td class="actions-cell">
-                                <span class="badge bg-warning">Archivée</span>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-
-                {# -----------------
-                3) Si aucune sortie
-                ------------------- #}
-
-                {% if sortie|length == 0 %}
-                    <tr>
-                        <td colspan="9" class="empty-row">
-                            Aucune sortie disponible
-                        </td>
-                    </tr>
-                {% endif %}
-
-            </tbody>
-        </table>
-    </div>
-
-    {# Modal pour le motif d'annulation #}
-    {% for sortie in sortie %}
-        <div class="modal fade" id="annulerModal{{ sortie.id }}" tabindex="-1" aria-labelledby="annulerModalLabel{{ sortie.id }}" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form method="post" action="{{ path('sortie_annuler', { id: sortie.id }) }}">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="annulerModalLabel{{ sortie.id }}">Motif d'annulation</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="motifAnnulation{{ sortie.id }}" class="form-label">Veuillez indiquer un motif</label>
-                                <textarea class="form-control" name="motifAnnulation" id="motifAnnulation{{ sortie.id }}" rows="3" required></textarea>
+        {# Modal pour le motif d'annulation #}
+        {% for sortie in sortie %}
+            <div class="modal fade" id="annulerModal{{ sortie.id }}" tabindex="-1" aria-labelledby="annulerModalLabel{{ sortie.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form method="post" action="{{ path('sortie_annuler', { id: sortie.id }) }}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="annulerModalLabel{{ sortie.id }}">Motif d'annulation</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-danger">Confirmer l'annulation</button>
-                        </div>
-                    </form>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="motifAnnulation{{ sortie.id }}" class="form-label">Veuillez indiquer un motif</label>
+                                    <textarea class="form-control" name="motifAnnulation" id="motifAnnulation{{ sortie.id }}" rows="3" required></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                <button type="submit" class="btn btn-danger">Confirmer l'annulation</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 
-    <style>
-    /* ===== TOP BAR ===== */
-    .top-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        max-width: 1100px;
-        margin: 1.5rem auto;
-    }
-
-    .date-box,
-    .user-box {
-        background: white;
-        padding: 0.6rem 1rem;
-        border-radius: 6px;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    /* ===== FILTER CARD ===== */
-    .filter-card {
-        max-width: 1100px;
-        margin: 2rem auto;
-        padding: 2rem;
-        background: white;
-        border-radius: 10px;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    }
-
-    .filter-title {
-        text-align: center;
-        margin-bottom: 1.5rem;
-        color: var(--accent);
-    }
-
-    .text-link {
-        text-decoration: none;
-        color: #4B0082;
-        transition: 0.2s ease;
-    }
-
-    .text-link:hover {
-        font-weight: bold;
-        color: var(--accent-dark);
-    }
-
-    .filter-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-    }
-
-    .filter-group {
-        margin-bottom: 1rem;
-    }
-
-    .filter-group input,
-    .filter-group select {
-        width: 100%;
-        padding: 0.6rem;
-        border-radius: 6px;
-        border: 1px solid var(--border-color);
-        background: var(--bg-secondary);
-    }
-
-    /* Bouton reset */
-    .reset-btn {
-        margin-top: 1rem;
-        padding: 0.6rem 1.5rem;
-        border-radius: 6px;
-        background: var(--accent);
-        color: white;
-        border: none;
-        cursor: pointer;
-        transition: 0.3s ease;
-    }
-
-    .reset-btn:hover {
-        transform: translateY(-2px);
-        opacity: 0.9;
-    }
-
-    /* ===== TABLE CARD ===== */
-    .table-card {
-        max-width: 1500px;
-        margin: 2rem auto;
-        background: white;
-        border-radius: 10px;
-        padding: 1rem;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-    }
-
-    .modern-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .modern-table th {
-        background: var(--bg-secondary);
-        padding: 0.8rem;
-        text-align: left;
-    }
-
-    .modern-table td {
-        padding: 0.8rem;
-        border-top: 1px solid var(--border-color);
-    }
-
-    .modern-table tbody tr {
-        transition: 0.2s ease;
-    }
-
-    .modern-table tbody tr:hover {
-        background: var(--glass);
-        transform: scale(1.01);
-    }
-
-    /* Actions */
-    .actions-cell {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .action-icon {
-        text-decoration: none;
-        font-size: 1.1rem;
-        transition: 0.2s ease;
-    }
-
-    .action-icon:hover {
-        transform: scale(1.2);
-    }
-
-    .success { color: #4caf50; }
-    .danger { color: #e53935; }
-
-    .badge-cancel {
-        color: white;
-        background: #666666;
-        padding: 0.3rem 0.6rem;
-        border-radius: 4px;
-        font-size: 0.75rem;
-    }
-
-    .badge-success{
-        text-decoration: none;
-        font-size: 1.1rem;
-        transition: 0.2s ease;
-        color: white;
-        background: #4caf50;
-        padding: 0.3rem 0.6rem;
-        border-radius: 4px;
-        font-size: 0.75rem;
-    }
-
-    .badge-success:hover {
-        transform: scale(1.2);
-    }
-
-    .empty-row {
-        text-align: center;
-        padding: 1rem;
-        color: var(--text-secondary);
-    }
-    </style>
-</div>
 {% endblock %}
 
 {% block javascripts %}
