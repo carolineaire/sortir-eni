@@ -19,7 +19,7 @@
 
     <div class="fluid-container">
 
-        <h1 class="page-title">Créer une sortie</h1>
+        <h1 class="page-title">Modifier une sortie</h1>
 
         <div class="form-card">
 
@@ -92,12 +92,12 @@
 
                 {{ form_widget(sortieForm.publier, {'attr': {'style': 'display:none'}}) }}
 
-                <a href="{{ path('sortie', { id: sortie.id }) }}" class="btn-primary ">
+                <a href="{{ path('sortie', { id: sortie.id }) }}" class="cancel-btn">
                     Annuler
                 </a>
                 {# Bouton supprimer simple #}
                 <a href="{{ path('sortie_delete', {'id': sortie.id}) }}"
-                   class="btn-danger"
+                   class="cancel-btn"
                    onclick="return confirm('Voulez-vous vraiment supprimer cette sortie ?');">
                     Supprimer
                 </a>
