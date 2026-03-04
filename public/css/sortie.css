@@ -270,6 +270,11 @@
         color: white;
     }
 
+    .btn-success {
+        background: linear-gradient(135deg, #4caf50, #81c784);
+        color: white;
+    }
+
     .action-btn:hover {
         transform: translateY(-3px);
         opacity: 0.9;

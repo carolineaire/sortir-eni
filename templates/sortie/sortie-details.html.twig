@@ -69,7 +69,7 @@
             {% elseif sortie.noEtats.id == 1 %}
                 {% if app.user and (app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN')) %}
                     <a href="{{ path('sortie_publier', { id: sortie.id, redirect: 'detail' }) }}"
-                       class="action-btn success"
+                       class="action-btn btn-success"
                        onclick="return confirm('Publier cette sortie ?');">
                         Publier
                     </a>
