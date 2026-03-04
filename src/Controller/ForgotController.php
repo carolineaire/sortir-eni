@@ -56,7 +56,7 @@ final class ForgotController extends AbstractController
             return $this->redirectToRoute('password_forgot');
         }
 
-        return $this->render('security/forgot.html.twig', [
+        return $this->render('security/reset-password.html.twig', [
             'forgotForm' => $form,
         ]);
     }

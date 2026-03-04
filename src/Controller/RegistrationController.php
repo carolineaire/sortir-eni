@@ -45,38 +45,6 @@ class RegistrationController extends AbstractController
             $entityManager->persist($participant);
             $entityManager->flush();
 
-//            // 2) CRÉATION DU PARTICIPANT ASSOCIÉ
-//            $participant = new Participants();
-//            $participant->setUser($user); // Lien OneToOne
-////var_dump($user);
-//
-//            // Champs Participants (mapped = false dans le form)
-//
-//            $participant->setNom($form->get('nom')->getData());
-//            $participant->setPrenom($form->get('prenom')->getData());
-//            $participant->setTelephone($form->get('telephone')->getData());
-//            $participant->setMail($form->get('email')->getData());
-//            $participant->setMotDePasse($user->getPassword());
-//
-//            $participant->setAdministrateur($form->get('administrateur')->getData());
-//            $participant->setActif($form->get('actif')->getData());
-//            $participant->setPseudo($user->getPseudo());
-//
-//
-////            $siteId = $form->get('site')->getData();
-////            $site = $entityManager->getRepository(Sites::class)->find($siteId);
-////            $participant->setNoSites($site);
-//            // $site = $entityManager->getRepository(Sites::class)->find($siteId);
-//            // $participant->setNoSites($site);
-//            $participant->setNoSites($form->get('site')->getData());
-//
-//            // 3) PERSISTENCE
-//
-//            $entityManager->persist($participant);
-//            $entityManager->flush();
-
-            // 4) LOGIN AUTOMATIQUE
-            //return $security->login($participant, 'form_login', 'main');
             return $this->redirectToRoute('app_login');
         }
 

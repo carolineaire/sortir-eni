@@ -34,7 +34,7 @@ final class VillesController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('villes/gererVille.html.twig', [
+        return $this->render('villes/gerer-ville.html.twig', [
             'villes' => $villes,
         ]);
     }
@@ -57,7 +57,7 @@ final class VillesController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('villes/formVille.html.twig', [
+        return $this->render('villes/form-ville.html.twig', [
             'villeForm' => $form,
             'titre' => 'Ajouter une ville'
         ]);
@@ -80,7 +80,7 @@ final class VillesController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('villes/modifierVille.html.twig', [
+        return $this->render('villes/modifier-ville.html.twig', [
             'villeForm' => $form,
             'titre' => 'Modifier la ville'
         ]);
@@ -95,8 +95,4 @@ final class VillesController extends AbstractController
         $this->addFlash('success', 'Ville supprimée avec succès !');
         return $this->redirectToRoute('app_villes');
     }
-
-
-
-
 }

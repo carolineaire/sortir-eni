@@ -134,7 +134,7 @@ final class ProfilController extends AbstractController
         }
         
         // 9) AFFICHER le formulaire
-        return $this->render('profil/edit.html.twig', [
+        return $this->render('profil/modifier-profil.html.twig', [
             'editProfilForm' => $form,
             'participant' => $participant,
             'user' => $user,

@@ -37,7 +37,7 @@ final class ParticipantsController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        return $this->render('participants/usersList.html.twig', [
+        return $this->render('participants/users-list.html.twig', [
             'users' => $users,
             'search' => $search,
         ]);
@@ -62,25 +62,6 @@ final class ParticipantsController extends AbstractController
 
         return $this->redirectToRoute('app_participants');
     }
-
-//    #[Route('/participants/{id}/delete', name: 'participants_deleteUser')]
-//    public function deleteUser(Participants $user, EntityManagerInterface $em): Response
-//    {
-//        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-//
-//        // Empêche un admin de se supprimer lui-même
-//        if ($this->getUser() === $user) {
-//            $this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte.');
-//            return $this->redirectToRoute('app_participants');
-//        }
-//
-//        $em->remove($user);
-//        $em->flush();
-//
-//        $this->addFlash('success', 'Utilisateur supprimé avec succès.');
-//
-//        return $this->redirectToRoute('app_participants');
-//    }
 
 
     #[Route('/participants/{id}/delete', name: 'participants_deleteUser')]
@@ -228,7 +209,7 @@ final class ParticipantsController extends AbstractController
             return $this->redirectToRoute('app_participants');
         }
 
-        return $this->render('participants/users_importCsv.html.twig', [
+        return $this->render('participants/users-import-csv.html.twig', [
             'form' => $form->createView(),
         ]);
     }

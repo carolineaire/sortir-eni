@@ -36,7 +36,7 @@ final class SitesController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('sites/gererSite.html.twig', [
+        return $this->render('sites/gerer-site.html.twig', [
             'sites' => $sites,
         ]);
     }
@@ -57,7 +57,7 @@ final class SitesController extends AbstractController
             return $this->redirectToRoute('app_sites');
         }
 
-        return $this->render('sites/modifierSite.html.twig', [
+        return $this->render('sites/modifier-site.html.twig', [
             'siteForm' => $form,
             'titre' => 'Ajouter un site'
         ]);
@@ -75,7 +75,7 @@ final class SitesController extends AbstractController
             return $this->redirectToRoute('app_sites');
         }
 
-        return $this->render('sites/modifierSite.html.twig', [
+        return $this->render('sites/modifier-site.html.twig', [
             'siteForm' => $form,
             'titre' => 'Modifier le site'
         ]);

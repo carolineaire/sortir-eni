@@ -38,15 +38,6 @@ final class SortieController extends AbstractController
                 ->getQuery()
                 ->getResult();
         } else {
-//
-//                 $sorties = $repo->createQueryBuilder('s')
-//                ->Where('s.noEtats > 1')  // Assurer que l'état n'est pas "Créé"
-//                ->orWhere('s.organisateur = :user')  // Ou l'organisateur est l'utilisateur actuel
-//                ->orderBy('s.dateDebut', 'ASC') // Trier par la date de début
-//                ->setParameter('user', $this->getUser())
-//                ->getQuery()
-//                ->getResult();
-
             // 1 Sorties publiques
             $publicSorties = $repo->createQueryBuilder('s')
                 ->where('s.isPrivate = false')
@@ -71,9 +62,6 @@ final class SortieController extends AbstractController
 
         }
 
-
-        //$user = $this->getUser();
-
         $villes = [];
         foreach ($sorties as $s) {
             $nomVille = $s->getNoLieux()->getNoVilles()->getNomVille();
@@ -81,11 +69,6 @@ final class SortieController extends AbstractController
                 $villes[] = $nomVille;
             }
         }
-
-        //si pas d'user connecté, redirection vers la page de connexion
-//        if (!$this->getUser()) {
-//            return $this->redirectToRoute('app_login');
-//        }
 
         return $this->render('sortie/sortie.html.twig', [
             'sortie' => $sorties,
@@ -158,10 +141,6 @@ final class SortieController extends AbstractController
 
 
                 }
-
-                // État par défaut = "Créée"
-                //  $etatCree = $em->getRepository(Etats::class)->find(1);
-                // $sortie->setNoEtats($etatCree);
 
                 if ($sortieForm->get('enregistrer')->isClicked()) {
 
@@ -460,19 +439,6 @@ final class SortieController extends AbstractController
                 return $this->redirectToRoute('sortie_edit', ['id' => $sortie->getId()]);
             }
 
-            // Gestion des boutons
-//            if ($form->get('enregistrer')->isClicked()) {
-////                $etat = $em->getRepository(Etats::class)->find(1); // Créée
-//            }
-
-//            if ($form->get('publier')->isClicked()) {
-////                $etat = $em->getRepository(Etats::class)->find(2); // Ouverte
-//            }
-
-//            if (isset($etat)) {
-//                $sortie->setNoEtats($etat);
-//            }
-
             // Pas de persist() l'entité existe déjà
             $em->flush();
 
@@ -484,7 +450,7 @@ final class SortieController extends AbstractController
             return $this->redirectToRoute('app_sortie');
         }
 
-        return $this->render('sortie/modifierSortie.html.twig', [
+        return $this->render('sortie/modifier-sortie.html.twig', [
             'sortieForm' => $form,
             'sortie' => $sortie,
             'rue' => $lieu ? $lieu->getRue() : '',
@@ -497,12 +463,6 @@ final class SortieController extends AbstractController
     #[Route('/sortie/{id}/delete', name: 'sortie_delete', methods: ['GET'])]
     public function delete(Sorties $sortie, EntityManagerInterface $em): Response
     {
-        //  check si l'utilisateur est l'organisateur
-        // if ($this->getUser() !== $sortie->getOrganisateur()) {
-        //     $this->addFlash('error', 'Vous ne pouvez pas supprimer cette sortie.');
-        //     return $this->redirectToRoute('app_sortie');
-        // }
-
         $em->remove($sortie);
         $em->flush();
 
