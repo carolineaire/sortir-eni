@@ -65,37 +65,37 @@
                     </p>
                 {% endif %}
 
-            {# Sortie créée - Option publiée & modifier disponible (seulement pour les admins & l'organisateur) #}
+                {# Sortie créée - Option publiée & modifier disponible (seulement pour les admins & l'organisateur) #}
             {% elseif sortie.noEtats.id == 1 %}
                 {% if app.user and (app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN')) %}
                     <a href="{{ path('sortie_publier', { id: sortie.id, redirect: 'detail' }) }}"
-                    class="action-btn success"
-                    onclick="return confirm('Publier cette sortie ?');">
+                       class="action-btn success"
+                       onclick="return confirm('Publier cette sortie ?');">
                         Publier
                     </a>
                     <a href="{{ path('sortie_edit', { id: sortie.id }) }}"
-                        class="action-btn btn-warning">
+                       class="action-btn btn-warning">
                         Modifier la sortie
                     </a>
                 {% endif %}
 
-            {# Sortie Cloturée - Les inscriptions sont fermées #}
+                {# Sortie Cloturée - Les inscriptions sont fermées #}
             {% elseif sortie.noEtats.id == 3 %}
                 <span class="badge bg-danger">Inscription clôturée</span>
 
-            {# Sortie en cours (début de la sortie + durée) #}
+                {# Sortie en cours (début de la sortie + durée) #}
             {% elseif sortie.noEtats.id == 4 %}
                 <span class="badge bg-success">Activité en cours</span>
 
-            {# Sortie passée (après début de la sortie + durée) #}
+                {# Sortie passée (après début de la sortie + durée) #}
             {% elseif sortie.noEtats.id == 6 %}
                 <span class="badge bg-primary">Activité terminée</span>
 
-            {# Sortie archivée (1 mois après la fin de la sortie) #}
+                {# Sortie archivée (1 mois après la fin de la sortie) #}
             {% elseif sortie.noEtats.id == 7 %}
                 <span class="badge bg-warning">Archivée</span>
 
-            {# Sortie ouverte - Options inscriptions, désinscription, modifiée, annulation disponnible (visible par tout les participants) #}
+                {# Sortie ouverte - Options inscriptions, désinscription, modifiée, annulation disponnible (visible par tout les participants) #}
             {% else %}
                 {% if app.user %}
 
@@ -121,25 +121,25 @@
 
                 {% if app.user and (app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN')) %}
                     <a href="{{ path('sortie_edit', { id: sortie.id }) }}"
-                        class="action-btn btn-warning">
+                       class="action-btn btn-warning">
                         Modifier la sortie
                     </a>
                     <a href="{{ path('sortie_annuler', { id: sortie.id, redirect: 'detail' }) }}"
-                        class="action-btn outline-danger"
-                        data-bs-toggle="modal" data-bs-target="#annulerModal{{ sortie.id }}"
-                        onclick="return confirm('Voulez-vous vraiment annuler cette sortie ?');">
+                       class="action-btn outline-danger"
+                       data-bs-toggle="modal" data-bs-target="#annulerModal{{ sortie.id }}"
+                       onclick="return confirm('Voulez-vous vraiment annuler cette sortie ?');">
                         Annuler la sortie
                     </a>
                 {% endif %}
-            {% endif %} 
+            {% endif %}
         </div>
     </div>
 
     {# Bloc liste des participants inscrits à la sortie (pas disponible si pas publiée ou si annulée) #}
     {% if sortie.noEtats.id != 1 %}
-    <div class="participants-card">
+        <div class="participants-card">
 
-        <h3>Participants inscrits</h3>
+            <h3>Participants inscrits</h3>
 
        <div class="participants-list">
 
@@ -173,7 +173,6 @@
             {% endif %}
 
         </div>
-    </div>
     {% endif %}
 
     <div class="back-button">
@@ -205,6 +204,17 @@
             </div>
         </div>
     </div>
+    <script>
+        {# Temps d'affichage du message d'erreur, succes, avertissement #}
+    document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () {
+        document.querySelectorAll('.alert').forEach(function (alert) {
+            alert.classList.add('fade-out');
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+});
+    </script>
 
 {% endblock %}
 

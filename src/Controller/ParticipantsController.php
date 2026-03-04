@@ -17,16 +17,29 @@ use Symfony\Component\Validator\Constraints\File;
 final class ParticipantsController extends AbstractController
 {
     #[Route('/participants', name: 'app_participants')]
-    public function index(ParticipantsRepository $repo): Response
+    public function index(ParticipantsRepository $repo,Request $request): Response
     {
         // Vérifie que l'utilisateur est admin
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Récupère tous les utilisateurs
-        $users = $repo->findAll();
+        $search = $request->query->get('search', ''); // récupère ?search=xxx
+
+        $qb = $repo->createQueryBuilder('p')
+            ->where('p.pseudo NOT LIKE :deleted')
+            ->setParameter('deleted', 'supprime%');
+
+        if ($search) {
+            $qb->andWhere('p.pseudo LIKE :search OR p.nom LIKE :search OR p.prenom LIKE :search')
+                ->setParameter('search', '%'.$search.'%');
+        }
+
+        $users = $qb->orderBy('p.pseudo', 'ASC')
+            ->getQuery()
+            ->getResult();
 
         return $this->render('participants/usersList.html.twig', [
             'users' => $users,
+            'search' => $search,
         ]);
     }
 
@@ -74,7 +87,8 @@ final class ParticipantsController extends AbstractController
     public function deleteUser(
         Participants $user,
         EntityManagerInterface $em,
-        EtatsRepository $etatsRepository
+        EtatsRepository $etatsRepository,
+        UserPasswordHasherInterface $passwordHasher
     ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -92,17 +106,39 @@ final class ParticipantsController extends AbstractController
 
         // Transférer les sorties
         foreach ($user->getSorties() as $sortie) {
-            $sortie->setOrganisateur($admin);
+
             $sortie->setNoEtats($etatAnnule);
+            $sortie->setMotifAnnulation("Sortie annulée suite à la suppression du compte organisateur.");
         }
 
-        // Suppri  mer l'utilisateur
-        $em->remove($user);
+        // Trouver le prochain numéro pour "Utilisateur supprimé X"
+        $ghostCount = $em->getRepository(Participants::class)
+            ->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.nom LIKE :nom')
+            ->setParameter('nom', 'Utilisateur supprimé%')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $num = $ghostCount + 1;
+        $hashedPassword = $passwordHasher->hashPassword($user, '1234567');
+        // Anonymiser le participant
+        $user->setNom('Utilisateur supprimé '.$num);
+        $user->setPrenom('Supprimé');
+        $user->setEmail('supprime'.$num.'@example.com');
+        $user->setPassword($hashedPassword);
+        $user->setRoles(['ROLE_USER']);
+        $user->setTelephone("0000000000");
+        $user->setPseudo("supprime".$num);
+        $user->setImage(" ");
+        $user->setAdministrateur(false);
+        // Optionnel : désactiver le compte
+        $user->setActif(false);
         $em->flush();
 
         $this->addFlash(
             'success',
-            'Utilisateur supprimé avec succès. Ses sorties ont été transférées à l\'administrateur et mises en état annulé.'
+            'Utilisateur anonymisé avec succès.Ses sorties ont été  mises en état annulé.'
         );
 
         return $this->redirectToRoute('app_participants');
