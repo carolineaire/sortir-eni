@@ -95,7 +95,7 @@ final class SortieController extends AbstractController
     }
 
 
-    #[Route('/creerSortie', name: 'sortie_create', methods: ['GET', 'POST'])]
+    #[Route('/creer-sortie', name: 'sortie_create', methods: ['GET', 'POST'])]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
@@ -183,7 +183,7 @@ final class SortieController extends AbstractController
                 return $this->redirectToRoute('app_sortie');
             }
         }
-            return $this->render('sortie/creerSortie.html.twig', [
+            return $this->render('sortie/creer-sortie.html.twig', [
                 'sortieForm' => $sortieForm
             ]);
         }
