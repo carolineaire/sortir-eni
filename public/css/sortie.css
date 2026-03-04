@@ -601,6 +601,56 @@ input[type="checkbox"] {
     gap: 8px;
 }
 
+.hidden {
+    display: none;
+}
+
+#invites-card {
+    max-width: 700px;
+    /* margin: 2rem auto; */
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: white;
+}
+
+#invites-list {
+    max-height: 200px; /* limite à 200px */
+    overflow-y: auto;  /* scroll si nécessaire */
+    padding: 0.5rem 0;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+/* Chaque participant */
+.invite-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+}
+
+/* Lignes alternées gris / mauve */
+.invite-item:nth-child(odd) {
+    background-color: #f5f5f5; /* gris clair */
+}
+
+.invite-item:nth-child(even) {
+    background-color: #e8dff5; /* violet très clair */
+}
+
+/* Optionnel : style label / input */
+.invite-item label {
+    margin-left: 0.5rem;
+    color: var(--text-primary);
+}
+
+.invite-item input[type="checkbox"] {
+    transform: scale(1.1);
+}
+
+
 /* --- PAGE STRUCTURE --- */
 .page-title {
 text-align: center;

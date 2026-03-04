@@ -24,15 +24,19 @@
                 {{ form_label(sortieForm.isPrivate) }}
             </div>
 
-            <div id="invites-list">
-                {% for invite in sortieForm.invites %}
-                    <div class="invite-item">
-                        {{ form_widget(invite) }}
-                        {{ form_label(invite) }}
-                    </div>
-                {% endfor %}
+            <div class="invites-card mb-2">
+                <div id="invites-list" 
+                class="{% if not sortieForm.vars.data.isPrivate %}hidden{% endif %}">
+                    {% for invite in sortieForm.invites %}
+                        <div class="invite-item">
+                            {{ form_widget(invite) }}
+                            {{ form_label(invite) }}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-            <section class="form-section">
+
+            <section class="form-section mt-3">
                 <h2>Informations générales</h2>
 
                 <div class="grid-2">
@@ -95,42 +99,3 @@
 {% block javascripts %}
     <script type="module" src="{{ asset('js/creer-sortie.js') }}"></script>
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
