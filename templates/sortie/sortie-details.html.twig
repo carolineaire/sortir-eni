@@ -105,14 +105,14 @@
                     {# Si sortie complète, le btn inscription n'est plus disponible (et desinscription seulement pour les inscrits) #}
                     {% if inscrit %}
                         <a href="{{ path('sortie_desinscription', { id: sortie.id, redirect: 'detail' }) }}"
-                        class="action-btn danger"
+                        class="action-btn danger-detail"
                         onclick="return confirm('Voulez-vous vraiment vous désinscrire ?');">
                             Se désinscrire
                         </a>
 
                     {% elseif placesRestantes > 0 %}
                         <a href="{{ path('sortie_inscription', { id: sortie.id, redirect: 'detail' }) }}"
-                        class="action-btn success">
+                        class="action-btn success-detail">
                             S'inscrire
                         </a>
                     {% endif %}
@@ -144,10 +144,13 @@
        <div class="participants-list">
 
             {# Afficher l'organisateur en premier #}
-            <div class="participant-row organizer">
-                <span class="pseudo">{{ sortie.organisateur.pseudo }}</span>
-                <span>{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</span>
-            </div>
+            <a href="{{ path('app_profil_user', { id: sortie.organisateur.id }) }}"
+            class="participant-row-link">
+                <div class="participant-row">
+                    <span class="pseudo">{{ sortie.organisateur.pseudo }}</span>
+                    <span class="name">{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</span>
+                </div>
+            </a>
 
             {# Boucle sur les inscriptions #}
             {% if sortie.inscriptions|length > 0 %}
@@ -158,7 +161,7 @@
                         class="participant-row-link">
                             <div class="participant-row">
                                 <span class="pseudo">{{ inscription.noParticipants.pseudo }}</span>
-                                <span>{{ inscription.noParticipants.prenom }} {{ inscription.noParticipants.nom }}</span>
+                                <span class="name">{{ inscription.noParticipants.prenom }} {{ inscription.noParticipants.nom }}</span>
                             </div>
                         </a>
                     {% endif %}
@@ -174,7 +177,7 @@
     {% endif %}
 
     <div class="back-button">
-        <a href="{{ path('app_sortie') }}" class="edit-profile-btn">
+        <a href="{{ path('app_sortie') }}" class="back-home-btn">
             ← Retour à la liste
         </a>
     </div>
