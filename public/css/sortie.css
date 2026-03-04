@@ -765,6 +765,10 @@ cursor: pointer;
 border: none;
 }
 
+.submit-container a {
+    text-decoration: none;
+}
+
 /* Bouton ENREGISTRER */
 button[name="sorties[enregistrer]"] {
 background: #3498db;

@@ -9,14 +9,20 @@
 
 {% block body %}
 
+    {# Messages d'erreurs, d'avertissement ou de succès #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
     <div class="fluid-container">
 
         <h1 class="page-title">Créer une sortie</h1>
 
         <div class="form-card">
-            {% for message in app.flashes('error') %}
-                <div class="alert alert-danger">{{ message }}</div>
-            {% endfor %}
 
             {{ form_start(sortieForm) }}
             <div class="form-check">
@@ -84,7 +90,7 @@
                 {{ form_widget(sortieForm.enregistrer) }}
                 {{ form_widget(sortieForm.publier) }}
 
-                <a href="{{ path('app_sortie') }}" class="btn-primary ">
+                <a href="{{ path('app_sortie') }}" class="btn-primary">
                     Annuler
                 </a>
 
@@ -98,4 +104,5 @@
 
 {% block javascripts %}
     <script type="module" src="{{ asset('js/creer-sortie.js') }}"></script>
+    <script type="module" src="{{ asset('js/message.js') }}"></script>
 {% endblock %}
