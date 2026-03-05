@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Participants;
 use App\Entity\Sites;
+use App\Form\ImportCsvType;
 use App\Repository\EtatsRepository;
 use App\Repository\ParticipantsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -136,27 +137,7 @@ final class ParticipantsController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $form = $this->createFormBuilder()
-            ->add('csv_file', FileType::class, [
-                'label' => 'Fichier CSV',
-                'mapped' => false,
-                'required' => true,
-                'constraints' => [
-                    new File([
-                        'maxSize' => '5M',
-                        'mimeTypes' => [
-                            'text/plain',
-                            'text/csv',
-                            'application/csv',
-                            'text/comma-separated-values',
-                            'application/vnd.ms-excel',
-                        ],
-                        'mimeTypesMessage' => 'Veuillez uploader un fichier CSV valide',
-                    ])
-                ],
-            ])
-            ->getForm();
-
+        $form = $this->createForm(ImportCsvType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -167,8 +148,14 @@ final class ParticipantsController extends AbstractController
 
             foreach ($rows as $i => $row) {
                 $data = array_combine($header, $row);
-
                 try {
+                    $existingUser = $em->getRepository(Participants::class)
+                        ->findOneBy(['pseudo' => $data['pseudo']]);
+                    if ($existingUser) {
+                        $this->addFlash('error', "Erreur ligne ".($i+2).": L’utilisateur '{$data['pseudo']}' existe déjà.");
+                        continue;
+                    }
+
                     $user = new Participants();
                     $user->setPseudo($data['pseudo']);
                     $user->setNom($data['nom']);
@@ -178,23 +165,14 @@ final class ParticipantsController extends AbstractController
                     $user->setActif(strtolower($data['actif'] ?? 'true') === 'true');
                     $user->setAdministrateur(strtolower($data['administrateur'] ?? 'false') === 'true');
 
-                    if ($user->isAdministrateur()) {
+                    $user->setRoles($user->isAdministrateur() ? ['ROLE_ADMIN'] : ['ROLE_USER']);
 
-                        $user->setRoles(['ROLE_ADMIN']);
-                    } else {
-
-                        $user->setRoles(['ROLE_USER']);
-                    }
-                    // Hash du mot de passe
                     $plainPassword = $data['plainPassword'] ?? 'changeme';
                     $user->setPassword($hasher->hashPassword($user, $plainPassword));
 
-                    // Associer le site si indiqué
                     if (!empty($data['noSites'])) {
                         $site = $em->getRepository(Sites::class)->find($data['noSites']);
-                        if ($site) {
-                            $user->setNoSites($site);
-                        }
+                        if ($site) $user->setNoSites($site);
                     }
 
                     $em->persist($user);
@@ -213,5 +191,4 @@ final class ParticipantsController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 }

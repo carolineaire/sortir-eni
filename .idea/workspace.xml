@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9afbf6cd-9f6e-4598-887d-2160b719671c" name="Changes" comment="Gerer des groupes privés, gerer la suppression des user">
+    <list default="true" id="9afbf6cd-9f6e-4598-887d-2160b719671c" name="Changes" comment="Modification minutes en heures">
+      <change afterPath="$PROJECT_DIR$/src/Form/ImportCsvType.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/participant.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/participant.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ParticipantsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ParticipantsController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/SortieController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SortieController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/SortiesType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/SortiesType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/participants/users-import-csv.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/participants/users-import-csv.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/participants/users-list.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/participants/users-list.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,8 +27,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="PHP File" />
         <option value="HTML File" />
+        <option value="PHP File" />
       </list>
     </option>
   </component>
@@ -241,7 +245,7 @@
       <workItem from="1772440995196" duration="8454000" />
       <workItem from="1772525122617" duration="13111000" />
       <workItem from="1772613628805" duration="6470000" />
-      <workItem from="1772698601252" duration="2239000" />
+      <workItem from="1772698601252" duration="13732000" />
     </task>
     <task id="LOCAL-00001" summary="Modifier et supprimer une sortie">
       <option name="closed" value="true" />
@@ -283,7 +287,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772187989716</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Modification minutes en heures">
+      <option name="closed" value="true" />
+      <created>1772701439150</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1772701439150</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -341,6 +353,7 @@
     <MESSAGE value="Gerer l'acces a la gestion des villes et des sites" />
     <MESSAGE value="Suppression de la connexion automatique après inscription" />
     <MESSAGE value="Gerer des groupes privés, gerer la suppression des user" />
-    <option name="LAST_COMMIT_MESSAGE" value="Gerer des groupes privés, gerer la suppression des user" />
+    <MESSAGE value="Modification minutes en heures" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modification minutes en heures" />
   </component>
 </project>

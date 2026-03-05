@@ -93,21 +93,19 @@ final class SortieController extends AbstractController
         $sortieForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted()) {
-
             if ($sortieForm->isValid()) {
+
                 $dateDebut = $sortie->getDateDebut();
                 $dateCloture = $sortie->getDateCloture();
 
                 if ($dateDebut <= $dateCloture) {
                     $this->addFlash('error', 'La date et heure de la sortie doit être supérieure à la date limite d\'inscription !');
                     return $this->redirectToRoute('sortie_create');
-
                 }
 
                 // Organisateur = utilisateur connecté
                 $organisateur = $this->getUser();
                 $sortie->setOrganisateur($organisateur);
-
 
                 // Si la sortie est privée
                 if ($sortie->isPrivate()) {
@@ -120,7 +118,7 @@ final class SortieController extends AbstractController
                         return $this->redirectToRoute('sortie_create');
                     }
 
-                    // Optionnel : ajouter automatiquement l'organisateur dans les invités
+                    //  ajouter automatiquement l'organisateur dans les invités
                     if (!$invites->contains($organisateur)) {
                         $sortie->addInvite($organisateur);
                     }
@@ -137,8 +135,6 @@ final class SortieController extends AbstractController
                         // Persister l'inscription
                         $em->persist($inscription);
                     }
-
-
 
                 }
 
@@ -235,7 +231,7 @@ final class SortieController extends AbstractController
             throw new \LogicException('L\'utilisateur doit être un participant.');
         }
 
-        // 🔒 Déjà inscrit ?
+        //  Déjà inscrit ?
         foreach ($sortie->getInscriptions() as $inscription) {
             if ($inscription->getNoParticipants() === $user) {
                 $this->addFlash('warning', 'Vous êtes déjà inscrit.');
@@ -243,7 +239,7 @@ final class SortieController extends AbstractController
             }
         }
 
-        // 🔥 Vérifier si sortie complète
+        //  Vérifier si sortie complète
         if ($sortie->getInscriptions()->count() >= $sortie->getNbInscriptionMax()) {
             $this->addFlash('danger', 'Il n\'y a plus de place disponible.');
 

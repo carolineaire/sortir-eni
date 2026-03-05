@@ -3,7 +3,7 @@
 {% block title %}Liste des participants{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="/css/participant.css">
+    <link rel="stylesheet" href="{{ asset('css/participant.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -11,7 +11,7 @@
     {# Messages d'erreurs, d'avertissement ou de succès #}
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="alert alert-{{ label }}">
+            <div class="flash-{{ label }}">
                 {{ message }}
             </div>
         {% endfor %}
@@ -24,9 +24,9 @@
             <div class="d-flex mb-3 gap-2">
                 <input type="text" name="search" class="form-control" placeholder="Rechercher par pseudo, nom ou prénom" value="{{ search }}">
                 <button type="submit" class="btn btn-primary">Rechercher</button>
-            </div>       
+            </div>
         </form>
-        
+
         <table class="table table-striped">
             <thead>
             <tr>

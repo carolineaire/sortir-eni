@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Importer des utilisateurs{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/participant.css') }}">
+{% endblock %}
 
 {% block body %}
 
     {# Messages d'erreurs, d'avertissement ou de succès #}
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="alert alert-{{ label }}">
+            <div class="flash-{{ label }}">
                 {{ message }}
             </div>
         {% endfor %}
@@ -22,9 +25,13 @@
         <a href="{{ path('app_participants') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
         {{ form_end(form) }}
     </div>
-    
+
 {% endblock %}
 
 {% block javascripts %}
     <script type="module" src="{{ asset('js/message.js') }}"></script>
 {% endblock %}
+
+
+
+
