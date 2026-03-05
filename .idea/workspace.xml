@@ -4,16 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9afbf6cd-9f6e-4598-887d-2160b719671c" name="Changes" comment="Gerer l'acces a la gestion des villes et des sites">
+    <list default="true" id="9afbf6cd-9f6e-4598-887d-2160b719671c" name="Changes" comment="Gerer des groupes privés, gerer la suppression des user">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ParticipantsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ParticipantsController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/SortieController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SortieController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Participants.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Participants.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Sorties.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Sorties.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Form/SortiesType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/SortiesType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/participants/usersList.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/participants/usersList.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sortie/creerSortie.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sortie/creerSortie.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sortie/sortie-details.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sortie/sortie-details.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +31,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="KatiGestionGroupesPrivés" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -211,7 +205,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;KatiGestionGroupesPrivés&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/sortir-eni&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -246,6 +240,8 @@
       <workItem from="1771957681613" duration="11580000" />
       <workItem from="1772440995196" duration="8454000" />
       <workItem from="1772525122617" duration="13111000" />
+      <workItem from="1772613628805" duration="6470000" />
+      <workItem from="1772698601252" duration="2239000" />
     </task>
     <task id="LOCAL-00001" summary="Modifier et supprimer une sortie">
       <option name="closed" value="true" />
@@ -344,6 +340,7 @@
     <MESSAGE value="suppression du button publier dans ecran  modifier une sortie" />
     <MESSAGE value="Gerer l'acces a la gestion des villes et des sites" />
     <MESSAGE value="Suppression de la connexion automatique après inscription" />
-    <option name="LAST_COMMIT_MESSAGE" value="Suppression de la connexion automatique après inscription" />
+    <MESSAGE value="Gerer des groupes privés, gerer la suppression des user" />
+    <option name="LAST_COMMIT_MESSAGE" value="Gerer des groupes privés, gerer la suppression des user" />
   </component>
 </project>

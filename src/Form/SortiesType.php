@@ -35,7 +35,7 @@ class SortiesType extends AbstractType
         ])
             ->add('duree', null, [
 
-        'label' => 'Durée (minutes)',
+        'label' => 'Durée (heures)',
     ])
             ->add('description')
 

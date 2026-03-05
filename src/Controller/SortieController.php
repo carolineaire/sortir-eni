@@ -131,7 +131,7 @@ final class SortieController extends AbstractController
                         $inscription->setNoParticipants($participant);
                         $inscription->setDateInscription(new \DateTimeImmutable());
 
-                        // Ajouter à la collection Sorties->inscriptions (optionnel mais pratique)
+                        // Ajouter à la collection Sorties->inscriptions
                         $sortie->addInscription($inscription);
 
                         // Persister l'inscription
